@@ -15,7 +15,7 @@ rm -rf images
 export MATLABPATH=$MATLABPATH:$SERVICE_DIR
 matlab -nodisplay -nosplash -r main
 count=$(ls images/*.png | wc -l)
-if [ $count -eq  ];
+if [ $count -eq 20 ];
 then
 	echo 0 > finished
 else
