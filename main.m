@@ -46,8 +46,13 @@ for ifg = 1:length(fg_classified)
     
     saveas(tract_profile, fullfile('images/', Title_plot.String), 'png')
     saveas(tract_profile, fullfile('images/', Title_plot.String), 'eps')
-    clear()
+    %clear()
+    json.images(ifg).filename = strcat(Title_plot.String,'.png');
+    json.images(ifg).name = strcat(Title_plot.String, ' tract analysis profile');
+    json.images(ifg).desc = strcat(Title_plot.String, ' tract analysis profile');
+    
 end
 
+savejson('', json, fullfile('images.json'));
 end
 
