@@ -62,8 +62,8 @@ for ifg = 1:length(fg_classified)
     xlabel('Location on tract')
     
     
-    saveas(tract_profile, fullfile('images/', Title_plot.String, ' ', prop), 'png')
-    saveas(tract_profile, fullfile('images/', Title_plot.String, ' ', prop), 'eps')
+    saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, ' ', prop)), 'png')
+    saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, ' ', prop)), 'eps')
     %clear()
     json.images(ifg).filename = strcat('images/',Title_plot.String,' ', prop, '.png');
     json.images(ifg).name = strcat(Title_plot.String);

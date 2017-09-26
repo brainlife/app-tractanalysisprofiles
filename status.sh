@@ -33,7 +33,7 @@ if [ -f jobid ]; then
     fi
     if [ $jobstate == "R" ]; then
         subid=$(cat jobid | cut -d '.' -f 1)
-        logname="tractclassification.o$subid"
+        logname="tractanalysisprofiles.o$subid"
         tail -1 $logname
         exit 0
     fi
