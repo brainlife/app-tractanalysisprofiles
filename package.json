@@ -1,0 +1,24 @@
+{
+  "name": "app-tractanalysisprofiles",
+  "version": "1.0.0",
+  "description": "run tract analysis profiles",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "start.sh",
+    "stop": "stop.sh",
+    "status": "status.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brain-life/app-tractanalysisprofiles"
+  },
+  "author": "Lindsey Kitchell <kitchell@indiana.edu>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/brain-life/app-tractanalysisprofiles/issues"
+  },
+  "homepage": "https://github.com/brain-life/app-tractanalysisprofiles"
+}

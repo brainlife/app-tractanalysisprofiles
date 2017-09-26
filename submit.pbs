@@ -1,0 +1,25 @@
+#!/bin/bash
+#PBS -l nodes=1:ppn=8:dc2,walltime=0:30:00
+#PBS -N tractanalysisprofiles
+#PBS -V
+
+
+if [ $ENV == "IUHPC" ]; then
+	cd $PBS_O_WORKDIR
+	module load matlab
+fi
+
+
+rm -rf images
+
+export MATLABPATH=$MATLABPATH:$SERVICE_DIR
+matlab -nodisplay -nosplash -r main
+count=$(ls images/*.png | wc -l)
+if [ $count -eq  ];
+then
+	echo 0 > finished
+else
+	echo "output missing"
+	echo 1 > finished
+	exit 1
+fi
