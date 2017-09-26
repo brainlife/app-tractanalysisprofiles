@@ -46,18 +46,26 @@ for ifg = 1:length(fg_classified)
         case 'fa'
             tract_profile = plot(fa(nodesToPlot),'color', [0.2 0.2 0.9],'linewidth',4)
             ylh = ylabel('Fractional Anisotropy');
+            ylim = [0.00, 1.00];
+            ytick = [0 .25 .5 .75];
         case 'md'
             tract_profile = plot(md(nodesToPlot),'color', [0.2 0.2 0.9],'linewidth',4)
             ylh = ylabel('Mean Diffusivity');
+            ylim = [0.00, 1.00];
+            ytick = [0 .25 .5 .75];
         case 'rd'
             tract_profile = plot(rd(nodesToPlot),'color', [0.2 0.2 0.9],'linewidth',4)
             ylh = ylabel('Radial Diffusivity');
+            ylim = [0.00, 1.00];
+            ytick = [0 .25 .5 .75];
         case 'ad'
             tract_profile = plot(ad(nodesToPlot),'color', [0.2 0.2 0.9],'linewidth',4)
             ylh = ylabel('Axial Diffusivity');
+            ylim = [0.00, 2.00];
+            ytick = [0 .5 1 1.5];
     end
     set(gca, 'fontsize',20, 'box','off', 'TickDir','out', ...
-        'xticklabel',{'Tract begin','Tract end'},'xlim',[0 100],'ylim',[0.00 1.00],'Ytick',[0 .25 .5 .75],'Xtick',[0 100])
+        'xticklabel',{'Tract begin','Tract end'},'xlim',[0 100],'ylim',ylim,'Ytick',ytick,'Xtick',[0 100])
     Title_plot = title(fg.name);
     xlabel('Location on tract')
     
