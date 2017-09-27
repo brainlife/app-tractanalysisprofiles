@@ -67,8 +67,7 @@ for ifg = 1:length(fg_classified)
             ytick = [0 .5 1 1.5];
     end
     set(gca, 'fontsize',20, 'box','off', 'TickDir','out', ...
-        % 'xticklabel',{'Tract begin','Tract end'},'xlim',[0 100],'ylim',ylim,'Ytick',ytick,'Xtick',[0 100])
-        'xticklabel',{'Tract begin','Tract end'},'xlim',[0 100],'ylim',ylim,'Ytick',ytick,'Xtick',[0 50])
+        'xticklabel',{'Tract begin','Tract end'},'xlim',[0 50],'ylim',ylim,'Ytick',ytick,'Xtick',[0 50])
     Title_plot = title(fg.name);
     xlabel('Location on tract')
     
