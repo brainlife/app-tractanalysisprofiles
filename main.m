@@ -30,7 +30,8 @@ for ifg = 1:length(fg_classified)
     fg = fg_classified( ifg );
 
     % compute the core fiber from the fiber group (the tact profile is computed here)
-    [fa, md, rd, ad, cl, core] = dtiComputeDiffusionPropertiesAlongFG( fg, dt,[],[],200);
+    % [fa, md, rd, ad, cl, core] = dtiComputeDiffusionPropertiesAlongFG( fg, dt,[],[],200);
+    [fa, md, rd, ad, cl, core] = dtiComputeDiffusionPropertiesAlongFG( fg, dt,[],[],100);
     
     % How to make a trct profile from a NIFTI file (such as from a run model)
     % nifti_file = niftiRead('path/to/nifti/file.nii.gz')
@@ -38,7 +39,8 @@ for ifg = 1:length(fg_classified)
     
     % 3. Select a center portion fo the tract and show the FA and MD values
     % normally we only use for analyses the middle most reliable portion of the fiber.
-    nodesToPlot = 50:151;
+    % nodesToPlot = 50:151;
+    nodesToPlot = 25:51;
     
     h.tpfig = figure('name', 'My tract profile','color', 'w', 'visible', 'off');
     
@@ -65,7 +67,8 @@ for ifg = 1:length(fg_classified)
             ytick = [0 .5 1 1.5];
     end
     set(gca, 'fontsize',20, 'box','off', 'TickDir','out', ...
-        'xticklabel',{'Tract begin','Tract end'},'xlim',[0 100],'ylim',ylim,'Ytick',ytick,'Xtick',[0 100])
+        % 'xticklabel',{'Tract begin','Tract end'},'xlim',[0 100],'ylim',ylim,'Ytick',ytick,'Xtick',[0 100])
+        'xticklabel',{'Tract begin','Tract end'},'xlim',[0 100],'ylim',ylim,'Ytick',ytick,'Xtick',[0 50])
     Title_plot = title(fg.name);
     xlabel('Location on tract')
     
