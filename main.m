@@ -40,7 +40,7 @@ for ifg = 1:length(fg_classified)
     % 3. Select a center portion fo the tract and show the FA and MD values
     % normally we only use for analyses the middle most reliable portion of the fiber.
     % nodesToPlot = 50:151;
-    nodesToPlot = 25:51;
+    nodesToPlot = 25:76;
     
     h.tpfig = figure('name', 'My tract profile','color', 'w', 'visible', 'off');
     
