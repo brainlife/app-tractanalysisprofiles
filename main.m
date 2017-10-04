@@ -41,7 +41,7 @@ fprintf(fileID, '%d', numfiles);
 fclose(fileID);
 
 mkdir('images');
-mkdir('images/profiles');
+mkdir('profiles');
 imgnum = 0;
 
 for ifg = 1:length(fg_classified)
@@ -61,7 +61,7 @@ for ifg = 1:length(fg_classified)
     
     T = cell2table(tract_profiles);
     T.Properties.VariableNames = {'FA', 'MD', 'RD', 'AD'};
-    writetable(T, strcat('images/profiles/', strrep(fg.name, ' ', '_'), '_profiles.csv'));
+    writetable(T, strcat('profiles/', strrep(fg.name, ' ', '_'), '_profiles.csv'));
     % How to make a trct profile from a NIFTI file (such as from a run model)
     % nifti_file = niftiRead('path/to/nifti/file.nii.gz')
     % val = dtiComputeDiffusionPropertiesAlongFG( fg, nifti_file,[],[],200);
@@ -122,7 +122,7 @@ for ifg = 1:length(fg_classified)
         saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, '_rd')), 'png')
         saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, '_rd')), 'eps')
         %clear()
-        imgnum = imngnum + 1;
+        imgnum = imgnum + 1;
         json.images(imgnum).filename = strcat('images/',Title_plot.String,'_rd', '.png');
         json.images(imgnum).name = strcat(Title_plot.String);
         json.images(imgnum).desc = strcat(Title_plot.String, ' tract analysis profile');
