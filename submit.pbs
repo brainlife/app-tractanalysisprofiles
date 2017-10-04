@@ -18,7 +18,7 @@ matlab -nodisplay -nosplash -r main
 count=$(ls images/*.png | wc -l)
 NUMFILES=`cat numfiles.txt`
 
-if [ "$coun"t ==  "$NUMFILES" ];
+if [ "$count" ==  "$NUMFILES" ];
 then
 	echo 0 > finished
 else
