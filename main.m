@@ -37,7 +37,7 @@ if config.fa
     numfiles = numfiles + 20;
 end
 fileID = fopen('numfiles.txt','w');
-fprintf(fileID, str(numfiles));
+fprintf(fileID, '%d', numfiles);
 fclose(fileID);
 
 mkdir('images');
