@@ -12,6 +12,8 @@ fi
 
 
 rm -rf images
+rm -f images.json
+rm -f numfiles.txt
 
 export MATLABPATH=$MATLABPATH:$SERVICE_DIR
 matlab -nodisplay -nosplash -r main
