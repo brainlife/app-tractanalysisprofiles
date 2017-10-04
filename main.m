@@ -30,8 +30,8 @@ for ifg = 1:length(fg_classified)
     fg = fg_classified( ifg );
 
     % compute the core fiber from the fiber group (the tact profile is computed here)
-    % [fa, md, rd, ad, cl, core] = dtiComputeDiffusionPropertiesAlongFG( fg, dt,[],[],200);
-    [fa, md, rd, ad, cl, core] = dtiComputeDiffusionPropertiesAlongFG( fg, dt,[],[],100);
+    [fa, md, rd, ad, cl, core] = dtiComputeDiffusionPropertiesAlongFG( fg, dt,[],[],200);
+    %[fa, md, rd, ad, cl, core] = dtiComputeDiffusionPropertiesAlongFG( fg, dt,[],[],100);
     
     tract_profiles{ifg,1} = fg.name;
     tract_profiles{ifg,2} = fa;
