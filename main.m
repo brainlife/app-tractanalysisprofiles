@@ -22,23 +22,29 @@ config = loadjson('config.json');
 dt = dtiLoadDt6(fullfile(config.dt6,'/dti/dt6.mat'));
 load(config.afq);
 %load('output.mat');
-tract_profiles = cell(length(fg_classified), 5);
+
 
 mkdir('images');
+mkdir('images/profiles');
 
 for ifg = 1:length(fg_classified)
     fg = fg_classified( ifg );
-
+    
+    
     % compute the core fiber from the fiber group (the tact profile is computed here)
-    [fa, md, rd, ad, cl, core] = dtiComputeDiffusionPropertiesAlongFG( fg, dt,[],[],200);
+    [fa, md, rd, ad, cl, SuperFiber, fgClipped, cp, cs, fgResampled] = dtiComputeDiffusionPropertiesAlongFG( fg, dt,[],[],200);
     %[fa, md, rd, ad, cl, core] = dtiComputeDiffusionPropertiesAlongFG( fg, dt,[],[],100);
+    tract_profiles = cell(200, 4);
     
-    tract_profiles{ifg,1} = fg.name;
-    tract_profiles{ifg,2} = fa;
-    tract_profiles{ifg,3} = md;
-    tract_profiles{ifg,4} = rd;
-    tract_profiles{ifg,5} = ad;
+
+    tract_profiles(:,1) = num2cell(fa);
+    tract_profiles(:,2) = num2cell(md);
+    tract_profiles(:,3) = num2cell(rd);
+    tract_profiles(:,4) = num2cell(ad);
     
+    T = cell2table(tract_profiles);
+    T.Properties.VariableNames = {'FA', 'MD', 'RD', 'AD'};
+    writetable(T, strcat('images/profiles/', strrep(fg.name, ' ', '_'), '_profiles.csv'));
     % How to make a trct profile from a NIFTI file (such as from a run model)
     % nifti_file = niftiRead('path/to/nifti/file.nii.gz')
     % val = dtiComputeDiffusionPropertiesAlongFG( fg, nifti_file,[],[],200);
@@ -135,9 +141,7 @@ for ifg = 1:length(fg_classified)
 %     
 end
 clf
-T = cell2table(tract_profiles);
-T.Properties.VariableNames = {'Tract Name', 'FA', 'MD', 'RD', 'AD'};
-writetable(T, 'images/tract_profiles.csv')
+
 savejson('', json, fullfile('images.json'));
 end
 
