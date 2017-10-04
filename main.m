@@ -27,13 +27,13 @@ numfiles = 0;
 if config.fa
     numfiles = numfiles + 20;
 end
-if config.fa
+if config.md
     numfiles = numfiles + 20;
 end
-if config.fa
+if config.rd
     numfiles = numfiles + 20;
 end
-if config.fa
+if config.ad
     numfiles = numfiles + 20;
 end
 fileID = fopen('numfiles.txt','w');
