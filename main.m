@@ -42,6 +42,7 @@ fclose(fileID);
 
 mkdir('images');
 mkdir('images/profiles');
+imgnum = 0;
 
 for ifg = 1:length(fg_classified)
     fg = fg_classified( ifg );
@@ -85,9 +86,10 @@ for ifg = 1:length(fg_classified)
         saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, '_fa')), 'png')
         saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, '_fa')), 'eps')
         %clear()
-        json.images(ifg).filename = strcat('images/',Title_plot.String,'_fa','.png');
-        json.images(ifg).name = strcat(Title_plot.String);
-        json.images(ifg).desc = strcat(Title_plot.String, ' tract analysis profile');
+        imgnum = imgnum+1;
+        json.images(imgnum).filename = strcat('images/',Title_plot.String,'_fa','.png');
+        json.images(imgnum).name = strcat(Title_plot.String);
+        json.images(imgnum).desc = strcat(Title_plot.String, ' tract analysis profile');
         clf
     end
     if config.md
@@ -102,9 +104,10 @@ for ifg = 1:length(fg_classified)
         saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, '_md')), 'png')
         saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, '_md')), 'eps')
         %clear()
-        json.images(ifg).filename = strcat('images/',Title_plot.String,'_md', '.png');
-        json.images(ifg).name = strcat(Title_plot.String);
-        json.images(ifg).desc = strcat(Title_plot.String, ' tract analysis profile');
+        imgnum = imgnum + 1;
+        json.images(imgnum).filename = strcat('images/',Title_plot.String,'_md', '.png');
+        json.images(imgnum).name = strcat(Title_plot.String);
+        json.images(imgnum).desc = strcat(Title_plot.String, ' tract analysis profile');
         clf
     end
     if config.rd
@@ -119,9 +122,10 @@ for ifg = 1:length(fg_classified)
         saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, '_rd')), 'png')
         saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, '_rd')), 'eps')
         %clear()
-        json.images(ifg).filename = strcat('images/',Title_plot.String,'_rd', '.png');
-        json.images(ifg).name = strcat(Title_plot.String);
-        json.images(ifg).desc = strcat(Title_plot.String, ' tract analysis profile');
+        imgnum = imngnum + 1;
+        json.images(imgnum).filename = strcat('images/',Title_plot.String,'_rd', '.png');
+        json.images(imgnum).name = strcat(Title_plot.String);
+        json.images(imgnum).desc = strcat(Title_plot.String, ' tract analysis profile');
         clf
     end
     if config.ad
@@ -136,9 +140,10 @@ for ifg = 1:length(fg_classified)
         saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, '_ad')), 'png')
         saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, '_ad')), 'eps')
         %clear()
-        json.images(ifg).filename = strcat('images/',Title_plot.String,'_ad', '.png');
-        json.images(ifg).name = strcat(Title_plot.String);
-        json.images(ifg).desc = strcat(Title_plot.String, ' tract analysis profile');
+        imgnum = imgnum + 1;
+        json.images(imgnum).filename = strcat('images/',Title_plot.String,'_ad', '.png');
+        json.images(imgnum).name = strcat(Title_plot.String);
+        json.images(imgnum).desc = strcat(Title_plot.String, ' tract analysis profile');
         clf
     end
 
