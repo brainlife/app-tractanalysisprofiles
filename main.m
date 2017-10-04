@@ -23,6 +23,22 @@ dt = dtiLoadDt6(fullfile(config.dt6,'/dti/dt6.mat'));
 load(config.afq);
 %load('output.mat');
 
+numfiles = 0;
+if config.fa
+    numfiles = numfiles + 20;
+end
+if config.fa
+    numfiles = numfiles + 20;
+end
+if config.fa
+    numfiles = numfiles + 20;
+end
+if config.fa
+    numfiles = numfiles + 20;
+end
+fileID = fopen('numfiles.txt','w');
+fprintf(fileID, numfiles);
+fclose(fileID);
 
 mkdir('images');
 mkdir('images/profiles');
