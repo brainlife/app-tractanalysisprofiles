@@ -22,6 +22,7 @@ config = loadjson('config.json');
 dt = dtiLoadDt6(fullfile(config.dt6,'/dti/dt6.mat'));
 load(config.afq);
 %load('output.mat');
+numnodes = config.numnodes;
 
 numfiles = 0;
 if config.fa
@@ -49,9 +50,9 @@ for ifg = 1:length(fg_classified)
     
     
     % compute the core fiber from the fiber group (the tact profile is computed here)
-    [fa, md, rd, ad, cl, SuperFiber, fgClipped, cp, cs, fgResampled] = dtiComputeDiffusionPropertiesAlongFG( fg, dt,[],[],200);
+    [fa, md, rd, ad, cl, SuperFiber, fgClipped, cp, cs, fgResampled] = dtiComputeDiffusionPropertiesAlongFG( fg, dt,[],[],numnodes);
     %[fa, md, rd, ad, cl, core] = dtiComputeDiffusionPropertiesAlongFG( fg, dt,[],[],100);
-    tract_profiles = cell(200, 4);
+    tract_profiles = cell(numnodes, 4);
     
 
     tract_profiles(:,1) = num2cell(fa);
@@ -68,19 +69,19 @@ for ifg = 1:length(fg_classified)
     
     % 3. Select a center portion fo the tract and show the FA and MD values
     % normally we only use for analyses the middle most reliable portion of the fiber.
-    nodesToPlot = 50:151;
+    %nodesToPlot = 1:200;
     %nodesToPlot = 25:76;
     
     h.tpfig = figure('name', 'My tract profile','color', 'w', 'visible', 'off');
     
 
     if config.fa
-        tract_profile = plot(fa(nodesToPlot),'color', [0.2 0.2 0.9],'linewidth',4)
+        tract_profile = plot(fa,'color', [0.2 0.2 0.9],'linewidth',4)
         ylh = ylabel('Fractional Anisotropy');
         ylim = [0.00, 1.00];
         ytick = [0 .25 .5 .75];
         set(gca, 'fontsize',20, 'box','off', 'TickDir','out', ...
-        'xticklabel',{'Tract begin','Tract end'},'xlim',[0 100],'ylim',ylim,'Ytick',ytick,'Xtick',[0 100])
+        'xticklabel',{'Tract begin','Tract end'},'xlim',[0 100],'ylim',ylim,'Ytick',ytick,'Xtick',[0 numnodes])
         Title_plot = title(fg.name);
         xlabel('Location on tract')
         saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, '_fa')), 'png')
@@ -93,12 +94,12 @@ for ifg = 1:length(fg_classified)
         clf
     end
     if config.md
-        tract_profile = plot(md(nodesToPlot),'color', [0.2 0.2 0.9],'linewidth',4)
+        tract_profile = plot(md,'color', [0.2 0.2 0.9],'linewidth',4)
         ylh = ylabel('Mean Diffusivity');
         ylim = [0.00, 1.00];
         ytick = [0 .25 .5 .75];
         set(gca, 'fontsize',20, 'box','off', 'TickDir','out', ...
-        'xticklabel',{'Tract begin','Tract end'},'xlim',[0 100],'ylim',ylim,'Ytick',ytick,'Xtick',[0 100])
+        'xticklabel',{'Tract begin','Tract end'},'xlim',[0 100],'ylim',ylim,'Ytick',ytick,'Xtick',[0 numnodes])
         Title_plot = title(fg.name);
         xlabel('Location on tract')
         saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, '_md')), 'png')
@@ -111,12 +112,12 @@ for ifg = 1:length(fg_classified)
         clf
     end
     if config.rd
-        tract_profile = plot(rd(nodesToPlot),'color', [0.2 0.2 0.9],'linewidth',4)
+        tract_profile = plot(rd,'color', [0.2 0.2 0.9],'linewidth',4)
         ylh = ylabel('Radial Diffusivity');
         ylim = [0.00, 1.00];
         ytick = [0 .25 .5 .75];
         set(gca, 'fontsize',20, 'box','off', 'TickDir','out', ...
-        'xticklabel',{'Tract begin','Tract end'},'xlim',[0 100],'ylim',ylim,'Ytick',ytick,'Xtick',[0 100])
+        'xticklabel',{'Tract begin','Tract end'},'xlim',[0 100],'ylim',ylim,'Ytick',ytick,'Xtick',[0 numnodes])
         Title_plot = title(fg.name);
         xlabel('Location on tract')
         saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, '_rd')), 'png')
@@ -129,12 +130,12 @@ for ifg = 1:length(fg_classified)
         clf
     end
     if config.ad
-        tract_profile = plot(ad(nodesToPlot),'color', [0.2 0.2 0.9],'linewidth',4)
+        tract_profile = plot(ad,'color', [0.2 0.2 0.9],'linewidth',4)
         ylh = ylabel('Axial Diffusivity');
         ylim = [0.00, 2.00];
         ytick = [0 .5 1 1.5];
         set(gca, 'fontsize',20, 'box','off', 'TickDir','out', ...
-        'xticklabel',{'Tract begin','Tract end'},'xlim',[0 100],'ylim',ylim,'Ytick',ytick,'Xtick',[0 100])
+        'xticklabel',{'Tract begin','Tract end'},'xlim',[0 100],'ylim',ylim,'Ytick',ytick,'Xtick',[0 numnodes])
         Title_plot = title(fg.name);
         xlabel('Location on tract')
         saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, '_ad')), 'png')
