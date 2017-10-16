@@ -81,7 +81,7 @@ for ifg = 1:length(fg_classified)
         ylim = [0.00, 1.00];
         ytick = [0 .25 .5 .75];
         set(gca, 'fontsize',20, 'box','off', 'TickDir','out', ...
-        'xticklabel',{'Tract begin','Tract end'},'xlim',[0 100],'ylim',ylim,'Ytick',ytick,'Xtick',[0 numnodes])
+        'xticklabel',{'Tract begin','Tract end'},'xlim',[0 numnodes],'ylim',ylim,'Ytick',ytick,'Xtick',[0 numnodes])
         Title_plot = title(fg.name);
         xlabel('Location on tract')
         saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, '_fa')), 'png')
@@ -99,7 +99,7 @@ for ifg = 1:length(fg_classified)
         ylim = [0.00, 1.00];
         ytick = [0 .25 .5 .75];
         set(gca, 'fontsize',20, 'box','off', 'TickDir','out', ...
-        'xticklabel',{'Tract begin','Tract end'},'xlim',[0 100],'ylim',ylim,'Ytick',ytick,'Xtick',[0 numnodes])
+        'xticklabel',{'Tract begin','Tract end'},'xlim',[0 numnodes],'ylim',ylim,'Ytick',ytick,'Xtick',[0 numnodes])
         Title_plot = title(fg.name);
         xlabel('Location on tract')
         saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, '_md')), 'png')
@@ -117,7 +117,7 @@ for ifg = 1:length(fg_classified)
         ylim = [0.00, 1.00];
         ytick = [0 .25 .5 .75];
         set(gca, 'fontsize',20, 'box','off', 'TickDir','out', ...
-        'xticklabel',{'Tract begin','Tract end'},'xlim',[0 100],'ylim',ylim,'Ytick',ytick,'Xtick',[0 numnodes])
+        'xticklabel',{'Tract begin','Tract end'},'xlim',[0 numnodes],'ylim',ylim,'Ytick',ytick,'Xtick',[0 numnodes])
         Title_plot = title(fg.name);
         xlabel('Location on tract')
         saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, '_rd')), 'png')
@@ -135,7 +135,7 @@ for ifg = 1:length(fg_classified)
         ylim = [0.00, 2.00];
         ytick = [0 .5 1 1.5];
         set(gca, 'fontsize',20, 'box','off', 'TickDir','out', ...
-        'xticklabel',{'Tract begin','Tract end'},'xlim',[0 100],'ylim',ylim,'Ytick',ytick,'Xtick',[0 numnodes])
+        'xticklabel',{'Tract begin','Tract end'},'xlim',[0 numnodes],'ylim',ylim,'Ytick',ytick,'Xtick',[0 numnodes])
         Title_plot = title(fg.name);
         xlabel('Location on tract')
         saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, '_ad')), 'png')
