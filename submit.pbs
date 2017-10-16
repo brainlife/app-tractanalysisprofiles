@@ -12,11 +12,15 @@ fi
 
 
 rm -rf images
+rm -f images.json
+rm -f numfiles.txt
 
 export MATLABPATH=$MATLABPATH:$SERVICE_DIR
 matlab -nodisplay -nosplash -r main
 count=$(ls images/*.png | wc -l)
-if [ $count -eq 20 ];
+NUMFILES=`cat numfiles.txt`
+
+if [ "$count" ==  "$NUMFILES" ];
 then
 	echo 0 > finished
 else
