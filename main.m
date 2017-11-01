@@ -149,7 +149,7 @@ try
         clf
     end
 catch ME
-save(pwd,'error_messages.mat')
+save(fullfile(pwd,'error_messages.mat'),'ME')
 
 %     set(gca, 'fontsize',20, 'box','off', 'TickDir','out', ...
 %         'xticklabel',{'Tract begin','Tract end'},'xlim',[0 50],'ylim',ylim,'Ytick',ytick,'Xtick',[0 50])
