@@ -26,16 +26,16 @@ numnodes = config.numnodes;
 
 numfiles = 0;
 if config.fa
-    numfiles = numfiles + 20;
+    numfiles = numfiles + length(fg_classified);
 end
 if config.md
-    numfiles = numfiles + 20;
+    numfiles = numfiles + length(fg_classified);
 end
 if config.rd
-    numfiles = numfiles + 20;
+    numfiles = numfiles + length(fg_classified);
 end
 if config.ad
-    numfiles = numfiles + 20;
+    numfiles = numfiles + length(fg_classified);
 end
 fileID = fopen('numfiles.txt','w');
 fprintf(fileID, '%d', numfiles);
