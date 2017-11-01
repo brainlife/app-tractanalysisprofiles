@@ -46,6 +46,7 @@ mkdir('profiles');
 imgnum = 0;
 
 for ifg = 1:length(fg_classified)
+try
     fg = fg_classified( ifg );
     
     
@@ -147,6 +148,8 @@ for ifg = 1:length(fg_classified)
         json.images(imgnum).desc = strcat(Title_plot.String, ' tract analysis profile');
         clf
     end
+catch ME
+save(pwd,'error_messages.mat')
 
 %     set(gca, 'fontsize',20, 'box','off', 'TickDir','out', ...
 %         'xticklabel',{'Tract begin','Tract end'},'xlim',[0 50],'ylim',ylim,'Ytick',ytick,'Xtick',[0 50])
@@ -161,6 +164,7 @@ for ifg = 1:length(fg_classified)
 %     json.images(ifg).name = strcat(Title_plot.String);
 %     json.images(ifg).desc = strcat(Title_plot.String, ' tract analysis profile');
 %     
+end
 end
 clf
 
