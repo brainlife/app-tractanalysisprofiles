@@ -45,6 +45,8 @@ mkdir('images');
 mkdir('profiles');
 imgnum = 0;
 
+possible_error=0;
+failed_tracts=[];
 for ifg = 1:length(fg_classified)
 try
     fg = fg_classified( ifg );
@@ -149,6 +151,9 @@ try
         clf
     end
 catch ME
+    possible_error=1;
+    failed_tracts = [failed_tracts, fg.name];
+    
 save(fullfile(pwd,'error_messages.mat'),'ME')
 
 %     set(gca, 'fontsize',20, 'box','off', 'TickDir','out', ...
@@ -167,6 +172,14 @@ save(fullfile(pwd,'error_messages.mat'),'ME')
 end
 end
 clf
+
+if possible_error==1
+    results.quality_check = 'ERROR: The following tracts failed:';
+    results.failed_tracts = failed_tracts;
+else
+    results.quality_check = 'All tracts analysis profiles were created successfully';
+end
+savejson('', results, 'product.json');
 
 savejson('', json, fullfile('images.json'));
 end
