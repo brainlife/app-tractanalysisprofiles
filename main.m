@@ -45,7 +45,10 @@ mkdir('images');
 mkdir('profiles');
 imgnum = 0;
 
+possible_error=0;
+failed_tracts=[];
 for ifg = 1:length(fg_classified)
+try
     fg = fg_classified( ifg );
     
     
@@ -147,6 +150,11 @@ for ifg = 1:length(fg_classified)
         json.images(imgnum).desc = strcat(Title_plot.String, ' tract analysis profile');
         clf
     end
+catch ME
+    possible_error=1;
+    failed_tracts = [failed_tracts, fg.name];
+    
+save('profiles/error_messages.mat','ME')
 
 %     set(gca, 'fontsize',20, 'box','off', 'TickDir','out', ...
 %         'xticklabel',{'Tract begin','Tract end'},'xlim',[0 50],'ylim',ylim,'Ytick',ytick,'Xtick',[0 50])
@@ -162,7 +170,16 @@ for ifg = 1:length(fg_classified)
 %     json.images(ifg).desc = strcat(Title_plot.String, ' tract analysis profile');
 %     
 end
+end
 clf
+
+if possible_error==1
+    results.quality_check = 'ERROR: The following tracts failed:';
+    results.failed_tracts = failed_tracts;
+else
+    results.quality_check = 'All tracts analysis profiles were created successfully';
+end
+savejson('', results, 'product.json');
 
 savejson('', json, fullfile('images.json'));
 end
