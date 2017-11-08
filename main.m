@@ -85,8 +85,8 @@ try
     fg = fg_classified( ifg );
 
 	if isfield(config,'dt6') ~= 1
-        continue;
-    else
+        	continue;
+    	else
 		% compute the core fiber from the fiber group (the tact profile is computed here)
 		[fa, md, rd, ad, cl, SuperFiber, fgClipped, cp, cs, fgResampled] = dtiComputeDiffusionPropertiesAlongFG( fg, dt,[],[],numnodes);
     		
@@ -103,82 +103,82 @@ try
 		writetable(T, strcat('profiles/', strrep(fg.name, ' ', '_'), '_tensor_profiles.csv'));
 		if config.fa
 			tract_analysis_profiles(fg,fa,tensor{1},numnodes,'Fractional Anisotropy',[0 1.00],[0 .25 .5 .75]);
-            imgnum = imgnum+1;
-            json.images(imgnum).filename = strcat('images/',sprintf('%s_%s',fg.name,tensor{1}),'.png');
-            json.images(imgnum).name = strcat(fg.name);
-            json.images(imgnum).desc = strcat(fg.name, ' tract analysis profile');
-            clf
+            		imgnum = imgnum+1;
+            		json.images(imgnum).filename = strcat('images/',sprintf('%s_%s',fg.name,tensor{1}),'.png');
+            		json.images(imgnum).name = strcat(fg.name);
+            		json.images(imgnum).desc = strcat(fg.name, ' tract analysis profile');
+            		clf
 		end
 		if config.md
 			tract_analysis_profiles(fg,md,tensor{2},numnodes,'Mean Diffusivity',[0 1.00],[0 .25 .5 .75]);
-            imgnum = imgnum+1;
-            json.images(imgnum).filename = strcat('images/',sprintf('%s_%s',fg.name,tensor{2}),'.png');
-            json.images(imgnum).name = strcat(fg.name);
-            json.images(imgnum).desc = strcat(fg.name, ' tract analysis profile');
-            clf		
+            		imgnum = imgnum+1;
+            		json.images(imgnum).filename = strcat('images/',sprintf('%s_%s',fg.name,tensor{2}),'.png');
+            		json.images(imgnum).name = strcat(fg.name);
+            		json.images(imgnum).desc = strcat(fg.name, ' tract analysis profile');
+            		clf		
 		end
 		if config.rd
 			tract_analysis_profiles(fg,rd,tensor{3},numnodes,'Radial Diffusivity',[0 1.00],[0 .25 .5 .75]);
-            imgnum = imgnum+1;
-            json.images(imgnum).filename = strcat('images/',sprintf('%s_%s',fg.name,tensor{3}),'.png');
-            json.images(imgnum).name = strcat(fg.name);
-            json.images(imgnum).desc = strcat(fg.name, ' tract analysis profile');
-            clf
+            		imgnum = imgnum+1;
+            		json.images(imgnum).filename = strcat('images/',sprintf('%s_%s',fg.name,tensor{3}),'.png');
+            		json.images(imgnum).name = strcat(fg.name);
+            		json.images(imgnum).desc = strcat(fg.name, ' tract analysis profile');
+            		clf
 		end
 		if config.ad
 			tract_analysis_profiles(fg,ad,tensor{4},numnodes,'Axial Diffusivity',[0 2.00],[0 .5 1 1.5]);
-            imgnum = imgnum+1;
-            json.images(imgnum).filename = strcat('images/',sprintf('%s_%s',fg.name,tensor{4}),'.png');
-            json.images(imgnum).name = strcat(fg.name);
-            json.images(imgnum).desc = strcat(fg.name, ' tract analysis profile');
-            clf
-        end
+            		imgnum = imgnum+1;
+            		json.images(imgnum).filename = strcat('images/',sprintf('%s_%s',fg.name,tensor{4}),'.png');
+            		json.images(imgnum).name = strcat(fg.name);
+            		json.images(imgnum).desc = strcat(fg.name, ' tract analysis profile');
+            		clf
+        	end
 	end
 
 	if isfield(config,'noddi') ~= 1
-        continue;
-    else
-        % compute the core fiber from the fiber group (the tact profile is computed here)
-        [fa1, SuperFiber1, fgClipped1, cp1, cs1, fgResampled1] = dtiComputeDiffusionPropertiesAlongFG( fg, noddiImage{1},[],[],numnodes);
-        [fa2, SuperFiber2, fgClipped2, cp2, cs2, fgResampled2] = dtiComputeDiffusionPropertiesAlongFG( fg, noddiImage{2},[],[],numnodes);
-        [fa3, SuperFiber3, fgClipped3, cp3, cs3, fgResampled3] = dtiComputeDiffusionPropertiesAlongFG( fg, noddiImage{3},[],[],numnodes);
+        	continue;
+    	else
+        	% compute the core fiber from the fiber group (the tact profile is computed here)
+        	[fa1, SuperFiber1, fgClipped1, cp1, cs1, fgResampled1] = dtiComputeDiffusionPropertiesAlongFG( fg, noddiImage{1},[],[],numnodes);
+        	[fa2, SuperFiber2, fgClipped2, cp2, cs2, fgResampled2] = dtiComputeDiffusionPropertiesAlongFG( fg, noddiImage{2},[],[],numnodes);
+        	[fa3, SuperFiber3, fgClipped3, cp3, cs3, fgResampled3] = dtiComputeDiffusionPropertiesAlongFG( fg, noddiImage{3},[],[],numnodes);
 
-        tract_profiles = cell(numnodes, 3);
+        	tract_profiles = cell(numnodes, 3);
     
 
-        tract_profiles(:,1) = num2cell(fa1);
-        tract_profiles(:,2) = num2cell(fa2);
-        tract_profiles(:,3) = num2cell(fa3);
+        	tract_profiles(:,1) = num2cell(fa1);
+        	tract_profiles(:,2) = num2cell(fa2);
+        	tract_profiles(:,3) = num2cell(fa3);
     
-        T = cell2table(tract_profiles);
-        T.Properties.VariableNames = noddi;
-        writetable(T, strcat('profiles/', strrep(fg.name, ' ', '_'), '_noddi_profiles.csv'));
-        if config.icvf
-            tract_analysis_profiles(fg,fa1,noddi{1},numnodes,'ICVF',[0 1.00],[0.25 .5 .75]);
-            imgnum = imgnum+1;
-            json.images(imgnum).filename = strcat('images/',sprintf('%s_%s',fg.name,noddi{1}),'.png');
-            json.images(imgnum).name = strcat(fg.name);
-            json.images(imgnum).desc = strcat(fg.name, ' tract analysis profile');
-            clf
-        end
-        if config.icvf
-            tract_analysis_profiles(fg,fa2,noddi{2},numnodes,'OD',[0 1.00],[0.25 .5 .75]);
-            imgnum = imgnum+1;
-            json.images(imgnum).filename = strcat('images/',sprintf('%s_%s',fg.name,noddi{2}),'.png');
-            json.images(imgnum).name = strcat(fg.name);
-            json.images(imgnum).desc = strcat(fg.name, ' tract analysis profile');
-            clf
-        end
-        if config.icvf
-            tract_analysis_profiles(fg,fa3,noddi{3},numnodes,'ISOVF',[0 1.00],[0.25 .5 .75]);
-            imgnum = imgnum+1;
-            json.images(imgnum).filename = strcat('images/',sprintf('%s_%s',fg.name,noddi{3}),'.png');
-            json.images(imgnum).name = strcat(fg.name);
-            json.images(imgnum).desc = strcat(fg.name, ' tract analysis profile');
-            clf
-        end
-        clf
-    end
+        	T = cell2table(tract_profiles);
+        	T.Properties.VariableNames = noddi;
+        	writetable(T, strcat('profiles/', strrep(fg.name, ' ', '_'), '_noddi_profiles.csv'));
+        	if config.icvf
+            		tract_analysis_profiles(fg,fa1,noddi{1},numnodes,'ICVF',[0 1.00],[0.25 .5 .75]);
+            		imgnum = imgnum+1;
+            		json.images(imgnum).filename = strcat('images/',sprintf('%s_%s',fg.name,noddi{1}),'.png');
+            		json.images(imgnum).name = strcat(fg.name);
+            		json.images(imgnum).desc = strcat(fg.name, ' tract analysis profile');
+            		clf
+		end
+        	if config.icvf
+            		tract_analysis_profiles(fg,fa2,noddi{2},numnodes,'OD',[0 1.00],[0.25 .5 .75]);
+            		imgnum = imgnum+1;
+            		json.images(imgnum).filename = strcat('images/',sprintf('%s_%s',fg.name,noddi{2}),'.png');
+            		json.images(imgnum).name = strcat(fg.name);
+            		json.images(imgnum).desc = strcat(fg.name, ' tract analysis profile');
+            		clf
+        	end
+        	if config.icvf
+            		tract_analysis_profiles(fg,fa3,noddi{3},numnodes,'ISOVF',[0 1.00],[0.25 .5 .75]);
+            		imgnum = imgnum+1;
+            		json.images(imgnum).filename = strcat('images/',sprintf('%s_%s',fg.name,noddi{3}),'.png');
+            		json.images(imgnum).name = strcat(fg.name);
+            		json.images(imgnum).desc = strcat(fg.name, ' tract analysis profile');
+            		clf
+        	end
+        	clf
+    	end
 
 catch ME
     possible_error=1;
