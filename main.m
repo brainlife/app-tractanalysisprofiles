@@ -84,9 +84,7 @@ for ifg = 1:length(fg_classified)
 try
     fg = fg_classified( ifg );
 
-	if isfield(config,'dt6') ~= 1
-        	continue;
-    	else
+	if isfield(config,'dt6') == 1
 		% compute the core fiber from the fiber group (the tact profile is computed here)
 		[fa, md, rd, ad, cl, SuperFiber, fgClipped, cp, cs, fgResampled] = dtiComputeDiffusionPropertiesAlongFG( fg, dt,[],[],numnodes);
     		
@@ -135,9 +133,7 @@ try
         	end
 	end
 
-	if isfield(config,'noddi') ~= 1
-        	continue;
-    	else
+	if isfield(config,'noddi') == 1
         	% compute the core fiber from the fiber group (the tact profile is computed here)
         	[fa1, SuperFiber1, fgClipped1, cp1, cs1, fgResampled1] = dtiComputeDiffusionPropertiesAlongFG( fg, noddiImage{1},[],[],numnodes);
         	[fa2, SuperFiber2, fgClipped2, cp2, cs2, fgResampled2] = dtiComputeDiffusionPropertiesAlongFG( fg, noddiImage{2},[],[],numnodes);
