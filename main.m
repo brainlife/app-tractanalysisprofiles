@@ -1,3 +1,5 @@
+function [] = main()
+
 switch getenv('ENV')
     case 'IUHPC'
         disp('loading paths for IUHPC')
