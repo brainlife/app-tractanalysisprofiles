@@ -1,4 +1,4 @@
-function [] = main()
+function [] = profiles()
 
 switch getenv('ENV')
     case 'IUHPC'
