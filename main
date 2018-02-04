@@ -1,16 +1,21 @@
 #!/bin/bash
-#PBS -k o
-#PBS -l nodes=1:ppn=8,walltime=0:20:00
 
-if [ $ENV == "IUHPC" ]; then
-	cd $PBS_O_WORKDIR
-	module load matlab
-	module load spm
+module load singularity 2> /dev/null
+
+singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/main
+
+rm -rf images;
+rm -f images.json;
+rm -f numfiles.txt;
+
+count=$(ls images/*.png | wc -l)
+NUMFILES=`cat numfiles.txt`
+
+if [ "$count" ==  "$NUMFILES" ];
+then
+	echo 0 > finished
+else
+	echo "output missing"
+	echo 0 > finished
+	exit 0
 fi
-
-rm -rf images
-rm -f images.json
-rm -f numfiles.txt
-
-export MATLABPATH=$MATLABPATH:$SERVICE_DIR
-matlab -nodisplay -nosplash -r profiles
