@@ -4,10 +4,6 @@ module load singularity 2> /dev/null
 
 singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/main
 
-rm -rf images;
-rm -f images.json;
-rm -f numfiles.txt;
-
 count=$(ls images/*.png | wc -l)
 NUMFILES=`cat numfiles.txt`
 
