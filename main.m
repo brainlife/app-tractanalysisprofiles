@@ -20,6 +20,10 @@ config = loadjson('config.json');
 %config.dt6 config.afq
 %dt = dtiLoadDt6('/N/dc2/projects/lifebid/code/kitchell/app-tractanalysisprofiles/dtiinit/dti/dt6.mat');
 %dt = dtiLoadDt6(fullfile(config.dt6,'/dti/dt6.mat'));
+nii_fa = niftiRead(fullfile(config.fa));
+nii_md = niftiRead(fullfile(config.md));
+nii_rd = niftiRead(fullfile(config.rd));
+nii_ad = niftiRead(fullfile(config.ad));
 load(config.afq);
 %load('output.mat');
 numnodes = config.numnodes;
@@ -27,20 +31,17 @@ numnodes = config.numnodes;
 numfiles = 0;
 if config.fa
     numfiles = numfiles + length(fg_classified);
-    nii_fa = niftiRead(fullfile(config.fa));
 end
 if config.md
     numfiles = numfiles + length(fg_classified);
-    nii_md = niftiRead(fullfile(config.md));
 end
 if config.rd
     numfiles = numfiles + length(fg_classified);
-    nii_rd = niftiRead(fullfile(config.rd));
 end
 if config.ad
     numfiles = numfiles + length(fg_classified);
-    nii_ad = niftiRead(fullfile(config.ad));
 end
+
 fileID = fopen('numfiles.txt','w');
 fprintf(fileID, '%d', numfiles);
 fclose(fileID);
@@ -56,25 +57,18 @@ try
     fgTract = fg_classified( ifg );
     fg = dtiXformFiberCoords(fgTract, inv(nii_fa.qto_xyz),'img'); % convert fibergroup to the proper space
     
-    
-    
     % compute the core fiber from the fiber group (the tact profile is computed here)
-    if config.fa
-        [FA_tract, FA_SuperFiber, ~, ~] = Compute_FA_AlongFG(fg, nii_fa, [], [], numnodes);
-        mean_fa = nanmean(FA_tract);
-    end
-    if config.md
-        [MD_tract, MD_SuperFiber, ~, ~] = Compute_FA_AlongFG(fg, nii_md, [], [], numnodes);
-        mean_md = nanmean(MD_tract);
-    end
-    if config.rd
-        [RD_tract, RD_SuperFiber, ~, ~] = Compute_FA_AlongFG(fg, nii_rd, [], [], numnodes);
-        mean_rd = nanmean(RD_tract);
-    end
-    if config.ad
-        [AD_tract, AD_SuperFiber, ~, ~] = Compute_FA_AlongFG(fg, nii_ad, [], [], numnodes);
-        mean_ad = nanmean(AD_tract);
-    end
+    [FA_tract, FA_SuperFiber, ~, ~] = Compute_FA_AlongFG(fg, nii_fa, [], [], numnodes);
+    mean_fa = nanmean(FA_tract);
+    
+    [MD_tract, MD_SuperFiber, ~, ~] = Compute_FA_AlongFG(fg, nii_md, [], [], numnodes);
+    mean_md = nanmean(MD_tract);
+    
+    [RD_tract, RD_SuperFiber, ~, ~] = Compute_FA_AlongFG(fg, nii_rd, [], [], numnodes);
+    mean_rd = nanmean(RD_tract);
+    
+    [AD_tract, AD_SuperFiber, ~, ~] = Compute_FA_AlongFG(fg, nii_ad, [], [], numnodes);
+    mean_ad = nanmean(AD_tract);
 
     %[fa, md, rd, ad, cl, core] = dtiComputeDiffusionPropertiesAlongFG( fg, dt,[],[],100);
     tract_profiles = cell(numnodes, 4);
