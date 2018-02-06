@@ -19,7 +19,7 @@ end
 config = loadjson('config.json');
 %config.dt6 config.afq
 %dt = dtiLoadDt6('/N/dc2/projects/lifebid/code/kitchell/app-tractanalysisprofiles/dtiinit/dti/dt6.mat');
-dt = dtiLoadDt6(fullfile(config.dt6,'/dti/dt6.mat'));
+%dt = dtiLoadDt6(fullfile(config.dt6,'/dti/dt6.mat'));
 load(config.afq);
 %load('output.mat');
 numnodes = config.numnodes;
@@ -27,19 +27,19 @@ numnodes = config.numnodes;
 numfiles = 0;
 if config.fa
     numfiles = numfiles + length(fg_classified);
-    nii_fa = niftiRead(fullfile(config.nii,'/dwi_fa.nii.gz'));
+    nii_fa = niftiRead(fullfile(config.fa));
 end
 if config.md
     numfiles = numfiles + length(fg_classified);
-    nii_md = niftiRead(fullfile(config.nii,'/dwi_md.nii.gz'));
+    nii_md = niftiRead(fullfile(config.md));
 end
 if config.rd
     numfiles = numfiles + length(fg_classified);
-    nii_rd = niftiRead(fullfile(config.nii,'/dwi_rd.nii.gz'));
+    nii_rd = niftiRead(fullfile(config.rd));
 end
 if config.ad
     numfiles = numfiles + length(fg_classified);
-    nii_ad = niftiRead(fullfile(config.nii,'/dwi_ad.nii.gz'));
+    nii_ad = niftiRead(fullfile(config.ad));
 end
 fileID = fopen('numfiles.txt','w');
 fprintf(fileID, '%d', numfiles);
