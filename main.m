@@ -65,15 +65,15 @@ try
     end
     if config.md
         [MD_tract, MD_SuperFiber, ~, ~] = Compute_FA_AlongFG(fg, nii_md, [], [], numnodes);
-        mean_md = mean(MD_tract);
+        mean_md = nanmean(MD_tract);
     end
     if config.rd
         [RD_tract, RD_SuperFiber, ~, ~] = Compute_FA_AlongFG(fg, nii_rd, [], [], numnodes);
-        mean_rd = mean(RD_tract);
+        mean_rd = nanmean(RD_tract);
     end
     if config.ad
         [AD_tract, AD_SuperFiber, ~, ~] = Compute_FA_AlongFG(fg, nii_ad, [], [], numnodes);
-        mean_ad = mean(AD_tract);
+        mean_ad = nanmean(AD_tract);
     end
 
     %[fa, md, rd, ad, cl, core] = dtiComputeDiffusionPropertiesAlongFG( fg, dt,[],[],100);
@@ -121,8 +121,8 @@ try
     if config.md
         tract_profile = plot(mean_md,'color', [0.2 0.2 0.9],'linewidth',4)
         ylh = ylabel('Mean Diffusivity');
-        ylim = [0.00, 1.00];
-        ytick = [0 .25 .5 .75];
+        ylim = [0.00, 2.00];
+        ytick = [0 .5 1 1.5];
         set(gca, 'fontsize',20, 'box','off', 'TickDir','out', ...
         'xticklabel',{'Tract begin','Tract end'},'xlim',[0 numnodes],'ylim',ylim,'Ytick',ytick,'Xtick',[0 numnodes])
         Title_plot = title(fg.name);
@@ -139,8 +139,8 @@ try
     if config.rd
         tract_profile = plot(mean_rd,'color', [0.2 0.2 0.9],'linewidth',4)
         ylh = ylabel('Radial Diffusivity');
-        ylim = [0.00, 1.00];
-        ytick = [0 .25 .5 .75];
+        ylim = [0.00, 2.00];
+        ytick = [0 .5 1 1.5];
         set(gca, 'fontsize',20, 'box','off', 'TickDir','out', ...
         'xticklabel',{'Tract begin','Tract end'},'xlim',[0 numnodes],'ylim',ylim,'Ytick',ytick,'Xtick',[0 numnodes])
         Title_plot = title(fg.name);
