@@ -27,15 +27,19 @@ numnodes = config.numnodes;
 numfiles = 0;
 if config.fa
     numfiles = numfiles + length(fg_classified);
+    nii_fa = niftiRead(fullfile(config.nii,'/dwi_fa.nii.gz'));
 end
 if config.md
     numfiles = numfiles + length(fg_classified);
+    nii_md = niftiRead(fullfile(config.nii,'/dwi_md.nii.gz'));
 end
 if config.rd
     numfiles = numfiles + length(fg_classified);
+    nii_rd = niftiRead(fullfile(config.nii,'/dwi_rd.nii.gz'));
 end
 if config.ad
     numfiles = numfiles + length(fg_classified);
+    nii_ad = niftiRead(fullfile(config.nii,'/dwi_ad.nii.gz'));
 end
 fileID = fopen('numfiles.txt','w');
 fprintf(fileID, '%d', numfiles);
@@ -49,19 +53,37 @@ possible_error=0;
 failed_tracts=[];
 for ifg = 1:length(fg_classified)
 try
-    fg = fg_classified( ifg );
+    fgTract = fg_classified( ifg );
+    fg = dtiXformFiberCoords(fgTract, inv(nii_fa.qto_xyz),'img'); % convert fibergroup to the proper space
+    
     
     
     % compute the core fiber from the fiber group (the tact profile is computed here)
-    [fa, md, rd, ad, cl, SuperFiber, fgClipped, cp, cs, fgResampled] = dtiComputeDiffusionPropertiesAlongFG( fg, dt,[],[],numnodes);
+    if config.fa
+        [FA_tract, FA_SuperFiber, ~, ~] = Compute_FA_AlongFG(fg, nii_fa, [], [], numnodes);
+        mean_fa = nanmean(FA_tract);
+    end
+    if config.md
+        [MD_tract, MD_SuperFiber, ~, ~] = Compute_FA_AlongFG(fg, nii_md, [], [], numnodes);
+        mean_md = mean(MD_tract);
+    end
+    if config.rd
+        [RD_tract, RD_SuperFiber, ~, ~] = Compute_FA_AlongFG(fg, nii_rd, [], [], numnodes);
+        mean_rd = mean(RD_tract);
+    end
+    if config.ad
+        [AD_tract, AD_SuperFiber, ~, ~] = Compute_FA_AlongFG(fg, nii_ad, [], [], numnodes);
+        mean_ad = mean(AD_tract);
+    end
+
     %[fa, md, rd, ad, cl, core] = dtiComputeDiffusionPropertiesAlongFG( fg, dt,[],[],100);
     tract_profiles = cell(numnodes, 4);
     
 
-    tract_profiles(:,1) = num2cell(fa);
-    tract_profiles(:,2) = num2cell(md);
-    tract_profiles(:,3) = num2cell(rd);
-    tract_profiles(:,4) = num2cell(ad);
+    tract_profiles(:,1) = num2cell(mean_fa);
+    tract_profiles(:,2) = num2cell(mean_md);
+    tract_profiles(:,3) = num2cell(mean_rd);
+    tract_profiles(:,4) = num2cell(mean_ad);
     
     T = cell2table(tract_profiles);
     T.Properties.VariableNames = {'FA', 'MD', 'RD', 'AD'};
@@ -79,7 +101,7 @@ try
     
 
     if config.fa
-        tract_profile = plot(fa,'color', [0.2 0.2 0.9],'linewidth',4)
+        tract_profile = plot(mean_fa,'color', [0.2 0.2 0.9],'linewidth',4)
         ylh = ylabel('Fractional Anisotropy');
         ylim = [0.00, 1.00];
         ytick = [0 .25 .5 .75];
@@ -97,7 +119,7 @@ try
         clf
     end
     if config.md
-        tract_profile = plot(md,'color', [0.2 0.2 0.9],'linewidth',4)
+        tract_profile = plot(mean_md,'color', [0.2 0.2 0.9],'linewidth',4)
         ylh = ylabel('Mean Diffusivity');
         ylim = [0.00, 1.00];
         ytick = [0 .25 .5 .75];
@@ -115,7 +137,7 @@ try
         clf
     end
     if config.rd
-        tract_profile = plot(rd,'color', [0.2 0.2 0.9],'linewidth',4)
+        tract_profile = plot(mean_rd,'color', [0.2 0.2 0.9],'linewidth',4)
         ylh = ylabel('Radial Diffusivity');
         ylim = [0.00, 1.00];
         ytick = [0 .25 .5 .75];
@@ -133,7 +155,7 @@ try
         clf
     end
     if config.ad
-        tract_profile = plot(ad,'color', [0.2 0.2 0.9],'linewidth',4)
+        tract_profile = plot(mean_ad,'color', [0.2 0.2 0.9],'linewidth',4)
         ylh = ylabel('Axial Diffusivity');
         ylim = [0.00, 2.00];
         ytick = [0 .5 1 1.5];
