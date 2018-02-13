@@ -19,9 +19,9 @@ end
 config = loadjson('config.json');
 noddi = {'ICVF','OD','ISOVF'};
 noddiImage = {'ICVF','OD','ISOVF'};
-nii_icvf = niftiRead(fullfile(config.icvf));
-nii_od = niftiRead(fullfile(config.od));
-nii_isovf = niftiRead(fullfile(config.isovf));
+nii_icvf = niftiRead(fullfile(config.noddi, 'FIT_ICVF_NEW.nii.gz'));
+nii_od = niftiRead(fullfile(config.noddi,'FIT_OD_NEW.nii.gz' ));
+nii_isovf = niftiRead(fullfile(config.noddi,'FIT_ISOVF_NEW.nii.gz'));
 load(config.afq);
 %load('output.mat');
 numnodes = config.numnodes;
@@ -50,7 +50,7 @@ failed_tracts=[];
 for ifg = 1:length(fg_classified)
 try
     fgTract = fg_classified( ifg );
-    fg = dtiXformFiberCoords(fgTract, inv(nii_fa.qto_xyz),'img'); % convert fibergroup to the proper space
+    fg = dtiXformFiberCoords(fgTract, inv(nii_icvf.qto_xyz),'img'); % convert fibergroup to the proper space
     
     % compute the core fiber from the fiber group (the tact profile is computed here)
     [ICVF_tract, ICVF_SuperFiber, ~, ~] = Compute_FA_AlongFG(fg, nii_icvf, [], [], numnodes);
@@ -102,11 +102,10 @@ try
     end
     clf
     
-catch ME
-    possible_error=1;
-    failed_tracts = [failed_tracts, fg.name];
-    
-save('profiles/error_messages.mat','ME')  
+    catch ME
+        possible_error=1;
+        failed_tracts = [failed_tracts, fg.name];
+        save('profiles/error_messages.mat','ME')  
 end
 end
 clf
