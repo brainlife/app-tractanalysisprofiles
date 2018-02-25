@@ -17,5 +17,5 @@ then
 else
 	echo "output missing"
 	echo 0 > finished
-	exit 0
+	exit 1
 fi
