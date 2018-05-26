@@ -28,7 +28,7 @@ failed_tracts=[];
 config = loadjson('config.json');
 
 % load segmentation file and set number of nodes
-load(fullfile(config.afq,'output.mat'));
+load(fullfile(config.afq));
 numnodes = config.numnodes;
 
 % load tensor and noddi (if applicable) files
