@@ -33,7 +33,9 @@ numnodes = config.numnodes;
 
 % load tensor and noddi (if applicable) files
 if isfield(config,'tensor')
-    tensors = dir(fullfile(config.tensor,'*.nii.gz*'));
+    tensors = dir(fullfile(config.tensor,strcat(tensorNames,'*.nii.gz*')));
+    tensors = [tensors(1) tensors(5) tensors(6) tensors(7)];
+    tensors = tensors';
     end_index = 4;
 else
     end_index = 0;
