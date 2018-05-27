@@ -102,32 +102,32 @@ try
     end
     
     if config.fa == 1
-        [imgnum,json] = analysisProflies(nii(2).mean,fg,nii(2).name,'Fractional Anisotropy',[0.00, 1.00],[0 .25 .5 .75],imgnum);
+        [imgnum,json] = analysisProfiles(nii(2).mean,fg,nii(2).name,'Fractional Anisotropy',[0.00, 1.00],[0 .25 .5 .75],numnodes,imgnum);
         numfiles = numfiles + 1;
     end
     
     if config.md == 1
-        [imgnum,json] = analysisProfiles(nii(3).mean,fg,nii(3).name,'Mean Diffusivity',[0.00, 2.00],[0 .5 1 1.5],imgnum);
+        [imgnum,json] = analysisProfiles(nii(3).mean,fg,nii(3).name,'Mean Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,imgnum);
         numfiles = numfiles + 1;
     end
     
     if config.rd == 1
-        [imgnum,json] = analysisProfiles(nii(4).mean,fg,nii(4).name,'Radial Diffusivity',[0.00, 2.00],[0 .5 1 1.5],imgnum);
+        [imgnum,json] = analysisProfiles(nii(4).mean,fg,nii(4).name,'Radial Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,imgnum);
         numfiles = numfiles + 1;
     end
     
     if config.icvf == 1
-        [imgnum,json] = analysisProfiles(nii(end_index + 1).mean,fg,nii(end_index + 1).name,'ICVF',[0 1.00],[0.25 .5 .75],imgnum);
+        [imgnum,json] = analysisProfiles(nii(end_index + 1).mean,fg,nii(end_index + 1).name,'ICVF',[0 1.00],[0.25 .5 .75],numnodes,imgnum);
         numfiles = numfiles + 1;
     end
 
     if config.isovf == 1
-        [imgnum,json] = analysisProfiles(nii(end_index + 2).mean,fg,nii(end_index + 1).name,'ISOVF',[0 1.00],[0.25 .5 .75],imgnum);
+        [imgnum,json] = analysisProfiles(nii(end_index + 2).mean,fg,nii(end_index + 1).name,'ISOVF',[0 1.00],[0.25 .5 .75],numnodes,imgnum);
         numfiles = numfiles + 1;
     end
     
     if config.od == 1
-        [imgnum,json] = analysisProfiles(nii(end_index + 3).mean,fg,nii(end_index + 1).name,'OD',[0 1.00],[0.25 .5 .75],imgnum);
+        [imgnum,json] = analysisProfiles(nii(end_index + 3).mean,fg,nii(end_index + 1).name,'OD',[0 1.00],[0.25 .5 .75],numnodes,imgnum);
         numfiles = numfiles + 1;
     end
     
