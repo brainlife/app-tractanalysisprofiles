@@ -122,12 +122,12 @@ try
     end
 
     if config.isovf == 1
-        [imgnum,json] = analysisProfiles(nii(end_index + 2).mean,fg,nii(end_index + 1).name,'ISOVF',[0 1.00],[0.25 .5 .75],numnodes,imgnum);
+        [imgnum,json] = analysisProfiles(nii(end_index + 2).mean,fg,nii(end_index + 2).name,'ISOVF',[0 1.00],[0.25 .5 .75],numnodes,imgnum);
         numfiles = numfiles + 1;
     end
     
     if config.od == 1
-        [imgnum,json] = analysisProfiles(nii(end_index + 3).mean,fg,nii(end_index + 1).name,'OD',[0 1.00],[0.25 .5 .75],numnodes,imgnum);
+        [imgnum,json] = analysisProfiles(nii(end_index + 3).mean,fg,nii(end_index + 3).name,'OD',[0 1.00],[0.25 .5 .75],numnodes,imgnum);
         numfiles = numfiles + 1;
     end
     
