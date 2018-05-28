@@ -48,15 +48,15 @@ end
 % Set data structures
 if isfield(config,'tensor')
     for ii = 1:length(tensors)
-        nii(ii).name = extractBefore(tensors(ii).name,strlength(tensors(ii).name)-6);
+        nii(ii).name = char(extractBefore(tensors(ii).name,strlength(tensors(ii).name)-6));
         nii(ii).data = niftiRead(fullfile(tensors(ii).folder,tensors(ii).name));
     end
 end
 
 if isfield(config,'noddi')
     for ii = 1:length(noddis)
-        nii(4+ii).name = extractBetween(noddis(ii).name,'FIT_','_NEW');
-        nii(4+ii).data = niftiRead(fullfile(noddis(ii).folder,noddis(ii).name));
+        nii(end_index+ii).name = char(extractBetween(noddis(ii).name,'FIT_','_NEW'));
+        nii(end_index+ii).data = niftiRead(fullfile(noddis(ii).folder,noddis(ii).name));
     end
 end
 

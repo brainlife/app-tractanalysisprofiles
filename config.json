@@ -1,0 +1,14 @@
+{
+	"tensor":	"/N/dc2/projects/lifebid/Concussion/app-tractanalysisprofiles/tensor",
+	"noddi":	"/N/dc2/projects/lifebid/Concussion/app-tractanalysisprofiles/noddi",
+	"afq":	"/N/dc2/projects/lifebid/Concussion/app-tractanalysisprofiles/wma/output.mat",
+	"numnodes":	100,
+	"ad":	false,
+	"fa":	true,
+	"md":	false,
+	"rd":	false,
+	"icvf":	true,
+	"isovf":	true,
+	"od":	true,
+	"fiberbased":	false
+}
