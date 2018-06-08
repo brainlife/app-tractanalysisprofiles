@@ -1,8 +1,8 @@
-function [imgnum,json] = analysisProfiles(data,fg,name,ytitle,ylim,ytick,numnodes,imgnum)
+function [imgnum,json] = analysisProfiles(data,fg,name,ytitle,ylim,ytick,numnodes,imgnum,units)
 
-h.tpfig = figure('name', 'My tract profile','color', 'w', 'visible', 'off');
+h.tpfig = figure('name', 'My tract profile','color', 'w', 'visible', 'on');
 tract_profile = plot(data,'color', [0.2 0.2 0.9],'linewidth',4)
-ylh = ylabel(ytitle);
+ylh = ylabel({ytitle;strcat('(',units,')')});
 ylim = ylim;
 ytick = ytick;
 set(gca, 'fontsize',20, 'box','off', 'TickDir','out', ...
