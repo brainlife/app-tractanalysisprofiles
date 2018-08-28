@@ -15,179 +15,186 @@ switch getenv('ENV')
         %addpath(genpath('/usr/local/afq-master'))
 end
 
-% load my own config.json
+% make directories and set up variables
+mkdir('images');
+mkdir('profiles');
+numfiles = 1;
+possible_error=0;
+failed_tracts=[];
+
+
+% load config.json
 config = loadjson('config.json');
-%config.dt6 config.afq
-%dt = dtiLoadDt6('/N/dc2/projects/lifebid/code/kitchell/app-tractanalysisprofiles/dtiinit/dti/dt6.mat');
-%dt = dtiLoadDt6(fullfile(config.dt6,'/dti/dt6.mat'));
-nii_fa = niftiRead(fullfile(config.fa));
-nii_md = niftiRead(fullfile(config.md));
-nii_rd = niftiRead(fullfile(config.rd));
-nii_ad = niftiRead(fullfile(config.ad));
-load(config.afq);
-%load('output.mat');
+
+% load segmentation file and set number of nodes
+load(fullfile(config.afq));
 numnodes = config.numnodes;
 
-numfiles = 0;
-if config.fa
-    numfiles = numfiles + length(fg_classified);
+% load tensor and noddi (if applicable) files
+if isfield(config,'tensor')
+    tensors = dir(fullfile(config.tensor,'*.nii.gz*'));
+    tensors = [tensors(1) tensors(5) tensors(6) tensors(7)];
+    tensors = tensors';
+    end_index = 4;
+else
+    end_index = 0;
 end
-if config.md
-    numfiles = numfiles + length(fg_classified);
+
+if isfield(config,'noddi')
+    noddis = dir(fullfile(config.noddi,'*_NEW.nii.gz*'));
 end
-if config.rd
-    numfiles = numfiles + length(fg_classified);
+
+% Set data structures
+if isfield(config,'tensor')
+    for ii = 1:length(tensors)
+        nii(ii).name = char(extractBefore(tensors(ii).name,strlength(tensors(ii).name)-6));
+        nii(ii).data = niftiRead(fullfile(tensors(ii).folder,tensors(ii).name));
+        nii(ii).data_inv = 1./nii(ii).data.data;
+        nii(ii).data_inv(~isfinite(nii(ii).data_inv))=0;
+        if nii(ii).name == 'fa'
+            nii(ii).units = 'unitless';
+        else
+            nii(ii).units = 'um^2/msec';
+        end
+        nii(end_index+ii).name = strcat(char(extractBefore(tensors(ii).name,strlength(tensors(ii).name)-6)),'_inverse');
+        nii(end_index+ii).data = nii(ii).data;
+        nii(end_index+ii).data.data = nii(ii).data_inv;
+        nii(end_index+ii).data_inv = nii(ii).data_inv;
+        if nii(end_index+ii).name == 'fa_inverse'
+            nii(end_index+ii).units = 'unitless';
+        else
+            nii(end_index+ii).units = 'msec/um^2';
+        end
+    end
+    end_index = length(nii);
 end
-if config.ad
-    numfiles = numfiles + length(fg_classified);
+
+if isfield(config,'noddi')
+    for ii = 1:length(noddis)
+        nii(end_index+ii).name = char(extractBetween(noddis(ii).name,'FIT_','_NEW'));
+        nii(end_index+ii).data = niftiRead(fullfile(noddis(ii).folder,noddis(ii).name));
+        nii(end_index+ii).data_inv = 1./nii(ii).data.data;
+        nii(end_index+ii).data_inv(~isfinite(nii(end_index+ii).data_inv))=0;
+        nii(end_index+ii).units = 'unitless';
+    end
+    end_index = length(nii);
+    for ii = 1:length(noddis)
+        nii(end_index+ii).name = strcat(char(extractBetween(noddis(ii).name,'FIT_','_NEW')),'_inverse');
+        nii(end_index+ii).data = nii(end_index-3+ii).data;
+        nii(end_index+ii).data_inv = nii(end_index-3+ii).data_inv;
+        nii(end_index+ii).data.data = nii(end_index+ii).data_inv;
+        nii(end_index+ii).units = 'unitless';
+    end
+    end_index = length(nii);
+end
+
+% Set up cell for csv
+tract_profiles = cell(numnodes, length(nii));
+
+for ifg = 1:length(fg_classified) 
+try
+    if config.fiberbased == 0
+        display 'volume based statistics'
+        fg = fg_classified( ifg );
+        for jj = 1:length(nii)
+            display(sprintf('computing %s',nii(jj).name));
+            [tract, ~, ~, ~, ~, ~, ~, ~, ~, ~, myValsFgSTD] = dtiComputeDiffusionPropertiesAlongFG_sd( fg, nii(jj).data,[],[],numnodes);
+            nii(jj).mean = tract;
+            nii(jj).std = myValsFgSTD;
+        end
+    else
+        display 'fiber based statistics'
+        fgTract = fg_classified( ifg );
+        fg = dtiXformFiberCoords(fgTract, inv(nii(2).data.qto_xyz),'img'); % convert fibergroup to the proper space
+        for jj = 1:length(nii)
+            display(sprintf('computing %s',nii(jj).name));
+            tract = Compute_FA_AlongFG(fg, nii(jj).data, [], [], numnodes);
+            nii(jj).mean = nanmean(tract);
+            nii(jj).std = nanstd(tract);
+        end
+    end
+    
+    for jj = 1:length(nii)
+        tract_profiles(:,jj,1) = num2cell(nii(jj).mean);
+        tract_profiles(:,jj,2) = num2cell(nii(jj).std);
+    end
+    
+    for jj = 1:length(nii)
+        T(:,jj) = table([tract_profiles(:,jj,1),tract_profiles(:,jj,2)]);
+        T.Properties.VariableNames{jj} = char(nii(jj).name);
+        T.Properties.VariableUnits{jj} = nii(jj).units;
+    end
+    
+    writetable(T, strcat('profiles/', strrep(fg.name, ' ', '_'), '_profiles.csv'));
+
+    if config.ad == 1
+        analysisProfiles(nii(1).mean,fg,nii(1).name,'Axial Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(1).units);
+        json.images(numfiles).filename = strcat('images/',fg.name,'_', 'Axial Diffusivity','.png');
+        json.images(numfiles).name = strcat(fg.name);
+        json.images(numfiles).desc = strcat(fg.name, ' tract analysis profile');
+        numfiles = numfiles + 1;
+    end
+    
+    if config.fa == 1
+        analysisProfiles(nii(2).mean,fg,nii(2).name,'Fractional Anisotropy',[0.00, 1.00],[0 .25 .5 .75],numnodes,nii(2).units);
+        json.images(numfiles).filename = strcat('images/',fg.name,'_', 'Fractional Anisotropy','.png');
+        json.images(numfiles).name = strcat(fg.name);
+        json.images(numfiles).desc = strcat(fg.name, ' tract analysis profile');
+        numfiles = numfiles + 1;
+    end
+    
+    if config.md == 1
+        analysisProfiles(nii(3).mean,fg,nii(3).name,'Mean Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(3).units);
+        json.images(numfiles).filename = strcat('images/',fg.name,'_', 'Mean Diffusivity','.png');
+        json.images(numfiles).name = strcat(fg.name);
+        json.images(numfiles).desc = strcat(fg.name, ' tract analysis profile');
+        numfiles = numfiles + 1;
+    end
+    
+    if config.rd == 1
+        analysisProfiles(nii(4).mean,fg,nii(4).name,'Radial Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(4).units);
+        json.images(numfiles).filename = strcat('images/',fg.name,'_', 'Radial Diffusivity','.png');
+        json.images(numfiles).name = strcat(fg.name);
+        json.images(numfiles).desc = strcat(fg.name, ' tract analysis profile');
+        numfiles = numfiles + 1;
+    end
+    
+    if config.icvf == 1
+        analysisProfiles(nii(end_index-6+1).mean,fg,nii(end_index-6+1).name,'ICVF',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+1).units);
+        json.images(numfiles).filename = strcat('images/',fg.name,'_', 'ICVF','.png');
+        json.images(numfiles).name = strcat(fg.name);
+        json.images(numfiles).desc = strcat(fg.name, ' tract analysis profile');
+        numfiles = numfiles + 1;
+    end
+
+    if config.isovf == 1
+        analysisProfiles(nii(end_index-6+2).mean,fg,nii(end_index-6+2).name,'ISOVF',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+2).units);
+        json.images(numfiles).filename = strcat('images/',fg.name,'_', 'ISOVF','.png');
+        json.images(numfiles).name = strcat(fg.name);
+        json.images(numfiles).desc = strcat(fg.name, ' tract analysis profile');
+        numfiles = numfiles + 1;
+    end
+    
+    if config.od == 1
+        analysisProfiles(nii(end_index-6+3).mean,fg,nii(end_index-6+3).name,'OD',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+3).units);
+        json.images(numfiles).filename = strcat('images/',fg.name,'_', 'OD','.png');
+        json.images(numfiles).name = strcat(fg.name);
+        json.images(numfiles).desc = strcat(fg.name, ' tract analysis profile');
+        numfiles = numfiles + 1;
+    end
+    
+catch ME
+    possible_error=1;
+    failed_tracts = [failed_tracts, fg.name];
+    
+save('profiles/error_messages.mat','ME');
+end
+clf
 end
 
 fileID = fopen('numfiles.txt','w');
 fprintf(fileID, '%d', numfiles);
 fclose(fileID);
-
-mkdir('images');
-mkdir('profiles');
-imgnum = 0;
-
-possible_error=0;
-failed_tracts=[];
-for ifg = 1:length(fg_classified)
-try
-    fgTract = fg_classified( ifg );
-    fg = dtiXformFiberCoords(fgTract, inv(nii_fa.qto_xyz),'img'); % convert fibergroup to the proper space
-    
-    % compute the core fiber from the fiber group (the tact profile is computed here)
-    [FA_tract, FA_SuperFiber, ~, ~] = Compute_FA_AlongFG(fg, nii_fa, [], [], numnodes);
-    mean_fa = nanmean(FA_tract);
-    
-    [MD_tract, MD_SuperFiber, ~, ~] = Compute_FA_AlongFG(fg, nii_md, [], [], numnodes);
-    mean_md = nanmean(MD_tract);
-    
-    [RD_tract, RD_SuperFiber, ~, ~] = Compute_FA_AlongFG(fg, nii_rd, [], [], numnodes);
-    mean_rd = nanmean(RD_tract);
-    
-    [AD_tract, AD_SuperFiber, ~, ~] = Compute_FA_AlongFG(fg, nii_ad, [], [], numnodes);
-    mean_ad = nanmean(AD_tract);
-
-    %[fa, md, rd, ad, cl, core] = dtiComputeDiffusionPropertiesAlongFG( fg, dt,[],[],100);
-    tract_profiles = cell(numnodes, 4);
-    
-
-    tract_profiles(:,1) = num2cell(mean_fa);
-    tract_profiles(:,2) = num2cell(mean_md);
-    tract_profiles(:,3) = num2cell(mean_rd);
-    tract_profiles(:,4) = num2cell(mean_ad);
-    
-    T = cell2table(tract_profiles);
-    T.Properties.VariableNames = {'FA', 'MD', 'RD', 'AD'};
-    writetable(T, strcat('profiles/', strrep(fg.name, ' ', '_'), '_profiles.csv'));
-    % How to make a trct profile from a NIFTI file (such as from a run model)
-    % nifti_file = niftiRead('path/to/nifti/file.nii.gz')
-    % val = dtiComputeDiffusionPropertiesAlongFG( fg, nifti_file,[],[],200);
-    
-    % 3. Select a center portion fo the tract and show the FA and MD values
-    % normally we only use for analyses the middle most reliable portion of the fiber.
-    %nodesToPlot = 1:200;
-    %nodesToPlot = 25:76;
-    
-    h.tpfig = figure('name', 'My tract profile','color', 'w', 'visible', 'off');
-    
-
-    if config.fa
-        tract_profile = plot(mean_fa,'color', [0.2 0.2 0.9],'linewidth',4)
-        ylh = ylabel('Fractional Anisotropy');
-        ylim = [0.00, 1.00];
-        ytick = [0 .25 .5 .75];
-        set(gca, 'fontsize',20, 'box','off', 'TickDir','out', ...
-        'xticklabel',{'Tract begin','Tract end'},'xlim',[0 numnodes],'ylim',ylim,'Ytick',ytick,'Xtick',[0 numnodes])
-        Title_plot = title(fg.name);
-        xlabel('Location on tract')
-        saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, '_fa')), 'png')
-        saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, '_fa')), 'eps')
-        %clear()
-        imgnum = imgnum+1;
-        json.images(imgnum).filename = strcat('images/',Title_plot.String,'_fa','.png');
-        json.images(imgnum).name = strcat(Title_plot.String);
-        json.images(imgnum).desc = strcat(Title_plot.String, ' tract analysis profile');
-        clf
-    end
-    if config.md
-        tract_profile = plot(mean_md,'color', [0.2 0.2 0.9],'linewidth',4)
-        ylh = ylabel('Mean Diffusivity');
-        ylim = [0.00, 2.00];
-        ytick = [0 .5 1 1.5];
-        set(gca, 'fontsize',20, 'box','off', 'TickDir','out', ...
-        'xticklabel',{'Tract begin','Tract end'},'xlim',[0 numnodes],'ylim',ylim,'Ytick',ytick,'Xtick',[0 numnodes])
-        Title_plot = title(fg.name);
-        xlabel('Location on tract')
-        saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, '_md')), 'png')
-        saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, '_md')), 'eps')
-        %clear()
-        imgnum = imgnum + 1;
-        json.images(imgnum).filename = strcat('images/',Title_plot.String,'_md', '.png');
-        json.images(imgnum).name = strcat(Title_plot.String);
-        json.images(imgnum).desc = strcat(Title_plot.String, ' tract analysis profile');
-        clf
-    end
-    if config.rd
-        tract_profile = plot(mean_rd,'color', [0.2 0.2 0.9],'linewidth',4)
-        ylh = ylabel('Radial Diffusivity');
-        ylim = [0.00, 2.00];
-        ytick = [0 .5 1 1.5];
-        set(gca, 'fontsize',20, 'box','off', 'TickDir','out', ...
-        'xticklabel',{'Tract begin','Tract end'},'xlim',[0 numnodes],'ylim',ylim,'Ytick',ytick,'Xtick',[0 numnodes])
-        Title_plot = title(fg.name);
-        xlabel('Location on tract')
-        saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, '_rd')), 'png')
-        saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, '_rd')), 'eps')
-        %clear()
-        imgnum = imgnum + 1;
-        json.images(imgnum).filename = strcat('images/',Title_plot.String,'_rd', '.png');
-        json.images(imgnum).name = strcat(Title_plot.String);
-        json.images(imgnum).desc = strcat(Title_plot.String, ' tract analysis profile');
-        clf
-    end
-    if config.ad
-        tract_profile = plot(mean_ad,'color', [0.2 0.2 0.9],'linewidth',4)
-        ylh = ylabel('Axial Diffusivity');
-        ylim = [0.00, 2.00];
-        ytick = [0 .5 1 1.5];
-        set(gca, 'fontsize',20, 'box','off', 'TickDir','out', ...
-        'xticklabel',{'Tract begin','Tract end'},'xlim',[0 numnodes],'ylim',ylim,'Ytick',ytick,'Xtick',[0 numnodes])
-        Title_plot = title(fg.name);
-        xlabel('Location on tract')
-        saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, '_ad')), 'png')
-        saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, '_ad')), 'eps')
-        %clear()
-        imgnum = imgnum + 1;
-        json.images(imgnum).filename = strcat('images/',Title_plot.String,'_ad', '.png');
-        json.images(imgnum).name = strcat(Title_plot.String);
-        json.images(imgnum).desc = strcat(Title_plot.String, ' tract analysis profile');
-        clf
-    end
-catch ME
-    possible_error=1;
-    failed_tracts = [failed_tracts, fg.name];
-    
-save('profiles/error_messages.mat','ME')
-
-%     set(gca, 'fontsize',20, 'box','off', 'TickDir','out', ...
-%         'xticklabel',{'Tract begin','Tract end'},'xlim',[0 50],'ylim',ylim,'Ytick',ytick,'Xtick',[0 50])
-%     Title_plot = title(fg.name);
-%     xlabel('Location on tract')
-%     
-%     
-%     saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, '_', prop)), 'png')
-%     saveas(tract_profile, fullfile('images/', strcat(Title_plot.String, '_', prop)), 'eps')
-%     %clear()
-%     json.images(ifg).filename = strcat('images/',Title_plot.String,'_', prop, '.png');
-%     json.images(ifg).name = strcat(Title_plot.String);
-%     json.images(ifg).desc = strcat(Title_plot.String, ' tract analysis profile');
-%     
-end
-end
-clf
 
 if possible_error==1
     results.quality_check = 'ERROR: The following tracts failed:';
