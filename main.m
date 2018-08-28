@@ -26,6 +26,11 @@ failed_tracts=[];
 % load config.json
 config = loadjson('config.json');
 
+if isempty(config.tensor) && isempty(config.noddi)
+    display('No input initialized. Please specify input');
+    exit
+end
+
 % load segmentation file and set number of nodes
 load(fullfile(config.afq));
 numnodes = config.numnodes;
@@ -127,31 +132,26 @@ try
     
     writetable(T, strcat('profiles/', strrep(fg.name, ' ', '_'), '_profiles.csv'));
 
-    if config.ad == 1
+    if isfield(config,'tensor')
+        % AD
         analysisProfiles(nii(1).mean,fg,nii(1).name,'Axial Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(1).units);
         json.images(numfiles).filename = strcat('images/',fg.name,'_', 'Axial Diffusivity','.png');
         json.images(numfiles).name = strcat(fg.name);
         json.images(numfiles).desc = strcat(fg.name, ' tract analysis profile');
         numfiles = numfiles + 1;
-    end
-    
-    if config.fa == 1
+        % FA
         analysisProfiles(nii(2).mean,fg,nii(2).name,'Fractional Anisotropy',[0.00, 1.00],[0 .25 .5 .75],numnodes,nii(2).units);
         json.images(numfiles).filename = strcat('images/',fg.name,'_', 'Fractional Anisotropy','.png');
         json.images(numfiles).name = strcat(fg.name);
         json.images(numfiles).desc = strcat(fg.name, ' tract analysis profile');
         numfiles = numfiles + 1;
-    end
-    
-    if config.md == 1
+        % MD
         analysisProfiles(nii(3).mean,fg,nii(3).name,'Mean Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(3).units);
         json.images(numfiles).filename = strcat('images/',fg.name,'_', 'Mean Diffusivity','.png');
         json.images(numfiles).name = strcat(fg.name);
         json.images(numfiles).desc = strcat(fg.name, ' tract analysis profile');
         numfiles = numfiles + 1;
-    end
-    
-    if config.rd == 1
+        % RD
         analysisProfiles(nii(4).mean,fg,nii(4).name,'Radial Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(4).units);
         json.images(numfiles).filename = strcat('images/',fg.name,'_', 'Radial Diffusivity','.png');
         json.images(numfiles).name = strcat(fg.name);
@@ -159,23 +159,20 @@ try
         numfiles = numfiles + 1;
     end
     
-    if config.icvf == 1
+    if isfield(config,'noddi')
+        % ICVF
         analysisProfiles(nii(end_index-6+1).mean,fg,nii(end_index-6+1).name,'ICVF',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+1).units);
         json.images(numfiles).filename = strcat('images/',fg.name,'_', 'ICVF','.png');
         json.images(numfiles).name = strcat(fg.name);
         json.images(numfiles).desc = strcat(fg.name, ' tract analysis profile');
         numfiles = numfiles + 1;
-    end
-
-    if config.isovf == 1
+        % ISOVF
         analysisProfiles(nii(end_index-6+2).mean,fg,nii(end_index-6+2).name,'ISOVF',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+2).units);
         json.images(numfiles).filename = strcat('images/',fg.name,'_', 'ISOVF','.png');
         json.images(numfiles).name = strcat(fg.name);
         json.images(numfiles).desc = strcat(fg.name, ' tract analysis profile');
         numfiles = numfiles + 1;
-    end
-    
-    if config.od == 1
+        % OD
         analysisProfiles(nii(end_index-6+3).mean,fg,nii(end_index-6+3).name,'OD',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+3).units);
         json.images(numfiles).filename = strcat('images/',fg.name,'_', 'OD','.png');
         json.images(numfiles).name = strcat(fg.name);
