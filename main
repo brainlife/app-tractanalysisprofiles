@@ -7,10 +7,8 @@ module load singularity 2> /dev/null
 
 singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/main
 
-
 count=$(ls images/*.png | wc -l)
 NUMFILES=`cat numfiles.txt`
-
 if [ "$count" ==  "$NUMFILES" ];
 then
 	echo 0 > finished
