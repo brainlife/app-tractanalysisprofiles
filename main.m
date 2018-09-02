@@ -4,6 +4,7 @@ if ~isdeployed
     disp('loading paths for IUHPC')
     addpath(genpath('/N/u/brlife/git/vistasoft'))
     addpath(genpath('/N/u/brlife/git/jsonlab'))
+    addpath(genpath('/N/u/brlife/git/jsonlab'))
 
     disp('loading paths for Jetstream VM')
     addpath(genpath('/usr/local/vistasoft'))
@@ -13,12 +14,13 @@ end
 % make directories and set up variables
 mkdir('images');
 mkdir('profiles');
-numfiles = 0;
+numfiles = 1;
 possible_error=0;
 failed_tracts=[];
 
 % load config.json
 config = loadjson('config.json');
+
 if isempty(config.tensor) && isempty(config.noddi)
     display('No input initialized. Please specify input');
     exit
@@ -30,8 +32,12 @@ numnodes = config.numnodes;
 
 % load tensor and noddi (if applicable) files
 if isfield(config,'tensor')
-    tensors = dir(fullfile(config.tensor,'*.nii.gz*'));
-    tensors = [tensors(1) tensors(5) tensors(6) tensors(7)];
+    %tensors = dir(fullfile(config.tensor,'*.nii.gz*'));
+    ad = dir(fullfile(config.tensor,'ad.nii.gz*'));
+    fa = dir(fullfile(config.tensor,'fa.nii.gz*'));
+    md = dir(fullfile(config.tensor,'md.nii.gz*'));
+    rd = dir(fullfile(config.tensor,'rd.nii.gz*'));
+    tensors = [ad(1) fa(1) md(1) rd(1)];
     tensors = tensors';
     end_index = 4;
 else
@@ -88,8 +94,6 @@ end
 
 % Set up cell for csv
 tract_profiles = cell(numnodes, length(nii));
-
-json = {}
 
 for ifg = 1:length(fg_classified) 
     try
@@ -178,16 +182,14 @@ for ifg = 1:length(fg_classified)
     catch ME
         possible_error=1;
         failed_tracts = [failed_tracts, fg.name];
-        save('profiles/error_messages.mat','ME');
-
-    end
         
+    save('profiles/error_messages.mat','ME');
+    end
     clf
-
 end
 
 fileID = fopen('numfiles.txt','w');
-fprintf(fileID, '%d', numfiles);
+fprintf(fileID, '%d', numfiles-1); %matlab uses 1 based indexing
 fclose(fileID);
 
 if possible_error==1
@@ -197,5 +199,8 @@ else
     results.quality_check = 'All tracts analysis profiles were created successfully';
 end
 
-savejson('', json, 'images.json');
 savejson('', results, 'product.json');
+savejson('', json, fullfile('images.json'));
+
+end
+
