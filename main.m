@@ -134,25 +134,25 @@ for ifg = 1:length(fg_classified)
         if isfield(config,'tensor')
             % AD
             analysisProfiles(nii(1).mean,fg,nii(1).name,'Axial Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(1).units);
-            json.images(numfiles).filename = strcat('images/',fg.name,'_', 'Axial Diffusivity','.png');
+            json.images(numfiles).filename = strcat('images/',fg.name,'_ad.png');
             json.images(numfiles).name = strcat(fg.name);
             json.images(numfiles).desc = strcat(fg.name, ' tract analysis profile');
             numfiles = numfiles + 1;
             % FA
             analysisProfiles(nii(2).mean,fg,nii(2).name,'Fractional Anisotropy',[0.00, 1.00],[0 .25 .5 .75],numnodes,nii(2).units);
-            json.images(numfiles).filename = strcat('images/',fg.name,'_', 'Fractional Anisotropy','.png');
+            json.images(numfiles).filename = strcat('images/',fg.name,'_fa.png');
             json.images(numfiles).name = strcat(fg.name);
             json.images(numfiles).desc = strcat(fg.name, ' tract analysis profile');
             numfiles = numfiles + 1;
             % MD
             analysisProfiles(nii(3).mean,fg,nii(3).name,'Mean Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(3).units);
-            json.images(numfiles).filename = strcat('images/',fg.name,'_', 'Mean Diffusivity','.png');
+            json.images(numfiles).filename = strcat('images/',fg.name,'_md.png');
             json.images(numfiles).name = strcat(fg.name);
             json.images(numfiles).desc = strcat(fg.name, ' tract analysis profile');
             numfiles = numfiles + 1;
             % RD
             analysisProfiles(nii(4).mean,fg,nii(4).name,'Radial Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(4).units);
-            json.images(numfiles).filename = strcat('images/',fg.name,'_', 'Radial Diffusivity','.png');
+            json.images(numfiles).filename = strcat('images/',fg.name,'_rd.png');
             json.images(numfiles).name = strcat(fg.name);
             json.images(numfiles).desc = strcat(fg.name, ' tract analysis profile');
             numfiles = numfiles + 1;
