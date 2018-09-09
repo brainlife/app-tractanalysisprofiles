@@ -23,7 +23,7 @@ You can submit this App online at [https://doi.org/10.25663/bl.app.43](https://d
 ```json
 {
         "tensor": "./input/tensor/",  # optional
-	      "noddi": "./input/noddi/", # optional
+      	"noddi": "./input/noddi/", # optional
         "afq": "./input/wmc/output.mat",
         "numnodes": 100,
         "fiberbased": False, # if fiber-based is preferred, True
@@ -53,8 +53,9 @@ bl dataset download 5a0dcb1216e499548135dd27 && mv 5a0dcb1216e499548135dd27 inpu
 
 ## Output
 
-The two main outputs of this App are folders called "images" and "tractprofile". The "images" folder contains .eps and .png images of the tract profiles for every measure and fascicle. The "tractprofile" folder contains a .csv file for every fascicle. The .csv file follows this layout:```
+The two main outputs of this App are folders called "images" and "tractprofile". The "images" folder contains .eps and .png images of the tract profiles for every measure and fascicle. The "tractprofile" folder contains a .csv file for every fascicle. The .csv file follows this layout:
 
+```
 ad_1 (measure data) ad_2 (measure std) fa_1 (measure data) fa_2 (measure std) md_1 (measure data) md_2 (measure std) rd_1 (measure data) rd_2 (measure std) ad_inverse_1 (measure data) ad_inverse_2 (measure std) fa_inverse_1 (measure data) fa_inverse_2 (measure std) md_inverse_1 (measure data) md_inverse_2 (measure std) rd_inverse_1 (measure data) rd_inverse_2 (measure std) icvf_1 (measure data) icvf_2 (measure std) isovf_1 (measure data) isovf_2 (measure std) od_1 (measure data) od_2 (measure std) icvf_inverse_1 (measure data) icvf_inverse_2 (measure std) isovf_inverse_1 (measure data) isovf_inverse_2 (measure std) od_inverse_1 (measure data) od_inverse_2 (measure std)
 ```
 
