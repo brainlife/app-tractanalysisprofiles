@@ -38,9 +38,9 @@ You can download sample datasets from Brainlife using [Brainlife CLI](https://gi
 npm install -g brainlife
 bl login
 mkdir input
-bl dataset download 5a0e604116e499548135de87 && mv 5a0e604116e499548135de87 input/tensor
-bl dataset download 5a0dcb1216e499548135dd27 && mv 5a0dcb1216e499548135dd27 input/noddi
-bl dataset download 5a0dcb1216e499548135dd27 && mv 5a0dcb1216e499548135dd27 input/wmc
+bl dataset download 5b09308ce81b47020407c4e9 && mv 5b09308ce81b47020407c4e9 input/tensor
+bl dataset download 5b0a713ce81b47020407c739 && mv 5b0a713ce81b47020407c739 input/noddi
+bl dataset download 5b0dbdcfe81b47020407ca17 && mv 5b0dbdcfe81b47020407ca17 input/wmc
 
 ```
 
