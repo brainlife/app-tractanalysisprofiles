@@ -22,11 +22,11 @@ You can submit this App online at [https://doi.org/10.25663/bl.app.43](https://d
 
 ```json
 {
-        "tensor": "./input/tensor/",  # optional
-      	"noddi": "./input/noddi/", # optional
+        "tensor": "./input/tensor/",
+      	"noddi": "./input/noddi/",
         "afq": "./input/wmc/output.mat",
         "numnodes": 100,
-        "fiberbased": False, # if fiber-based is preferred, True
+        "fiberbased": False,
 }
 ```
 
