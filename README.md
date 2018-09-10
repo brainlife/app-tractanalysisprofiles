@@ -7,8 +7,6 @@ This service computes profiles of tensor (i.e. AD, FA, MD, RD) and/or NODDI (i.e
 ### Authors
 - Brad Caron (bacaron@iu.edu)
 - Lindsey Kitchell (kitchell@iu.edu)
-- Soichi Hayashi (hayashi@iu.edu)
-- Franco Pestilli (franpest@indiana.edu)
 
 ### Contributors
 - Soichi Hayashi (hayashi@iu.edu)
