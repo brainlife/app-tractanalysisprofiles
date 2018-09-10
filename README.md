@@ -48,7 +48,6 @@ mkdir input
 bl dataset download 5b09308ce81b47020407c4e9 && mv 5b09308ce81b47020407c4e9 input/tensor
 bl dataset download 5b0a713ce81b47020407c739 && mv 5b0a713ce81b47020407c739 input/noddi
 bl dataset download 5b0dbdcfe81b47020407ca17 && mv 5b0dbdcfe81b47020407ca17 input/wmc
-
 ```
 
 
