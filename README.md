@@ -1,13 +1,22 @@
+
 [![Run on Brainlife.io](https://img.shields.io/badge/Brainlife-bl.app.43-blue.svg)](https://doi.org/10.25663/bl.app.43)
 
 # app-tractanalysisprofiles
 This service computes profiles of tensor (i.e. AD, FA, MD, RD) and/or NODDI (i.e. ICVF, ISOVF, OD) measures, and their inverse measures and corresponding standard deviations, over a user-specified number of nodes along segmented white matter fascicles. Based on user-input, it computes these profiles using either dtiComputeDiffusionPropertiesAlongFG_sd from Vistasoft, which weights streamlines based on their distance away from a central core of the fascicle (i.e. 'volume based'), or Compute_FA_AlongFG, which does not weight the streamlines and is appropriate for testing models involving streamline/fiber corssings (i.e. 'fiber based'). EPS and PNG images of these profiles are created for the measures, and a .csv file is outputted containing all the measures and standard deviations for each segmented fascicle.
 
-#### Authors
+### Authors
 - Brad Caron (bacaron@iu.edu)
 - Lindsey Kitchell (kitchell@iu.edu)
 - Soichi Hayashi (hayashi@iu.edu)
 - Franco Pestilli (franpest@indiana.edu)
+
+### Contributors
+- Soichi Hayashi (hayashi@iu.edu)
+- Franco Pestilli (franpest@indiana.edu)
+
+### Funding
+[![NSF-BCS-1734853](https://img.shields.io/badge/NSF_BCS-1734853-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1734853)
+[![NSF-BCS-1636893](https://img.shields.io/badge/NSF_BCS-1636893-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1636893)
 
 ## Running the App 
 
