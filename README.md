@@ -26,7 +26,7 @@ You can submit this App online at [https://doi.org/10.25663/bl.app.43](https://d
       	"noddi": "./input/noddi/",
         "afq": "./input/wmc/output.mat",
         "numnodes": 100,
-        "fiberbased": False,
+        "fiberbased": False
 }
 ```
 
