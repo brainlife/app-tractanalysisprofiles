@@ -17,7 +17,9 @@ mkdir('images');
 mkdir('profiles');
 numfiles = 1;
 possible_error=0;
+possible_error_lows=0;
 failed_tracts=[];
+failed_tracts_lows=[];
 
 % load config.json
 config = loadjson('config.json');
@@ -96,26 +98,38 @@ end
 % Set up cell for csv
 tract_profiles = cell(numnodes, length(nii));
 
-for ifg = 1:length(fg_classified) 
+for ifg = 1:length(fg_classified)
     try
         if config.fiberbased == 0
             display 'volume based statistics'
             fg = fg_classified( ifg );
             for jj = 1:length(nii)
-                display(sprintf('computing %s',nii(jj).name));
-                [tract, ~, ~, ~, ~, ~, ~, ~, ~, ~, myValsFgSTD] = dtiComputeDiffusionPropertiesAlongFG_sd( fg, nii(jj).data,[],[],numnodes);
-                nii(jj).mean = tract;
-                nii(jj).std = myValsFgSTD;
+                if length(fg_classified(ifg).fibers) < 6
+                    display('too few streamlines. outputting profile of NaNs')
+                    nii(jj).mean = NaN(numnodes,1);
+                    nii(jj).std = NaN(numnodes,1);
+                else
+                    display(sprintf('computing %s',nii(jj).name));
+                    [tract, ~, ~, ~, ~, ~, ~, ~, ~, ~, myValsFgSTD] = dtiComputeDiffusionPropertiesAlongFG_sd( fg, nii(jj).data,[],[],numnodes);
+                    nii(jj).mean = tract;
+                    nii(jj).std = myValsFgSTD;
+                end
             end
         else
             display 'fiber based statistics'
             fgTract = fg_classified( ifg );
             fg = dtiXformFiberCoords(fgTract, inv(nii(2).data.qto_xyz),'img'); % convert fibergroup to the proper space
             for jj = 1:length(nii)
-                display(sprintf('computing %s',nii(jj).name));
-                tract = Compute_FA_AlongFG(fg, nii(jj).data, [], [], numnodes);
-                nii(jj).mean = nanmean(tract);
-                nii(jj).std = nanstd(tract);
+                if length(fg_classified(ifg).fibers) < 6
+                    display('too few streamlines. outputting profile of NaNs')
+                    nii(jj).mean = NaN(numnodes,1);
+                    nii(jj).std = NaN(numnodes,1);
+                else
+                    display(sprintf('computing %s',nii(jj).name));
+                    tract = Compute_FA_AlongFG(fg, nii(jj).data, [], [], numnodes);
+                    nii(jj).mean = nanmean(tract);
+                    nii(jj).std = nanstd(tract);
+                end
             end
         end
         
@@ -187,6 +201,13 @@ for ifg = 1:length(fg_classified)
         
     save('profiles/error_messages.mat','ME');
     end
+    
+    if length(fg_classified(ifg).fibers) < 6
+        possible_error_lows=1;
+        failed_tracts_lows = [failed_tracts, fg.name];
+        save('profiles/error_messages_lows.mat','failed_tracts_lows')
+    end
+    
     clf
 end
 
@@ -197,9 +218,13 @@ fclose(fileID);
 if possible_error==1
     results.quality_check = 'ERROR: The following tracts failed:';
     results.failed_tracts = failed_tracts;
+elseif possible_error_lows==1
+    results.quality_check = 'ERROR: The following tracts have too few streamlines:';
+    results.failed_tracts = failed_tracts_lows;
 else
     results.quality_check = 'All tracts analysis profiles were created successfully';
 end
+
 
 savejson('', results, 'product.json');
 savejson('', json, fullfile('images.json'));
