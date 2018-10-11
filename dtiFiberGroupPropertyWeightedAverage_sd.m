@@ -77,7 +77,7 @@ numfibers = size(fg.fibers, 1);
 
 % Each fiber is represented by numberOfNodes, so can easily loop over 1st
 % node, 2nd, etc...
-fc = horzcat(fgResampled.fibers{:})';
+fc = double(horzcat(fgResampled.fibers{:}))';
 
 
 % Compute properties if you the argument image is passed into valNames then
