@@ -24,7 +24,7 @@ failed_tracts_lows=[];
 % load config.json
 config = loadjson('config.json');
 
-if isempty(config.tensor) && isempty(config.noddi)
+if isempty(config.ad) && isempty(config.icvf)
     display('No input initialized. Please specify input');
     exit
 end
@@ -34,25 +34,27 @@ load(fullfile(config.afq));
 numnodes = config.numnodes;
 
 % load tensor and noddi (if applicable) files
-if isfield(config,'tensor')
+if isfield(config,'ad')
     %tensors = dir(fullfile(config.tensor,'*.nii.gz*'));
-    ad = dir(fullfile(config.tensor,'ad.nii.gz*'));
-    fa = dir(fullfile(config.tensor,'fa.nii.gz*'));
-    md = dir(fullfile(config.tensor,'md.nii.gz*'));
-    rd = dir(fullfile(config.tensor,'rd.nii.gz*'));
-    tensors = [ad(1) fa(1) md(1) rd(1)];
-    tensors = tensors';
+    ad = dir(config.ad);
+    fa = dir(config.fa);
+    md = dir(config.md);
+    rd = dir(config.rd);
+    tensors = [ad fa md rd];
     end_index = 4;
 else
     end_index = 0;
 end
 
-if isfield(config,'noddi')
-    noddis = dir(fullfile(config.noddi,'*_NEW.nii.gz*'));
+if isfield(config,'icvf')
+    icvf = dir(config.icvf);
+    isovf = dir(config.isovf);
+    od = dir(config.od);
+    noddis = [icvf isovf od];
 end
 
 % Set data structures
-if isfield(config,'tensor')
+if isfield(config,'ad')
     for ii = 1:length(tensors)
         nii(ii).name = char(extractBefore(tensors(ii).name,strlength(tensors(ii).name)-6));
         nii(ii).data = niftiRead(fullfile(tensors(ii).folder,tensors(ii).name));
@@ -76,9 +78,9 @@ if isfield(config,'tensor')
     end_index = length(nii);
 end
 
-if isfield(config,'noddi')
+if isfield(config,'icvf')
     for ii = 1:length(noddis)
-        nii(end_index+ii).name = char(extractBetween(noddis(ii).name,'FIT_','_NEW'));
+        nii(end_index+ii).name = char(extractBefore(noddis(ii).name,strlength(noddis(ii).name)-6));
         nii(end_index+ii).data = niftiRead(fullfile(noddis(ii).folder,noddis(ii).name));
         nii(end_index+ii).data_inv = 1./nii(ii).data.data;
         nii(end_index+ii).data_inv(~isfinite(nii(end_index+ii).data_inv))=0;
@@ -86,7 +88,7 @@ if isfield(config,'noddi')
     end
     end_index = length(nii);
     for ii = 1:length(noddis)
-        nii(end_index+ii).name = strcat(char(extractBetween(noddis(ii).name,'FIT_','_NEW')),'_inverse');
+        nii(end_index+ii).name = strcat(char(extractBefore(noddis(ii).name,strlength(noddis(ii).name)-6)),'_inverse');
         nii(end_index+ii).data = nii(end_index-3+ii).data;
         nii(end_index+ii).data_inv = nii(end_index-3+ii).data_inv;
         nii(end_index+ii).data.data = nii(end_index+ii).data_inv;
@@ -147,7 +149,7 @@ for ifg = 1:length(fg_classified)
         fg_filename = strrep(fg.name, ' ', '_');
         writetable(T, strcat('profiles/', fg_filename, '_profiles.csv'));
 
-        if isfield(config,'tensor')
+        if isfield(config,'ad')
             % AD
             analysisProfiles(nii(1).mean,fg,nii(1).name,'Axial Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(1).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_ad.png');
@@ -174,7 +176,7 @@ for ifg = 1:length(fg_classified)
             numfiles = numfiles + 1;
         end
         
-        if isfield(config,'noddi')
+        if isfield(config,'icvf')
             % ICVF
             analysisProfiles(nii(end_index-6+1).mean,fg,nii(end_index-6+1).name,'ICVF',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+1).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_ICVF.png');
