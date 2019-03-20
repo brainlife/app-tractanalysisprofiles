@@ -24,7 +24,7 @@ failed_tracts_lows=[];
 % load config.json
 config = loadjson('config.json');
 
-if isempty(config.ad) && isempty(config.icvf)
+if ~isfield(config,'ad') && ~isfield(config,'icvf')
     display('No input initialized. Please specify input');
     exit
 end
@@ -32,6 +32,12 @@ end
 % load segmentation file and set number of nodes
 load(fullfile(config.afq));
 numnodes = config.numnodes;
+
+if ~exist('fg_classified','var')
+    fg_classified = tracts;
+else
+    fg_classified = fg_classified;
+end
 
 % load tensor and noddi (if applicable) files
 if isfield(config,'ad')
@@ -43,6 +49,7 @@ if isfield(config,'ad')
     tensors = [ad fa md rd];
     end_index = 4;
 else
+    ad = [];
     end_index = 0;
 end
 
