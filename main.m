@@ -34,7 +34,9 @@ load(fullfile(config.afq));
 numnodes = config.numnodes;
 
 if ~exist('fg_classified','var')
-    fg_classified = tracts;
+    fg_classified = {tracts};
+elseif ~iscell(fg_classified)
+    fg_classified = {fg_classified};
 else
     fg_classified = fg_classified;
 end
@@ -65,6 +67,10 @@ if isfield(config,'ad')
     for ii = 1:length(tensors)
         nii(ii).name = char(extractBefore(tensors(ii).name,strlength(tensors(ii).name)-6));
         nii(ii).data = niftiRead(fullfile(tensors(ii).folder,tensors(ii).name));
+        nii(ii).non_zero_index = find(nii(ii).data.data(:,:,:) ~= 0);
+        if max(nii(ii).data.data(nii(ii).non_zero_index)) < 0.01 && ~strcmp(nii(ii).name,'fa')
+            nii(ii).data.data = nii(ii).data.data * 1000;
+        end
         nii(ii).data_inv = 1./nii(ii).data.data;
         nii(ii).data_inv(~isfinite(nii(ii).data_inv))=0;
         if nii(ii).name == 'fa'
@@ -111,9 +117,9 @@ for ifg = 1:length(fg_classified)
     try
         if config.fiberbased == 0
             display 'volume based statistics'
-            fg = fg_classified( ifg );
+            fg = fg_classified{ ifg };
             for jj = 1:length(nii)
-                if length(fg_classified(ifg).fibers) < 6
+                if length(fg_classified{ifg}.fibers) < 6
                     display('too few streamlines. outputting profile of NaNs')
                     nii(jj).mean = NaN(numnodes,1);
                     nii(jj).std = NaN(numnodes,1);
@@ -126,10 +132,10 @@ for ifg = 1:length(fg_classified)
             end
         else
             display 'fiber based statistics'
-            fgTract = fg_classified( ifg );
+            fgTract = fg_classified{ ifg };
             fg = dtiXformFiberCoords(fgTract, inv(nii(2).data.qto_xyz),'img'); % convert fibergroup to the proper space
             for jj = 1:length(nii)
-                if length(fg_classified(ifg).fibers) < 6
+                if length(fg_classified{ifg}.fibers) < 6
                     display('too few streamlines. outputting profile of NaNs')
                     nii(jj).mean = NaN(numnodes,1);
                     nii(jj).std = NaN(numnodes,1);
@@ -211,7 +217,7 @@ for ifg = 1:length(fg_classified)
     save('profiles/error_messages.mat','ME');
     end
     
-    if length(fg_classified(ifg).fibers) < 6
+    if length(fg_classified{ifg}.fibers) < 6
         possible_error_lows=1;
         failed_tracts_lows = [failed_tracts, fg.name];
         save('profiles/error_messages_lows.mat','failed_tracts_lows')
