@@ -7,13 +7,6 @@ if ~isdeployed
     addpath(genpath('/N/u/brlife/git/jsonlab'))
     addpath(genpath('/N/soft/rhel7/mrtrix/3.0/mrtrix3/matlab'))
     addpath(genpath('/N/u/brlife/git/wma_tools'))
-else
-    disp('loading paths for Jetstream VM')
-    addpath(genpath('/usr/local/vistasoft'))
-    addpath(genpath('/usr/local/spm8'))
-    addpath(genpath('/usr/local/jsonlab'))
-    addpath(genpath('/usr/local/mrtrix/3.0/mrtrix3/matlab'))
-    addpath(genpath('/usr/local/wma_tools'))
 end
 
 % make directories and set up variables
