@@ -113,13 +113,13 @@ end
 % Set up cell for csv
 tract_profiles = cell(numnodes, length(nii));
 
-for ifg = 1:length(fg_classified)
+for ifg = 1:length(fg_classified{1})
     try
         if config.fiberbased == 0
             display 'volume based statistics'
-            fg = fg_classified{ ifg };
+            fg = fg_classified{ 1 }(ifg);
             for jj = 1:length(nii)
-                if length(fg_classified{ifg}.fibers) < 6
+                if length(fg.fibers) < 6
                     display('too few streamlines. outputting profile of NaNs')
                     nii(jj).mean = NaN(numnodes,1);
                     nii(jj).std = NaN(numnodes,1);
@@ -132,10 +132,10 @@ for ifg = 1:length(fg_classified)
             end
         else
             display 'fiber based statistics'
-            fgTract = fg_classified{ ifg };
+            fgTract = fg_classified{ 1 }(ifg);
             fg = dtiXformFiberCoords(fgTract, inv(nii(2).data.qto_xyz),'img'); % convert fibergroup to the proper space
             for jj = 1:length(nii)
-                if length(fg_classified{ifg}.fibers) < 6
+                if length(fg.fibers) < 6
                     display('too few streamlines. outputting profile of NaNs')
                     nii(jj).mean = NaN(numnodes,1);
                     nii(jj).std = NaN(numnodes,1);
@@ -217,7 +217,7 @@ for ifg = 1:length(fg_classified)
     save('profiles/error_messages.mat','ME');
     end
     
-    if length(fg_classified{ifg}.fibers) < 6
+    if length(fg.fibers) < 6
         possible_error_lows=1;
         failed_tracts_lows = [failed_tracts, fg.name];
         save('profiles/error_messages_lows.mat','failed_tracts_lows')
