@@ -127,8 +127,7 @@ end
 % Set up cell for csv
 tract_profiles = cell(numnodes, length(nii));
 
-% for ifg = 1:length(fg_classified)
-for ifg = 1:2
+for ifg = 1:length(fg_classified)
     try
         if config.fiberbased == 0
             display 'volume based statistics'
