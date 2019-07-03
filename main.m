@@ -118,8 +118,10 @@ for ii = 1:length(classification.names)
     tractname = strrep(classification.names{ii},' ','');
     tractprofiles.(tractname) = struct();
     for jj = 1:length(nii)
-        measurename = nii(jj).name;
-        tractprofiles.(tractname).(measurename) = [];
+        if ~strcmp(nii(jj).name(end),'e')
+            measurename = nii(jj).name;
+            tractprofiles.(tractname).(measurename) = [];
+        end
     end
 end
 
@@ -176,10 +178,17 @@ for ifg = 1:length(fg_classified)
         fg_filename = strrep(fg.name, ' ', '_');
         writetable(T, strcat('profiles/', fg_filename, '_profiles.csv'));
         
-        tractname = fg.name;
+        tractname = strrep(fg.name,' ','');
         for jj = 1:length(nii)
-            measurename = nii(jj).name;
-            tractprofiles.(tractname).(measurename) = round(cell2mat(tract_profiles(:,jj,1)'),4,'significant');
+            % think of a better heuristic for this. right now, if a measure
+            % ends with an 'e', it's just going to be skipped. reason this
+            % works is because currently, the only measure I allow to be
+            % run that ends in 'e' are the inverse measures (i.e.
+            % fa_inverse).
+            if ~strcmp(nii(jj).name(end),'e') 
+                measurename = nii(jj).name;
+                tractprofiles.(tractname).(measurename) = round(cell2mat(tract_profiles(:,jj,1)'),4,'significant');
+            end
         end
         
         if isfield(config,'ad')
@@ -250,21 +259,24 @@ fileID = fopen('numfiles.txt','w');
 fprintf(fileID, '%d', numfiles-1); %matlab uses 1 based indexing
 fclose(fileID);
 
+
+product = struct;
+
 if possible_error == 1
-    message.brainlife = struct;
-    message.brainlife.type = 'error';
-    message.brainlife.msg = sprintf('ERROR: The following tracts have failed: %s',failed_tracts);
-    product = {tractprofiles,message};
+    product.brainlife = struct;
+    product.brainlife.type = 'error';
+    product.brainlife.msg = sprintf('ERROR: The following tracts have failed: %s',failed_tracts);
+    product.profiles = tractprofiles;
 elseif possible_error_lows==1
-    message.brainlife = struct;
-    message.brainlife.type = 'error';
-    message.brainlife.msg = sprintf('ERROR: The following tracts have too few streamlines: %s',failed_tracts_lows);
-    product = {tractprofiles,message};
+    product.brainlife = struct;
+    product.brainlife.type = 'error';
+    product.brainlife.msg = sprintf('ERROR: The following tracts have too few streamlines: %s',failed_tracts_lows);
+    product.profiles = tractprofiles;
 else
-    message.brainlife = struct;
-    message.brainlife.type = 'success';
-    message.brainlife.msg = 'All tracts analysis profiles were created successfully';
-    product = {message,tractprofiles};
+    product.brainlife = struct;
+    product.brainlife.type = 'success';
+    product.brainlife.msg = 'All tracts analysis profiles were created successfully';
+    product.profiles = tractprofiles;
 end
 
 savejson('', product, 'product.json');
