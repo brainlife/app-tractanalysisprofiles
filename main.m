@@ -34,6 +34,8 @@ numnodes = config.numnodes;
 wbFG = wma_loadTck(config.tck);
 fg_classified = bsc_makeFGsFromClassification_v4(classification, wbFG);
 
+
+
 % if ~exist('fg_classified','var')
 %     fg_classified = {tracts};
 % elseif ~iscell(fg_classified)
@@ -111,10 +113,22 @@ if isfield(config,'icvf')
     end_index = length(nii);
 end
 
+% set up array for product.json
+for ii = 1:length(classification.names)
+    tractname = strrep(classification.names{ii},' ','');
+    tractprofiles.(tractname) = struct();
+    for jj = 1:length(nii)
+        measurename = nii(jj).name;
+        tractprofiles.(tractname).(measurename) = [];
+    end
+end
+
+
 % Set up cell for csv
 tract_profiles = cell(numnodes, length(nii));
 
-for ifg = 1:length(fg_classified)
+% for ifg = 1:length(fg_classified)
+for ifg = 1:2
     try
         if config.fiberbased == 0
             display 'volume based statistics'
@@ -162,7 +176,13 @@ for ifg = 1:length(fg_classified)
         
         fg_filename = strrep(fg.name, ' ', '_');
         writetable(T, strcat('profiles/', fg_filename, '_profiles.csv'));
-
+        
+        tractname = fg.name;
+        for jj = 1:length(nii)
+            measurename = nii(jj).name;
+            tractprofiles.(tractname).(measurename) = round(cell2mat(tract_profiles(:,jj,1)'),4,'significant');
+        end
+        
         if isfield(config,'ad')
             % AD
             analysisProfiles(nii(1).mean,fg,nii(1).name,'Axial Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(1).units);
@@ -231,18 +251,24 @@ fileID = fopen('numfiles.txt','w');
 fprintf(fileID, '%d', numfiles-1); %matlab uses 1 based indexing
 fclose(fileID);
 
-if possible_error==1
-    results.quality_check = 'ERROR: The following tracts failed:';
-    results.failed_tracts = failed_tracts;
+if possible_error == 1
+    message.brainlife = struct;
+    message.brainlife.type = 'error';
+    message.brainlife.msg = sprintf('ERROR: The following tracts have failed: %s',failed_tracts);
+    product = {tractprofiles,message};
 elseif possible_error_lows==1
-    results.quality_check = 'ERROR: The following tracts have too few streamlines:';
-    results.failed_tracts = failed_tracts_lows;
+    message.brainlife = struct;
+    message.brainlife.type = 'error';
+    message.brainlife.msg = sprintf('ERROR: The following tracts have too few streamlines: %s',failed_tracts_lows);
+    product = {tractprofiles,message};
 else
-    results.quality_check = 'All tracts analysis profiles were created successfully';
+    message.brainlife = struct;
+    message.brainlife.type = 'success';
+    message.brainlife.msg = 'All tracts analysis profiles were created successfully';
+    product = {message,tractprofiles};
 end
 
-
-savejson('', results, 'product.json');
+savejson('', product, 'product.json');
 savejson('', json, fullfile('images.json'));
 
 end
