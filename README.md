@@ -2,7 +2,7 @@
 [![Run on Brainlife.io](https://img.shields.io/badge/Brainlife-bl.app.43-blue.svg)](https://doi.org/10.25663/bl.app.43)
 
 # app-tractanalysisprofiles
-This service computes profiles of tensor (i.e. AD, FA, MD, RD) and/or NODDI (i.e. ICVF, ISOVF, OD) measures, and their inverse measures and corresponding standard deviations, over a user-specified number of nodes along segmented white matter fascicles. Based on user-input, it computes these profiles using either dtiComputeDiffusionPropertiesAlongFG_sd from Vistasoft, which weights streamlines based on their distance away from a central core of the fascicle (i.e. 'volume based'), or Compute_FA_AlongFG, which does not weight the streamlines and is appropriate for testing models involving streamline/fiber corssings (i.e. 'fiber based'). EPS and PNG images of these profiles are created for the measures, and a .csv file is outputted containing all the measures and standard deviations for each segmented fascicle.
+This service computes profiles of tensor (i.e. AD, FA, MD, RD) and/or NODDI (i.e. ICVF, ISOVF, OD) measures, and their inverse measures and corresponding standard deviations, over a user-specified number of nodes along segmented white matter fascicles. Based on user-input, it computes these profiles using either dtiComputeDiffusionPropertiesAlongFG_sd from Vistasoft (, which weights streamlines based on their distance away from a central core of the fascicle (i.e. 'volume based'), or Compute_FA_AlongFG, which does not weight the streamlines and is appropriate for testing models involving streamline/fiber corssings (i.e. 'fiber based'). EPS and PNG images of these profiles are created for the measures, and a .csv file is outputted containing all the measures and standard deviations for each segmented fascicle.
 
 ### Authors
 - Brad Caron (bacaron@iu.edu)
@@ -76,3 +76,10 @@ This App requires the following libraries when run locally.
   - VISTASOFT: https://github.com/vistalab/vistasoft/
   - SPM 8: https://www.fil.ion.ucl.ac.uk/spm/software/spm8/
   - jsonlab: https://github.com/fangq/jsonlab.git
+  
+#### References
+(v0.1)  —  Yeatman J.D., Dougherty R.F., Myall N.J., Wandell B.A., Feldman H.M. (2012). Tract Profiles of White Matter Properties: Automating Fiber-Tract Quantification. PLoS One.
+
+(v1.1)  —  Yeatman J.D., Wandell B.A., Mezer A. (2014). Lifespan Maturation and Degeneration of Human Brain White Matter. Nature Communications.
+
+(v1.2)  —  Yeatman J.D., Weiner K.S., Pestilli F., Rokem A., Mezer A., Wandell B.A. (2014). The Vertical Occipital Fasciculus: A Century of Controversy Resolved By In Vivo Measurements. PNAS.
