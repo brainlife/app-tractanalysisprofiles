@@ -5,11 +5,8 @@ if ~isdeployed
     addpath(genpath('/N/u/brlife/git/vistasoft'))
     addpath(genpath('/N/soft/mason/SPM/spm8'))
     addpath(genpath('/N/u/brlife/git/jsonlab'))
-
-    disp('loading paths for Jetstream VM')
-    addpath(genpath('/usr/local/vistasoft'))
-    addpath(genpath('/usr/local/spm8'))
-    addpath(genpath('/usr/local/jsonlab'))
+    addpath(genpath('/N/soft/rhel7/mrtrix/3.0/mrtrix3/matlab'))
+    addpath(genpath('/N/u/brlife/git/wma_tools'))
 end
 
 % make directories and set up variables
@@ -29,15 +26,23 @@ if ~isfield(config,'ad') && ~isfield(config,'icvf')
     exit
 end
 
-% load segmentation file and set number of nodes
+% load segmentation file and set number of nodes; take in both
+% classification structure and tck tractogram, will generate fg_classified
+% structure
 load(fullfile(config.afq));
 numnodes = config.numnodes;
+wbFG = wma_loadTck(config.tck);
+fg_classified = bsc_makeFGsFromClassification_v4(classification, wbFG);
 
-if ~exist('fg_classified','var')
-    fg_classified = tracts;
-else
-    fg_classified = fg_classified;
-end
+
+
+% if ~exist('fg_classified','var')
+%     fg_classified = {tracts};
+% elseif ~iscell(fg_classified)
+%     fg_classified = {fg_classified};
+% else
+%     fg_classified = fg_classified;
+% end
 
 % load tensor and noddi (if applicable) files
 if isfield(config,'ad')
@@ -65,6 +70,10 @@ if isfield(config,'ad')
     for ii = 1:length(tensors)
         nii(ii).name = char(extractBefore(tensors(ii).name,strlength(tensors(ii).name)-6));
         nii(ii).data = niftiRead(fullfile(tensors(ii).folder,tensors(ii).name));
+        nii(ii).non_zero_index = find(nii(ii).data.data(:,:,:) ~= 0);
+        if max(nii(ii).data.data(nii(ii).non_zero_index)) < 0.01 && ~strcmp(nii(ii).name,'fa')
+            nii(ii).data.data = nii(ii).data.data * 1000;
+        end
         nii(ii).data_inv = 1./nii(ii).data.data;
         nii(ii).data_inv(~isfinite(nii(ii).data_inv))=0;
         if nii(ii).name == 'fa'
@@ -104,6 +113,19 @@ if isfield(config,'icvf')
     end_index = length(nii);
 end
 
+% set up array for product.json
+for ii = 1:length(classification.names)
+    tractname = strrep(classification.names{ii},' ','');
+    tractprofiles.(tractname) = struct();
+    for jj = 1:length(nii)
+        if ~strcmp(nii(jj).name(end),'e')
+            measurename = nii(jj).name;
+            tractprofiles.(tractname).(measurename) = [];
+        end
+    end
+end
+
+
 % Set up cell for csv
 tract_profiles = cell(numnodes, length(nii));
 
@@ -111,9 +133,9 @@ for ifg = 1:length(fg_classified)
     try
         if config.fiberbased == 0
             display 'volume based statistics'
-            fg = fg_classified( ifg );
+            fg = fg_classified{ ifg };
             for jj = 1:length(nii)
-                if length(fg_classified(ifg).fibers) < 6
+                if length(fg_classified{ifg}.fibers) < 6
                     display('too few streamlines. outputting profile of NaNs')
                     nii(jj).mean = NaN(numnodes,1);
                     nii(jj).std = NaN(numnodes,1);
@@ -126,10 +148,10 @@ for ifg = 1:length(fg_classified)
             end
         else
             display 'fiber based statistics'
-            fgTract = fg_classified( ifg );
+            fgTract = fg_classified{ ifg };
             fg = dtiXformFiberCoords(fgTract, inv(nii(2).data.qto_xyz),'img'); % convert fibergroup to the proper space
             for jj = 1:length(nii)
-                if length(fg_classified(ifg).fibers) < 6
+                if length(fg_classified{ifg}.fibers) < 6
                     display('too few streamlines. outputting profile of NaNs')
                     nii(jj).mean = NaN(numnodes,1);
                     nii(jj).std = NaN(numnodes,1);
@@ -155,7 +177,20 @@ for ifg = 1:length(fg_classified)
         
         fg_filename = strrep(fg.name, ' ', '_');
         writetable(T, strcat('profiles/', fg_filename, '_profiles.csv'));
-
+        
+        tractname = strrep(fg.name,' ','');
+        for jj = 1:length(nii)
+            % think of a better heuristic for this. right now, if a measure
+            % ends with an 'e', it's just going to be skipped. reason this
+            % works is because currently, the only measure I allow to be
+            % run that ends in 'e' are the inverse measures (i.e.
+            % fa_inverse).
+            if ~strcmp(nii(jj).name(end),'e') 
+                measurename = nii(jj).name;
+                tractprofiles.(tractname).(measurename) = round(cell2mat(tract_profiles(:,jj,1)'),4,'significant');
+            end
+        end
+        
         if isfield(config,'ad')
             % AD
             analysisProfiles(nii(1).mean,fg,nii(1).name,'Axial Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(1).units);
@@ -211,7 +246,7 @@ for ifg = 1:length(fg_classified)
     save('profiles/error_messages.mat','ME');
     end
     
-    if length(fg_classified(ifg).fibers) < 6
+    if length(fg_classified{ifg}.fibers) < 6
         possible_error_lows=1;
         failed_tracts_lows = [failed_tracts, fg.name];
         save('profiles/error_messages_lows.mat','failed_tracts_lows')
@@ -224,18 +259,27 @@ fileID = fopen('numfiles.txt','w');
 fprintf(fileID, '%d', numfiles-1); %matlab uses 1 based indexing
 fclose(fileID);
 
-if possible_error==1
-    results.quality_check = 'ERROR: The following tracts failed:';
-    results.failed_tracts = failed_tracts;
+
+product = struct;
+
+if possible_error == 1
+    product.brainlife = struct;
+    product.brainlife.type = 'error';
+    product.brainlife.msg = sprintf('ERROR: The following tracts have failed: %s',failed_tracts);
+    product.profiles = tractprofiles;
 elseif possible_error_lows==1
-    results.quality_check = 'ERROR: The following tracts have too few streamlines:';
-    results.failed_tracts = failed_tracts_lows;
+    product.brainlife = struct;
+    product.brainlife.type = 'error';
+    product.brainlife.msg = sprintf('ERROR: The following tracts have too few streamlines: %s',failed_tracts_lows);
+    product.profiles = tractprofiles;
 else
-    results.quality_check = 'All tracts analysis profiles were created successfully';
+    product.brainlife = struct;
+    product.brainlife.type = 'success';
+    product.brainlife.msg = 'All tracts analysis profiles were created successfully';
+    product.profiles = tractprofiles;
 end
 
-
-savejson('', results, 'product.json');
+savejson('', product, 'product.json');
 savejson('', json, fullfile('images.json'));
 
 end
