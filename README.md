@@ -27,15 +27,34 @@ You can submit this App online at [https://doi.org/10.25663/bl.app.43](https://d
 1. git clone this repo.
 2. Inside the cloned directory, create `config.json` with something like the following content with paths to your input files.
 
+
+* Running with tensor
+
 ```json
 {
-        "tensor": "./input/tensor/",
-      	"noddi": "./input/noddi/",
-        "afq": "./input/wmc/output.mat",
+        "fa": "./testdata/tensor/fa.nii.gz",
+        "md": "./testdata/tensor/md.nii.gz",
+        "rd": "./testdata/tensor/rd.nii.gz",
+        "ad": "./testdata/tensor/ad.nii.gz",
+        "afq": "./testdata/wmc/classification.mat",
+        "tck": "./testdata/tck/track.tck",
         "numnodes": 100,
         "fiberbased": false
 }
 ```
+
+* Running with noddi
+
+```json
+{
+        "icvf": "./testdata/noddi/icvf.nii.gz",
+        "isovf": "./testdata/noddi/isovf.nii.gz",
+        "od": "./testdata/noddi/od.nii.gz",
+        "afq": "./testdata/wmc/classification.mat",
+        "tck": "./testdata/tck/track.tck",
+        "numnodes": 100,
+        "fiberbased": false
+}```
 
 ### Sample Datasets
 
@@ -45,11 +64,11 @@ You can download sample datasets from Brainlife using [Brainlife CLI](https://gi
 npm install -g brainlife
 bl login
 mkdir input
-bl dataset download 5b96bdce059cf900271924fb && mv 5b96bdce059cf900271924fb input/tensor
-bl dataset download 5b96bdba059cf900271924fa && mv 5b96bdba059cf900271924fa input/noddi
+bl dataset download 5b96bdce059cf900271924fb && mv 5b96bdce059cf900271924fb input/tensor #for tensor mode
+bl dataset download 5b96bdba059cf900271924fa && mv 5b96bdba059cf900271924fa input/noddi #for noddi mode
 bl dataset download 5b96bdd2059cf900271924fc && mv 5b96bdd2059cf900271924fc input/wmc
+bl dataset download tdb.. && mv tdb.. input/tck
 ```
-
 
 3. Launch the App by executing `main`
 

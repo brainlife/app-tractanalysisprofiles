@@ -259,25 +259,21 @@ fileID = fopen('numfiles.txt','w');
 fprintf(fileID, '%d', numfiles-1); %matlab uses 1 based indexing
 fclose(fileID);
 
+message = struct;
+if possible_error == 1
+    message.type = 'error';
+    message.msg = sprintf('ERROR: The following tracts have failed: %s',failed_tracts);
+elseif possible_error_lows==1
+    message.type = 'error';
+    message.msg = sprintf('ERROR: The following tracts have too few streamlines: %s',failed_tracts_lows);
+else
+    message.type = 'success';
+    message.msg = 'All tracts analysis profiles were created successfully';
+end
 
 product = struct;
-
-if possible_error == 1
-    product.brainlife = struct;
-    product.brainlife.type = 'error';
-    product.brainlife.msg = sprintf('ERROR: The following tracts have failed: %s',failed_tracts);
-    product.profiles = tractprofiles;
-elseif possible_error_lows==1
-    product.brainlife = struct;
-    product.brainlife.type = 'error';
-    product.brainlife.msg = sprintf('ERROR: The following tracts have too few streamlines: %s',failed_tracts_lows);
-    product.profiles = tractprofiles;
-else
-    product.brainlife = struct;
-    product.brainlife.type = 'success';
-    product.brainlife.msg = 'All tracts analysis profiles were created successfully';
-    product.profiles = tractprofiles;
-end
+product.brainlife = {message}
+product.profiles = tractprofiles;
 
 savejson('', product, 'product.json');
 savejson('', json, fullfile('images.json'));
