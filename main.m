@@ -120,7 +120,9 @@ for ii = 1:length(classification.names)
     for jj = 1:length(nii)
         if ~strcmp(nii(jj).name(end),'e')
             measurename = nii(jj).name;
-            tractprofiles.(tractname).(measurename) = [];
+            tractprofiles.(tractname).(measurename).profile = [];
+            tractprofiles.(tractname).(measurename).mean = [];
+            tractprofiles.(tractname).(measurename).sd = [];
         end
     end
 end
@@ -187,7 +189,9 @@ for ifg = 1:length(fg_classified)
             % fa_inverse).
             if ~strcmp(nii(jj).name(end),'e') 
                 measurename = nii(jj).name;
-                tractprofiles.(tractname).(measurename) = round(cell2mat(tract_profiles(:,jj,1)'),4,'significant');
+                tractprofiles.(tractname).(measurename).profile = round(cell2mat(tract_profiles(:,jj,1)'),4);
+                tractprofiles.(tractname).(measurename).mean = round(mean(tractprofiles.(tractname).(measurename).profile),4);
+                tractprofiles.(tractname).(measurename).sd = round(std(tractprofiles.(tractname).(measurename).profile),4);
             end
         end
         
@@ -272,7 +276,7 @@ else
 end
 
 product = struct;
-product.brainlife = {message}
+product.brainlife = {message};
 product.profiles = tractprofiles;
 
 savejson('', product, 'product.json');
