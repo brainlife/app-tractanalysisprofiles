@@ -136,12 +136,12 @@ if isnumeric(p)
     % new fiber. So by sampling myValsW every numberOfNodes we can pull out
     % a given node for every fiber
     for node = 1:numberOfNodes
-        myValsFgWa(node, :)=nansum(myValsW((1:numberOfNodes:numfibers*numberOfNodes)+(node-1), :));
+        myValsFgWa(node, :)=sum(myValsW((1:numberOfNodes:numfibers*numberOfNodes)+(node-1), :),'omitnan');
     end
     
     % Compute STD
     for node = 1:numberOfNodes
-        myValsFgSTD(node, :) = nanstd(myVals((1:numberOfNodes:numfibers*numberOfNodes)+(node-1), :),fw((1:numberOfNodes:numfibers*numberOfNodes)+(node-1), :));
+        myValsFgSTD(node, :) = std(myVals((1:numberOfNodes:numfibers*numberOfNodes)+(node-1), :),fw((1:numberOfNodes:numfibers*numberOfNodes)+(node-1), :),'omitnan');
     end
 elseif strcmp(p ,'median')
     % Compute the median rather than the weighted mean
@@ -150,12 +150,12 @@ elseif strcmp(p ,'median')
         % myVals((1:numberOfNodes:numfibers*numberOfNodes)+(node-1), :) is
         % a matrix of values for node n with dimensionality Nfibers by
         % diffusion properties
-        myValsFgWa(node, :) = nanmedian(myVals((1:numberOfNodes:numfibers*numberOfNodes)+(node-1), :));
+        myValsFgWa(node, :) = median(myVals((1:numberOfNodes:numfibers*numberOfNodes)+(node-1), :),'omitnan');
     end
     
     % Compute STD
     for node = 1:numberOfNodes
-        myValsFgSTD(node, :) = nanstd(myVals((1:numberOfNodes:numfibers*numberOfNodes)+(node-1), :));
+        myValsFgSTD(node, :) = std(myVals((1:numberOfNodes:numfibers*numberOfNodes)+(node-1), :),'omitnan');
     end
 
 elseif strcmp(p ,'mean')
@@ -166,12 +166,12 @@ elseif strcmp(p ,'mean')
         % myVals((1:numberOfNodes:numfibers*numberOfNodes)+(node-1), :) is
         % a matrix of values for node n with dimensionality Nfibers by
         % diffusion properties
-        myValsFgWa(node, :) = nanmean(myVals((1:numberOfNodes:numfibers*numberOfNodes)+(node-1), :));
+        myValsFgWa(node, :) = mean(myVals((1:numberOfNodes:numfibers*numberOfNodes)+(node-1), :),'omitnan');
     end
     
     % Compute STD
     for node = 1:numberOfNodes
-        myValsFgSTD(node, :) = nanstd(myVals((1:numberOfNodes:numfibers*numberOfNodes)+(node-1), :));
+        myValsFgSTD(node, :) = std(myVals((1:numberOfNodes:numfibers*numberOfNodes)+(node-1), :),'omitnan');
     end
 end
 

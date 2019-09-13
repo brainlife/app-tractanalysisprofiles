@@ -160,8 +160,8 @@ for ifg = 1:length(fg_classified)
                 else
                     display(sprintf('computing %s',nii(jj).name));
                     tract = Compute_FA_AlongFG(fg, nii(jj).data, [], [], numnodes);
-                    nii(jj).mean = nanmean(tract);
-                    nii(jj).std = nanstd(tract);
+                    nii(jj).mean = mean(tract,'omitnan');
+                    nii(jj).std = std(tract,'omitnan');
                 end
             end
         end
