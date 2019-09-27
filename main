@@ -3,6 +3,8 @@
 #PBS -N tractanalysisprofiles
 #PBS -V
 
+set -e
+
 singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/main
 
 count=$(ls images/*.png | wc -l)
