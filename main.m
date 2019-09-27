@@ -22,7 +22,7 @@ failed_tracts_lows=[];
 config = loadjson('config.json');
 
 if ~isfield(config,'ad') && ~isfield(config,'icvf')
-    display('No input initialized. Please specify input');
+    display('Please specify either tensor or noddi input (or both). You are trying to run this app with neither of them.');
     exit
 end
 
