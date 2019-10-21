@@ -1,5 +1,5 @@
 function [FA_profile, SuperFiber, fgResampled] = ...
-    dtiFiberGroup_FA_Average(fg, dt, numberOfNodes)
+    dtiFiberGroup_FA_Average(fg, dt, numberOfNodes,SuperFiber)
 
 % Average FA across the fibers, along the bundle length
 %
@@ -35,8 +35,9 @@ numfibers = size(fg.fibers, 1);
 % This function will resample the fibers to numberOfNodes and will also
 % reorient some fibers, so the notion of "first" and "last" may end up
 % converted. [fg] returned in the line below will be resampled and reoriented.  
-
-[SuperFiber, fgResampled] = dtiComputeSuperFiberRepresentation(fg, [], numberOfNodes);
+if isempty(SuperFiber)
+    [SuperFiber, fg] = dtiComputeSuperFiberRepresentation(fg, [], numberOfNodes);
+end
 
 % Compute gradient of SuperFiber
 grad = gradient(SuperFiber.fibers{1});

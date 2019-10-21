@@ -117,31 +117,31 @@ for ifg = 1:length(fg_classified{1})
     try
         if config.fiberbased == 0
             display 'volume based statistics'
-            fg = fg_classified{ 1 }(ifg);
+            [SuperFiber, fgResampled] = dtiComputeSuperFiberRepresentation(fg_classified{1}(ifg), [], numnodes);
             for jj = 1:length(nii)
-                if length(fg.fibers) < 6
+                if length(fgResampled.fibers) < 6
                     display('too few streamlines. outputting profile of NaNs')
                     nii(jj).mean = NaN(numnodes,1);
                     nii(jj).std = NaN(numnodes,1);
                 else
                     display(sprintf('computing %s',nii(jj).name));
-                    [tract, ~, ~, ~, ~, ~, ~, ~, ~, ~, myValsFgSTD] = dtiComputeDiffusionPropertiesAlongFG_sd( fg, nii(jj).data,[],[],numnodes);
+                    [tract, ~, ~, ~, ~, ~, ~, ~, ~, ~, myValsFgSTD] = dtiComputeDiffusionPropertiesAlongFG_sd( fgResampled, nii(jj).data,[],[],numnodes,[],SuperFiber);
                     nii(jj).mean = tract;
                     nii(jj).std = myValsFgSTD;
                 end
+                clear tract myValsFgSTD
             end
         else
             display 'fiber based statistics'
-            fgTract = fg_classified{ 1 }(ifg);
-            fg = dtiXformFiberCoords(fgTract, inv(nii(2).data.qto_xyz),'img'); % convert fibergroup to the proper space
+            [SuperFiber, fgResampled] = dtiComputeSuperFiberRepresentation(dtiXformFiberCoords(fg_classified{1}(ifg), inv(nii(2).data.qto_xyz),'img'),[], numberOfNodes); % convert fibergroup to the proper space
             for jj = 1:length(nii)
-                if length(fg.fibers) < 6
+                if length(fgResampled.fibers) < 6
                     display('too few streamlines. outputting profile of NaNs')
                     nii(jj).mean = NaN(numnodes,1);
                     nii(jj).std = NaN(numnodes,1);
                 else
                     display(sprintf('computing %s',nii(jj).name));
-                    tract = Compute_FA_AlongFG(fg, nii(jj).data, [], [], numnodes);
+                    tract = Compute_FA_AlongFG(fgResampled, nii(jj).data, [], [], numnodes,SuperFiber);
                     nii(jj).mean = nanmean(tract);
                     nii(jj).std = nanstd(tract);
                 end
@@ -159,71 +159,72 @@ for ifg = 1:length(fg_classified{1})
             T.Properties.VariableUnits{jj} = nii(jj).units;
         end
         
-        fg_filename = strrep(fg.name, ' ', '_');
+        fg_filename = strrep(fgResampled.name, ' ', '_');
         writetable(T, strcat('profiles/', fg_filename, '_profiles.csv'));
 
         if isfield(config,'ad')
             % AD
-            analysisProfiles(nii(1).mean,fg,nii(1).name,'Axial Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(1).units);
+            analysisProfiles(nii(1).mean,fgResampled,nii(1).name,'Axial Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(1).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_ad.png');
-            json.images(numfiles).name = fg.name;
+            json.images(numfiles).name = fgResampled.name;
             json.images(numfiles).desc = strcat('Axial Diffusivity');
             numfiles = numfiles + 1;
             % FA
-            analysisProfiles(nii(2).mean,fg,nii(2).name,'Fractional Anisotropy',[0.00, 1.00],[0 .25 .5 .75],numnodes,nii(2).units);
+            analysisProfiles(nii(2).mean,fgResampled,nii(2).name,'Fractional Anisotropy',[0.00, 1.00],[0 .25 .5 .75],numnodes,nii(2).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_fa.png');
-            json.images(numfiles).name = fg.name;
+            json.images(numfiles).name = fgResampled.name;
             json.images(numfiles).desc = strcat('Fractional Anistropy');
             numfiles = numfiles + 1;
             % MD
-            analysisProfiles(nii(3).mean,fg,nii(3).name,'Mean Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(3).units);
+            analysisProfiles(nii(3).mean,fgResampled,nii(3).name,'Mean Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(3).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_md.png');
-            json.images(numfiles).name = fg.name;
+            json.images(numfiles).name = fgResampled.name;
             json.images(numfiles).desc = strcat('Mean Diffusivity');
             numfiles = numfiles + 1;
             % RD
-            analysisProfiles(nii(4).mean,fg,nii(4).name,'Radial Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(4).units);
+            analysisProfiles(nii(4).mean,fgResampled,nii(4).name,'Radial Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(4).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_rd.png');
-            json.images(numfiles).name = fg.name;
+            json.images(numfiles).name = fgResampled.name;
             json.images(numfiles).desc = strcat('Radial Diffusivity');
             numfiles = numfiles + 1;
         end
         
         if isfield(config,'icvf')
             % ICVF
-            analysisProfiles(nii(end_index-6+1).mean,fg,nii(end_index-6+1).name,'ICVF',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+1).units);
+            analysisProfiles(nii(end_index-6+1).mean,fgResampled,nii(end_index-6+1).name,'ICVF',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+1).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_ICVF.png');
-            json.images(numfiles).name = fg.name;
+            json.images(numfiles).name = fgResampled.name;
             json.images(numfiles).desc = strcat('ICVF');
             numfiles = numfiles + 1;
             % ISOVF
-            analysisProfiles(nii(end_index-6+2).mean,fg,nii(end_index-6+2).name,'ISOVF',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+2).units);
+            analysisProfiles(nii(end_index-6+2).mean,fgResampled,nii(end_index-6+2).name,'ISOVF',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+2).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_ISOVF.png');
-            json.images(numfiles).name = fg.name;
+            json.images(numfiles).name = fgResampled.name;
             json.images(numfiles).desc = strcat('ISOVF');
             numfiles = numfiles + 1;
             % OD
-            analysisProfiles(nii(end_index-6+3).mean,fg,nii(end_index-6+3).name,'OD',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+3).units);
+            analysisProfiles(nii(end_index-6+3).mean,fgResampled,nii(end_index-6+3).name,'OD',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+3).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_OD.png');
-            json.images(numfiles).name = fg.name;
+            json.images(numfiles).name = fgResampled.name;
             json.images(numfiles).desc = strcat('OD');
             numfiles = numfiles + 1;
         end
         
     catch ME
         possible_error=1;
-        failed_tracts = [failed_tracts, fg.name];
+        failed_tracts = [failed_tracts, fgResampled.name];
         
     save('profiles/error_messages.mat','ME');
     end
     
-    if length(fg.fibers) < 6
+    if length(fgResampled.fibers) < 6
         possible_error_lows=1;
-        failed_tracts_lows = [failed_tracts, fg.name];
+        failed_tracts_lows = [failed_tracts, fgResampled.name];
         save('profiles/error_messages_lows.mat','failed_tracts_lows')
     end
     
     clf
+    clear fgResampled SuperFiber;
 end
 
 fileID = fopen('numfiles.txt','w');

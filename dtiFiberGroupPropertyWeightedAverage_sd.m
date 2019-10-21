@@ -1,5 +1,5 @@
-function [myValsFgWa, SuperFiber, weightsNormalized, weights, fgResampled, myValsFgSTD] = ...
-    dtiFiberGroupPropertyWeightedAverage_sd(fg, dt, numberOfNodes, valNames, p)
+function [myValsFgWa, SuperFiber, weightsNormalized, weights, fg, myValsFgSTD] = ...
+    dtiFiberGroupPropertyWeightedAverage_sd(fg, dt, numberOfNodes, valNames, p,SuperFiber)
 % Average eigenvalues across the fibers, along the bundle length
 %
 % [eigValFG,SuperFiber, weightsNormalized, weights, fgResampled] = ...
@@ -55,7 +55,7 @@ function [myValsFgWa, SuperFiber, weightsNormalized, weights, fgResampled, myVal
 %
 % Elena (c) Stanford VISTASOFT Team, 2009
 
-if notDefined('fg'), error('Fiber group required'); end
+% if notDefined('fg'), error('Fiber group required'); end
 if ~exist('valNames', 'var') || isempty(valNames)
     valNames = 'eigvals';
 end
@@ -73,11 +73,13 @@ numfibers = size(fg.fibers, 1);
 % This function will resample the fibers to numberOfNodes and will also
 % reorient some fibers, so the notion of "first" and "last" may end up
 % converted. [fg] returned in the line below will be resampled and reoriented.
-[SuperFiber, fgResampled] = dtiComputeSuperFiberRepresentation(fg, [], numberOfNodes);
+if isempty(SuperFiber)
+    [SuperFiber, fg] = dtiComputeSuperFiberRepresentation(fg, [], numberOfNodes);
+end
 
 % Each fiber is represented by numberOfNodes, so can easily loop over 1st
 % node, 2nd, etc...
-fc = double(horzcat(fgResampled.fibers{:}))';
+fc = double(horzcat(fg.fibers{:}))';
 
 
 % Compute properties if you the argument image is passed into valNames then
@@ -89,7 +91,7 @@ else
     [myVals1,myVals2, myVals3, myVals4, myVals5, myVals6, myVals7] = ...
         dtiGetValFromTensors(dt.dt6, fc, inv(dt.xformToAcpc), valNames);
     myVals = [myVals1(:) myVals2(:) myVals3(:) myVals4(:) myVals5(:) myVals6(:) myVals7(:)];
-end;
+end
 
 % Preallocate weights when you understand its size
 % weights = zeros(numberOfNodes,???)

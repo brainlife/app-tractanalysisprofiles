@@ -1,5 +1,5 @@
 function [FA_profile, SuperFiber, fgClipped, fgResampled] = ...
-    Compute_FA_AlongFG(fg, dt, roi1, roi2, numberOfNodes)
+    Compute_FA_AlongFG(fg, dt, roi1, roi2, numberOfNodes,SuperFiber)
 
 %   Compute a weighted average of a variable (FA) in a track segment
 %
