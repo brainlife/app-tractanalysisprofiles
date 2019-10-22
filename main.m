@@ -135,7 +135,7 @@ for ifg = 1:length(fg_classified)
     try
         if config.fiberbased == 0
             display 'volume based statistics'
-            fg = fg_classified{ ifg };
+            [SuperFiber, fgResampled] = dtiComputeSuperFiberRepresentation(fg_classified{ifg}, [], numnodes);
             for jj = 1:length(nii)
                 if length(fg_classified{ifg}.fibers) < 6
                     display('too few streamlines. outputting profile of NaNs')
@@ -143,15 +143,15 @@ for ifg = 1:length(fg_classified)
                     nii(jj).std = NaN(numnodes,1);
                 else
                     display(sprintf('computing %s',nii(jj).name));
-                    [tract, ~, ~, ~, ~, ~, ~, ~, ~, ~, myValsFgSTD] = dtiComputeDiffusionPropertiesAlongFG_sd( fg, nii(jj).data,[],[],numnodes);
+                    [tract, ~, ~, ~, ~, ~, ~, ~, ~, ~, myValsFgSTD] = dtiComputeDiffusionPropertiesAlongFG_sd( fgResampled, nii(jj).data,[],[],numnodes,SuperFiber);
                     nii(jj).mean = tract;
                     nii(jj).std = myValsFgSTD;
                 end
+                clear tract myValsFgSTD;
             end
         else
             display 'fiber based statistics'
-            fgTract = fg_classified{ ifg };
-            fg = dtiXformFiberCoords(fgTract, inv(nii(2).data.qto_xyz),'img'); % convert fibergroup to the proper space
+            [SuperFiber, fgResampled] = dtiComputeSuperFiberRepresentation(dtiXformFiberCoords(fg_classified{ifg}, inv(nii(2).data.qto_xyz),'img'),[], numnodes); % convert fibergroup to the proper space
             for jj = 1:length(nii)
                 if length(fg_classified{ifg}.fibers) < 6
                     display('too few streamlines. outputting profile of NaNs')
@@ -159,10 +159,11 @@ for ifg = 1:length(fg_classified)
                     nii(jj).std = NaN(numnodes,1);
                 else
                     display(sprintf('computing %s',nii(jj).name));
-                    tract = Compute_FA_AlongFG(fg, nii(jj).data, [], [], numnodes);
+                    tract = Compute_FA_AlongFG(fg, nii(jj).data, [], [], numnodes,SuperFiber);
                     nii(jj).mean = mean(tract,'omitnan');
                     nii(jj).std = std(tract,'omitnan');
                 end
+                clear tract myValsFgSTD;
             end
         end
         
@@ -225,19 +226,19 @@ for ifg = 1:length(fg_classified)
         if isfield(config,'icvf')
             % ICVF
             analysisProfiles(nii(end_index-6+1).mean,fg,nii(end_index-6+1).name,'ICVF',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+1).units);
-            json.images(numfiles).filename = strcat('images/',fg_filename,'_ICVF.png');
+            json.images(numfiles).filename = strcat('images/',fg_filename,'_icvf.png');
             json.images(numfiles).name = fg.name;
             json.images(numfiles).desc = strcat('ICVF');
             numfiles = numfiles + 1;
             % ISOVF
             analysisProfiles(nii(end_index-6+2).mean,fg,nii(end_index-6+2).name,'ISOVF',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+2).units);
-            json.images(numfiles).filename = strcat('images/',fg_filename,'_ISOVF.png');
+            json.images(numfiles).filename = strcat('images/',fg_filename,'_isovf.png');
             json.images(numfiles).name = fg.name;
             json.images(numfiles).desc = strcat('ISOVF');
             numfiles = numfiles + 1;
             % OD
             analysisProfiles(nii(end_index-6+3).mean,fg,nii(end_index-6+3).name,'OD',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+3).units);
-            json.images(numfiles).filename = strcat('images/',fg_filename,'_OD.png');
+            json.images(numfiles).filename = strcat('images/',fg_filename,'_od.png');
             json.images(numfiles).name = fg.name;
             json.images(numfiles).desc = strcat('OD');
             numfiles = numfiles + 1;
@@ -257,6 +258,7 @@ for ifg = 1:length(fg_classified)
     end
     
     clf
+    clear fgResampled SuperFiber;
 end
 
 fileID = fopen('numfiles.txt','w');

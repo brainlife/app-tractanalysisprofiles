@@ -1,5 +1,5 @@
-function [fa, md, rd, ad, cl, SuperFiber, fgClipped, cp, cs, fgResampled, myValsFgSTD] = ...
-    dtiComputeDiffusionPropertiesAlongFG(fg, dt, roi1, roi2, numberOfNodes, dFallOff)
+function [fa, md, rd, ad, cl, SuperFiber, fgClipped, cp, cs, fg, myValsFgSTD] = ...
+    dtiComputeDiffusionPropertiesAlongFG_sd(fg, dt, roi1, roi2, numberOfNodes, dFallOff,SuperFiber)
 %   Compute a weighted average of a variable (FA/MD/RD/AD) in a track segment
 %
 %  [fa, md, rd, ad, cl, SuperFiber,fgClipped, cp, cs, fgResampled] = ...
@@ -61,12 +61,12 @@ end
 if ~notDefined('roi1') && ~notDefined('roi2')
     fgClipped = dtiClipFiberGroupToROIs(fg,roi1,roi2);
     % compute weighted averages for eigenvalues along clipped fiber tract
-    [myValsFgWa, SuperFiber, ~, ~, fgResampled, myValsFgSTD] = ...
+    [myValsFgWa, ~, ~, ~, ~, myValsFgSTD] = ...
         dtiFiberGroupPropertyWeightedAverage_sd(fgClipped, dt, numberOfNodes, valname, dFallOff);
 else
     % compute weighted averages for eigenvalues along full fiber tract
-    [myValsFgWa, SuperFiber, ~, ~, fgResampled, myValsFgSTD] = ...
-        dtiFiberGroupPropertyWeightedAverage_sd(fg, dt, numberOfNodes, valname, dFallOff);
+    [myValsFgWa, ~, ~, ~, ~, myValsFgSTD] = ...
+        dtiFiberGroupPropertyWeightedAverage_sd(fg, dt, numberOfNodes, valname, dFallOff, SuperFiber);
     % There is no clipped fiber group
     fgClipped = nan;
 end
