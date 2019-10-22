@@ -133,7 +133,7 @@ for ifg = 1:length(fg_classified{1})
             end
         else
             display 'fiber based statistics'
-            [SuperFiber, fgResampled] = dtiComputeSuperFiberRepresentation(dtiXformFiberCoords(fg_classified{1}(ifg), inv(nii(2).data.qto_xyz),'img'),[], numberOfNodes); % convert fibergroup to the proper space
+            [SuperFiber, fgResampled] = dtiComputeSuperFiberRepresentation(dtiXformFiberCoords(fg_classified{1}(ifg), inv(nii(2).data.qto_xyz),'img'),[], numnodes); % convert fibergroup to the proper space
             for jj = 1:length(nii)
                 if length(fgResampled.fibers) < 6
                     display('too few streamlines. outputting profile of NaNs')
@@ -145,6 +145,7 @@ for ifg = 1:length(fg_classified{1})
                     nii(jj).mean = nanmean(tract);
                     nii(jj).std = nanstd(tract);
                 end
+                clear tract myValsFgSTD
             end
         end
         
