@@ -178,10 +178,10 @@ for ifg = 1:length(fg_classified)
             T.Properties.VariableUnits{jj} = nii(jj).units;
         end
         
-        fg_filename = strrep(fg.name, ' ', '_');
+        fg_filename = strrep(fgResampled.name, ' ', '_');
         writetable(T, strcat('profiles/', fg_filename, '_profiles.csv'));
         
-        tractname = strrep(fg.name,' ','');
+        tractname = strrep(fgResampled.name,' ','');
         for jj = 1:length(nii)
             % think of a better heuristic for this. right now, if a measure
             % ends with an 'e', it's just going to be skipped. reason this
@@ -198,62 +198,62 @@ for ifg = 1:length(fg_classified)
         
         if isfield(config,'ad')
             % AD
-            analysisProfiles(nii(1).mean,fg,nii(1).name,'Axial Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(1).units);
+            analysisProfiles(nii(1).mean,fgResampled,nii(1).name,'Axial Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(1).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_ad.png');
-            json.images(numfiles).name = fg.name;
+            json.images(numfiles).name = fgResampled.name;
             json.images(numfiles).desc = strcat('Axial Diffusivity');
             numfiles = numfiles + 1;
             % FA
-            analysisProfiles(nii(2).mean,fg,nii(2).name,'Fractional Anisotropy',[0.00, 1.00],[0 .25 .5 .75],numnodes,nii(2).units);
+            analysisProfiles(nii(2).mean,fgResampled,nii(2).name,'Fractional Anisotropy',[0.00, 1.00],[0 .25 .5 .75],numnodes,nii(2).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_fa.png');
-            json.images(numfiles).name = fg.name;
+            json.images(numfiles).name = fgResampled.name;
             json.images(numfiles).desc = strcat('Fractional Anistropy');
             numfiles = numfiles + 1;
             % MD
-            analysisProfiles(nii(3).mean,fg,nii(3).name,'Mean Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(3).units);
+            analysisProfiles(nii(3).mean,fgResampled,nii(3).name,'Mean Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(3).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_md.png');
-            json.images(numfiles).name = fg.name;
+            json.images(numfiles).name = fgResampled.name;
             json.images(numfiles).desc = strcat('Mean Diffusivity');
             numfiles = numfiles + 1;
             % RD
-            analysisProfiles(nii(4).mean,fg,nii(4).name,'Radial Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(4).units);
+            analysisProfiles(nii(4).mean,fgResampled,nii(4).name,'Radial Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(4).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_rd.png');
-            json.images(numfiles).name = fg.name;
+            json.images(numfiles).name = fgResampled.name;
             json.images(numfiles).desc = strcat('Radial Diffusivity');
             numfiles = numfiles + 1;
         end
         
         if isfield(config,'icvf')
             % ICVF
-            analysisProfiles(nii(end_index-6+1).mean,fg,nii(end_index-6+1).name,'ICVF',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+1).units);
+            analysisProfiles(nii(end_index-6+1).mean,fgResampled,nii(end_index-6+1).name,'ICVF',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+1).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_icvf.png');
-            json.images(numfiles).name = fg.name;
+            json.images(numfiles).name = fgResampled.name;
             json.images(numfiles).desc = strcat('ICVF');
             numfiles = numfiles + 1;
             % ISOVF
-            analysisProfiles(nii(end_index-6+2).mean,fg,nii(end_index-6+2).name,'ISOVF',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+2).units);
+            analysisProfiles(nii(end_index-6+2).mean,fgResampled,nii(end_index-6+2).name,'ISOVF',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+2).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_isovf.png');
-            json.images(numfiles).name = fg.name;
+            json.images(numfiles).name = fgResampled.name;
             json.images(numfiles).desc = strcat('ISOVF');
             numfiles = numfiles + 1;
             % OD
-            analysisProfiles(nii(end_index-6+3).mean,fg,nii(end_index-6+3).name,'OD',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+3).units);
+            analysisProfiles(nii(end_index-6+3).mean,fgResampled,nii(end_index-6+3).name,'OD',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+3).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_od.png');
-            json.images(numfiles).name = fg.name;
+            json.images(numfiles).name = fgResampled.name;
             json.images(numfiles).desc = strcat('OD');
             numfiles = numfiles + 1;
         end
         
     catch ME
         possible_error=1;
-        failed_tracts = [failed_tracts, fg.name];
+        failed_tracts = [failed_tracts, fgResampled.name];
         
     save('profiles/error_messages.mat','ME');
     end
     
     if length(fg_classified{ifg}.fibers) < 6
         possible_error_lows=1;
-        failed_tracts_lows = [failed_tracts, fg.name];
+        failed_tracts_lows = [failed_tracts, fgResampled.name];
         save('profiles/error_messages_lows.mat','failed_tracts_lows')
     end
     
