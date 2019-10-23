@@ -143,7 +143,7 @@ for ifg = 1:length(fg_classified)
                     nii(jj).std = NaN(numnodes,1);
                 else
                     display(sprintf('computing %s',nii(jj).name));
-                    [tract, ~, ~, ~, ~, ~, ~, ~, ~, ~, myValsFgSTD] = dtiComputeDiffusionPropertiesAlongFG_sd( fgResampled, nii(jj).data,[],[],numnodes,SuperFiber);
+                    [tract, ~, ~, ~, ~, ~, ~, ~, ~, ~, myValsFgSTD] = dtiComputeDiffusionPropertiesAlongFG_sd(fgResampled, nii(jj).data,[],[],numnodes,[],SuperFiber);
                     nii(jj).mean = tract;
                     nii(jj).std = myValsFgSTD;
                 end

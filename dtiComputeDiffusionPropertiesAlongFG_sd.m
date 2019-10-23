@@ -62,7 +62,7 @@ if ~notDefined('roi1') && ~notDefined('roi2')
     fgClipped = dtiClipFiberGroupToROIs(fg,roi1,roi2);
     % compute weighted averages for eigenvalues along clipped fiber tract
     [myValsFgWa, ~, ~, ~, ~, myValsFgSTD] = ...
-        dtiFiberGroupPropertyWeightedAverage_sd(fgClipped, dt, numberOfNodes, valname, dFallOff);
+        dtiFiberGroupPropertyWeightedAverage_sd(fgClipped, dt, numberOfNodes, valname, dFallOff,SuperFiber);
 else
     % compute weighted averages for eigenvalues along full fiber tract
     [myValsFgWa, ~, ~, ~, ~, myValsFgSTD] = ...
