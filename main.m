@@ -1,13 +1,13 @@
 function [] = main()
 
-% if ~isdeployed
-%     disp('loading paths for IUHPC')
-%     addpath(genpath('/N/u/brlife/git/vistasoft'))
-%     addpath(genpath('/N/soft/mason/SPM/spm8'))
-%     addpath(genpath('/N/u/brlife/git/jsonlab'))
-%     addpath(genpath('/N/soft/rhel7/mrtrix/3.0/mrtrix3/matlab'))
-%     addpath(genpath('/N/u/brlife/git/wma_tools'))
-% end
+if ~isdeployed
+    disp('loading paths for IUHPC')
+    addpath(genpath('/N/u/brlife/git/vistasoft'))
+    addpath(genpath('/N/soft/mason/SPM/spm8'))
+    addpath(genpath('/N/u/brlife/git/jsonlab'))
+    addpath(genpath('/N/soft/rhel7/mrtrix/3.0/mrtrix3/matlab'))
+    addpath(genpath('/N/u/brlife/git/wma_tools'))
+end
 
 % make directories and set up variables
 mkdir('images');
