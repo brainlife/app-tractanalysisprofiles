@@ -7,6 +7,7 @@ singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/mai
 
 count=$(ls images/*.png | wc -l)
 NUMFILES=`cat numfiles.txt`
+cp product.json ./tractprofile/
 if [ "$count" !=  "$NUMFILES" ];
 then
 	echo "not all output generated"
