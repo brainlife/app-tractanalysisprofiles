@@ -178,7 +178,7 @@ for ifg = 1:length(fg_classified)
             T.Properties.VariableUnits{jj} = nii(jj).units;
         end
         
-        fg_filename = strrep(strrep(fgResampled.name,'.','_'), ' ', '_');
+        fg_filename = strrep(strrep(fgResampled.name,'.','_'), ' ', '');
         writetable(T, strcat('profiles/', fg_filename, '_profiles.csv'));
         
         for jj = 1:length(nii)
