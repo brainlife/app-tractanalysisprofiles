@@ -32,7 +32,7 @@ end
 load(fullfile(config.afq));
 numnodes = config.numnodes;
 wbFG = wma_loadTck(config.tck);
-fg_classified = bsc_makeFGsFromClassification_v4(classification, wbFG);
+fg_classified = bsc_makeFGsFromClassification_v4_bradEdit(classification, wbFG);
 
 
 
