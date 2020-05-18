@@ -42,16 +42,16 @@ You can submit this App online at [https://doi.org/10.25663/brainlife.app.185](h
 ```json 
 {
    "afq":    "testdata/wmc/classification.mat",
-    "fa":    "testdata/tensor/ifa.nii.gz",
-    "md":    "testdata/tensor/md.nii.gz",
-    "rd":    "tesdata/tensor/rd.nii.gz",
-    "ad":    "tesdata/tensor/ad.nii.gz",
-    "icvf":    "testdata/noddi/icvf.nii.gz",
-    "isovf":    "testdata/noddi/isovf.nii.gz",
-    "od":    "tesdata/noddi/od.nii.gz",
-    "tck":    "testdata/track/track.tck",
-    "fiberbased":    false
-,    "numnodes":    200
+   "fa":    "testdata/tensor/ifa.nii.gz",
+   "md":    "testdata/tensor/md.nii.gz",
+   "rd":    "tesdata/tensor/rd.nii.gz",
+   "ad":    "tesdata/tensor/ad.nii.gz",
+   "icvf":    "testdata/noddi/icvf.nii.gz",
+   "isovf":    "testdata/noddi/isovf.nii.gz",
+   "od":    "tesdata/noddi/od.nii.gz",
+   "tck":    "testdata/track/track.tck",
+   "fiberbased":    false
+   "numnodes":    200
 } 
 ``` 
 
