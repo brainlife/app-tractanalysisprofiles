@@ -58,11 +58,11 @@ else
     end_index = 0;
 end
 
-if isfield(config,'icvf')
-    icvf = dir(config.icvf);
+if isfield(config,'ndi')
+    ndi = dir(config.ndi);
     isovf = dir(config.isovf);
-    od = dir(config.od);
-    noddis = [icvf isovf od];
+    odi = dir(config.odi);
+    noddis = [ndi isovf odi];
 end
 
 % Set data structures
@@ -94,7 +94,7 @@ if isfield(config,'ad')
     end_index = length(nii);
 end
 
-if isfield(config,'icvf')
+if isfield(config,'ndi')
     for ii = 1:length(noddis)
         nii(end_index+ii).name = char(extractBefore(noddis(ii).name,strlength(noddis(ii).name)-6));
         nii(end_index+ii).data = niftiRead(fullfile(noddis(ii).folder,noddis(ii).name));
@@ -222,12 +222,12 @@ for ifg = 1:length(fg_classified)
             numfiles = numfiles + 1;
         end
         
-        if isfield(config,'icvf')
+        if isfield(config,'ndi')
             % ICVF
-            analysisProfiles(nii(end_index-6+1).mean,fgResampled,nii(end_index-6+1).name,'ICVF',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+1).units);
-            json.images(numfiles).filename = strcat('images/',fg_filename,'_icvf.png');
+            analysisProfiles(nii(end_index-6+1).mean,fgResampled,nii(end_index-6+1).name,'NDI',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+1).units);
+            json.images(numfiles).filename = strcat('images/',fg_filename,'_ndi.png');
             json.images(numfiles).name = fg_filename;
-            json.images(numfiles).desc = strcat('ICVF');
+            json.images(numfiles).desc = strcat('NDI');
             numfiles = numfiles + 1;
             % ISOVF
             analysisProfiles(nii(end_index-6+2).mean,fgResampled,nii(end_index-6+2).name,'ISOVF',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+2).units);
@@ -236,10 +236,10 @@ for ifg = 1:length(fg_classified)
             json.images(numfiles).desc = strcat('ISOVF');
             numfiles = numfiles + 1;
             % OD
-            analysisProfiles(nii(end_index-6+3).mean,fgResampled,nii(end_index-6+3).name,'OD',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+3).units);
-            json.images(numfiles).filename = strcat('images/',fg_filename,'_od.png');
+            analysisProfiles(nii(end_index-6+3).mean,fgResampled,nii(end_index-6+3).name,'ODI',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+3).units);
+            json.images(numfiles).filename = strcat('images/',fg_filename,'_odi.png');
             json.images(numfiles).name = fg_filename;
-            json.images(numfiles).desc = strcat('OD');
+            json.images(numfiles).desc = strcat('ODI');
             numfiles = numfiles + 1;
         end
         
