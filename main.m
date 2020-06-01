@@ -21,7 +21,7 @@ failed_tracts_lows=[];
 % load config.json
 config = loadjson('config.json');
 
-if ~isfield(config,'ad') && ~isfield(config,'icvf')
+if ~isfield(config,'ad') && ~isfield(config,'ndi')
     display('Please specify either tensor or noddi input (or both). You are trying to run this app with neither of them.');
     exit
 end
