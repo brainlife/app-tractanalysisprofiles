@@ -6,7 +6,7 @@ if ~isdeployed
     addpath(genpath('/N/soft/mason/SPM/spm8'))
     addpath(genpath('/N/u/brlife/git/jsonlab'))
     addpath(genpath('/N/soft/rhel7/mrtrix/3.0/mrtrix3/matlab'))
-    addpath(genpath('/N/u/brlife/git/wma_tools'))
+    %addpath(genpath('/N/u/brlife/git/wma_tools'))
 end
 
 % make directories and set up variables
@@ -32,7 +32,7 @@ end
 load(fullfile(config.afq));
 numnodes = config.numnodes;
 wbFG = wma_loadTck(config.tck);
-fg_classified = bsc_makeFGsFromClassification_v4_bradEdit(classification, wbFG);
+fg_classified = bsc_makeFGsFromClassification_v5(classification, wbFG);
 
 
 
@@ -178,6 +178,15 @@ for ifg = 1:length(fg_classified)
             T.Properties.VariableUnits{jj} = nii(jj).units;
         end
         
+        % set information for superfiber coordinates for QA and informative
+        % figures
+        T.x_coords = SuperFiber.fibers{:}(1,:)';
+        T.Properties.VariableUnits{length(T.Properties.VariableNames)} = 'mm';
+        T.y_coords = SuperFiber.fibers{:}(2,:)';
+        T.Properties.VariableUnits{length(T.Properties.VariableNames)} = 'mm';
+        T.z_coords = SuperFiber.fibers{:}(3,:)';
+        T.Properties.VariableUnits{length(T.Properties.VariableNames)} = 'mm';
+        
         fg_filename = strrep(strrep(fgResampled.name,'.','_'), ' ', '');
         writetable(T, strcat('profiles/', fg_filename, '_profiles.csv'));
         
@@ -195,6 +204,11 @@ for ifg = 1:length(fg_classified)
             end
         end
         
+        % add coords to structure for product.json
+        tractprofiles.(fg_filename).x_coords = SuperFiber.fibers{:}(1,:);
+        tractprofiles.(fg_filename).y_coords = SuperFiber.fibers{:}(2,:);
+        tractprofiles.(fg_filename).z_coords = SuperFiber.fibers{:}(3,:);
+
         if isfield(config,'ad')
             % AD
             analysisProfiles(nii(1).mean,fgResampled,nii(1).name,'Axial Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(1).units);
