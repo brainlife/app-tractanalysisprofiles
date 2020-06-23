@@ -71,7 +71,7 @@ if isfield(config,'ad')
         nii(ii).name = char(extractBefore(tensors(ii).name,strlength(tensors(ii).name)-6));
         nii(ii).data = niftiRead(fullfile(tensors(ii).folder,tensors(ii).name));
         nii(ii).non_zero_index = find(nii(ii).data.data(:,:,:) ~= 0);
-        if max(nii(ii).data.data(nii(ii).non_zero_index)) < 0.01 && ~strcmp(nii(ii).name,'fa')
+        if median(nii(ii).data.data(nii(ii).non_zero_index)) < 0.01 && ~strcmp(nii(ii).name,'fa')
             nii(ii).data.data = nii(ii).data.data * 1000;
         end
         nii(ii).data_inv = 1./nii(ii).data.data;
