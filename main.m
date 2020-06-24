@@ -139,8 +139,11 @@ for ifg = 1:length(fg_classified)
             for jj = 1:length(nii)
                 if length(fg_classified{ifg}.fibers) < 6
                     display('too few streamlines. outputting profile of NaNs')
-                    nii(jj).mean = NaN(numnodes,1);
-                    nii(jj).std = NaN(numnodes,1);
+					% 1.9: ignore warning and output profiles
+                    %nii(jj).mean = NaN(numnodes,1);
+					nii(jj).mean = tract;
+					nii(jj).std = myValsFgSTD;
+                    %nii(jj).std = NaN(numnodes,1);
                 else
                     display(sprintf('computing %s',nii(jj).name));
                     [tract, ~, ~, ~, ~, ~, ~, ~, ~, ~, myValsFgSTD] = dtiComputeDiffusionPropertiesAlongFG_sd(fgResampled, nii(jj).data,[],[],numnodes,[],SuperFiber);
