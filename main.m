@@ -65,6 +65,18 @@ if isfield(config,'ndi')
     noddis = [ndi isovf odi];
 end
 
+if isfield(config,'dki_fa'):
+	dki_fa = dir(config.dki_fa);
+	dki_ga = dir(config.dki_ga);
+	dki_md = dir(config.dki_md);
+	dki_ad = dir(config.dki_ad);
+	dki_rd = dir(config.dki_rd);
+	dki_mk = dir(config.dki_mk);
+	dki_ak = dir(config.dki_ak);
+	dki_rk = dir(config.dki_rk);
+	dki = [dki_fa dki_ga dki_md dki_ad dki_rd dki_mk dki_ak dki_rk];
+end
+
 % Set data structures
 if isfield(config,'ad')
     for ii = 1:length(tensors)
@@ -109,6 +121,30 @@ if isfield(config,'ndi')
         nii(end_index+ii).data_inv = nii(end_index-3+ii).data_inv;
         nii(end_index+ii).data.data = nii(end_index+ii).data_inv;
         nii(end_index+ii).units = 'unitless';
+    end
+    end_index = length(nii);
+end
+
+if isfield(config,'dki_fa')
+    for ii = 1:length(dki)
+        nii(end_index+ii).name = char(extractBefore(dki(ii).name,strlength(dki(ii).name)-6));
+        nii(end_index+ii).data = niftiRead(fullfile(dki(ii).folder,dki(ii).name));
+        nii(end_index+ii).data_inv = 1./nii(ii).data.data;
+        nii(end_index+ii).data_inv(~isfinite(nii(end_index+ii).data_inv))=0;
+        nii(end_index+ii).units = 'unitless';
+    end
+    end_index = length(nii);
+    for ii = 1:length(dki)
+        nii(end_index+ii).name = strcat(char(extractBefore(dki(ii).name,strlength(dki(ii).name)-6)),'_inverse');
+        nii(end_index+ii).data = nii(end_index-8+ii).data;
+        nii(end_index+ii).data_inv = nii(end_index-8+ii).data_inv;
+        nii(end_index+ii).data.data = nii(end_index+ii).data_inv;
+        nii(end_index+ii).units = 'unitless';
+        if nii(end_index+ii).name == 'fa_inverse'
+            nii(end_index+ii).units = 'unitless';
+        else
+            nii(end_index+ii).units = 'msec/um^2';
+        end
     end
     end_index = length(nii);
 end
@@ -257,6 +293,26 @@ for ifg = 1:length(fg_classified)
             numfiles = numfiles + 1;
         end
         
+        if isfield(config,'dki_fa')
+            % dki_fa
+            analysisProfiles(nii(end_index-16+1).mean,fgResampled,nii(end_index-6+1).name,'DKI_FA',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-16+1).units);
+            json.images(numfiles).filename = strcat('images/',fg_filename,'_dki_fa.png');
+            json.images(numfiles).name = fg_filename;
+            json.images(numfiles).desc = strcat('DKI_FA');
+            numfiles = numfiles + 1;
+            % dki_ga
+            analysisProfiles(nii(end_index-16+2).mean,fgResampled,nii(end_index-6+2).name,'dki_ga',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+2).units);
+            json.images(numfiles).filename = strcat('images/',fg_filename,'_dki_ga.png');
+            json.images(numfiles).name = fg_filename;
+            json.images(numfiles).desc = strcat('DKI_GA');
+            numfiles = numfiles + 1;
+            % dki_md
+            analysisProfiles(nii(end_index-16+4).mean,fgResampled,nii(end_index-6+3).name,'dki_md',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+3).units);
+            json.images(numfiles).filename = strcat('images/',fg_filename,'_odi.png');
+            json.images(numfiles).name = fg_filename;
+            json.images(numfiles).desc = strcat('ODI');
+            numfiles = numfiles + 1;
+        end
     catch ME
         possible_error=1;
         failed_tracts = [failed_tracts, fg_filename];
