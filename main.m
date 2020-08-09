@@ -67,7 +67,7 @@ scale_index = [scale_index ["false","false","false"]];
 end
 
 %%%% load nifti data into singular structure
-nii = build_nifti_data(measures,scale_value,value_units,inverse_units);
+nii = build_nifti_data(measures,scale_index,value_units,inverse_units);
 
 %%%% set up array for product.json
 for ii = 1:length(classification.names)
