@@ -36,6 +36,8 @@ fg_classified = bsc_makeFGsFromClassification_v5(classification, wbFG);
 measures = {};
 end_index = [];
 scale_index = [];
+value_units = [];
+inverse_units = [];
 
 % dti
 if isfield(config,tensor(1))
@@ -44,7 +46,9 @@ if isfield(config,tensor(1))
     end
     end_index = [length(tensor)];
     scale_index = ["true","false","true","true"];
-    
+    value_units = ["um^2/msec","unitless","um^2/msec","um^2/msec"];
+    inverse_units = ["msec/um^2","unitless","msec/um^2","um^2/msec"];
+
     % dki
     if isfield(config,dki(1))
         for kk = 1:length(dki)
@@ -52,6 +56,8 @@ if isfield(config,tensor(1))
         end
         end_index = [end_index end_index+length(dki)];
         scale_index = [scale_index ["false","false","false","false"]];
+        value_units = [value_units ["unitless","um^2/msec","um^2/msec","um^2/msec"]];
+    	inverse_units = [inverse_units ["unitless","msec/um^2","msec/um^2","um^2/msec"]];
     end
 else
     end_index = 0;
@@ -64,6 +70,8 @@ if isfield(config,noddi(1))
     end
 end_index = [end_index end_index(end)+length(noddi)];
 scale_index = [scale_index ["false","false","false"]];
+value_units = [value_units ["unitless","unitless","unitless"]];
+inverse_units = [value_units ["unitless","unitless","unitless"]];
 end
 
 %%%% load nifti data into singular structure
