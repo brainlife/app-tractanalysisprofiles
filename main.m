@@ -77,20 +77,6 @@ end
 %%%% load nifti data into singular structure
 nii = build_nifti_data(measures,scale_index,value_units,inverse_units);
 
-%%%% set up array for product.json
-for ii = 1:length(classification.names)
-    tractname = strrep(strrep(classification.names{ii},'.','_'),' ','');
-    tractprofiles.(tractname) = struct();
-    for jj = 1:length(nii)
-        if ~strcmp(nii(jj).name(end),'e')
-            measurename = nii(jj).name;
-            tractprofiles.(tractname).(measurename).profile = [];
-            tractprofiles.(tractname).(measurename).mean = [];
-            tractprofiles.(tractname).(measurename).sd = [];
-        end
-    end
-end
-
 %%%% generate analysis profiles
 tractAnalysisProfiles(classification,nii,config,numnodes,fg_classified)
 
