@@ -85,8 +85,9 @@ fc = double(horzcat(fg.fibers{:}))';
 % Compute properties if you the argument image is passed into valNames then
 % we will compuute a weighted average of values from that image.  Otherwise
 % the dt6 file will be used
+
 if strcmp(valNames,'image');
-    [myVals] = dtiGetValFromImage(dt.data, fc, dt.qto_ijk);
+    [myVals] = dtiGetValFromImage(dt.data, fc, dt.sto_ijk);
 else
     [myVals1,myVals2, myVals3, myVals4, myVals5, myVals6, myVals7] = ...
         dtiGetValFromTensors(dt.dt6, fc, inv(dt.xformToAcpc), valNames);

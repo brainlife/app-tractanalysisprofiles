@@ -58,6 +58,7 @@ else
 end
 % If two rois are passed in clip the fiber group to the portion that spans
 % between the ROIs
+
 if ~notDefined('roi1') && ~notDefined('roi2')
     fgClipped = dtiClipFiberGroupToROIs(fg,roi1,roi2);
     % compute weighted averages for eigenvalues along clipped fiber tract

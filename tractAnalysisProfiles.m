@@ -1,4 +1,4 @@
-function [] = tractAnalysisProfiles(classification,nii,config)
+function [] = tractAnalysisProfiles(classification,nii,config,numnodes,fg_classified)
 
 numfiles = 1;
 possible_error=0;
@@ -24,6 +24,7 @@ end
 tract_profiles = cell(numnodes, length(nii));
 
 for ifg = 1:length(fg_classified)
+    fg_filename = strrep(strrep(fg_classified{ifg}.name,'.','_'), ' ', '');
     try
         if config.fiberbased == 0
             display 'volume based statistics'
@@ -43,7 +44,7 @@ for ifg = 1:length(fg_classified)
             end
         else
             display 'fiber based statistics'
-            [SuperFiber, fgResampled] = dtiComputeSuperFiberRepresentation(dtiXformFiberCoords(fg_classified{ifg}, inv(nii(2).data.qto_xyz),'img'),[], numnodes); % convert fibergroup to the proper space
+            [SuperFiber, fgResampled] = dtiComputeSuperFiberRepresentation(dtiXformFiberCoords(fg_classified{ifg}, inv(nii(jj).data.qto_xyz),'img'),[], numnodes); % convert fibergroup to the proper space
             for jj = 1:length(nii)
                 if length(fg_classified{ifg}.fibers) < 6
                     display('too few streamlines. outputting profile of NaNs')
@@ -64,10 +65,15 @@ for ifg = 1:length(fg_classified)
             tract_profiles(:,jj,2) = num2cell(nii(jj).std);
         end
         
+        jj = 0;
+        tps = {'mean','sd'};
         for jj = 1:length(nii)
-            T(:,jj) = table([tract_profiles(:,jj,1),tract_profiles(:,jj,2)]);
-            T.Properties.VariableNames{jj} = char(nii(jj).name);
-            T.Properties.VariableUnits{jj} = nii(jj).units;
+            for tp = 1:length(tract_profiles(1,jj,:))
+                T(:,(2*jj-2)+tp) = table(tract_profiles(:,jj,tp));
+                T.Properties.VariableNames{(2*jj-2)+tp} = sprintf('%s_%s',char(nii(jj).name),tps{tp});
+                T.Properties.VariableUnits{(2*jj-2)+tp} = sprintf('%s',nii(jj).units);
+                %T.Properties.VariableUnits{jj+1} = sprintf('%s',nii(jj).units);
+            end
         end
         
         % set information for superfiber coordinates for QA and informative
@@ -79,7 +85,6 @@ for ifg = 1:length(fg_classified)
         T.z_coords = SuperFiber.fibers{:}(3,:)';
         T.Properties.VariableUnits{length(T.Properties.VariableNames)} = 'mm';
         
-        fg_filename = strrep(strrep(fgResampled.name,'.','_'), ' ', '');
         writetable(T, strcat('profiles/', fg_filename, '_profiles.csv'));
         
         for jj = 1:length(nii)
@@ -109,46 +114,46 @@ for ifg = 1:length(fg_classified)
             json.images(numfiles).desc = strcat('Axial Diffusivity');
             numfiles = numfiles + 1;
             % FA
-            analysisProfiles(nii(2).mean,fgResampled,nii(2).name,'Fractional Anisotropy',[0.00, 1.00],[0 .25 .5 .75],numnodes,nii(2).units);
+            analysisProfiles(nii(3).mean,fgResampled,nii(3).name,'Fractional Anisotropy',[0.00, 1.00],[0 .25 .5 .75],numnodes,nii(2).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_fa.png');
             json.images(numfiles).name = fg_filename;
             json.images(numfiles).desc = strcat('Fractional Anistropy');
             numfiles = numfiles + 1;
             % MD
-            analysisProfiles(nii(3).mean,fgResampled,nii(3).name,'Mean Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(3).units);
+            analysisProfiles(nii(5).mean,fgResampled,nii(5).name,'Mean Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(3).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_md.png');
             json.images(numfiles).name = fg_filename;
             json.images(numfiles).desc = strcat('Mean Diffusivity');
             numfiles = numfiles + 1;
             % RD
-            analysisProfiles(nii(4).mean,fgResampled,nii(4).name,'Radial Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(4).units);
+            analysisProfiles(nii(7).mean,fgResampled,nii(7).name,'Radial Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(4).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_rd.png');
             json.images(numfiles).name = fg_filename;
             json.images(numfiles).desc = strcat('Radial Diffusivity');
             numfiles = numfiles + 1;
         end
         
-        if isfield(config,'dki')
+        if isfield(config,'ga')
             % ga
-            analysisProfiles(nii(5).mean,fgResampled,nii(5).name,'Geodesic Anisotropy',[0.00, 1.00],[0 .25 5 7.5],numnodes,nii(5).units);
+            analysisProfiles(nii(9).mean,fgResampled,nii(9).name,'Geodesic Anisotropy',[0.00, 1.00],[0 .25 0.5 0.75],numnodes,nii(5).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_ga.png');
             json.images(numfiles).name = fg_filename;
-            json.images(numfiles).desc = strcat('Axial Kurtosis');
+            json.images(numfiles).desc = strcat('Geodesic Anisotropy');
             numfiles = numfiles + 1;
             % ak
-            analysisProfiles(nii(6).mean,fgResampled,nii(6).name,'Axial Kurtosis',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(6).units);
+            analysisProfiles(nii(11).mean,fgResampled,nii(11).name,'Axial Kurtosis',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(6).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_ak.png');
             json.images(numfiles).name = fg_filename;
             json.images(numfiles).desc = strcat('Axial Kurtosis');
             numfiles = numfiles + 1;
             % mk
-            analysisProfiles(nii(7).mean,fgResampled,nii(7).name,'Mean Kurtosis',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(7).units);
+            analysisProfiles(nii(13).mean,fgResampled,nii(13).name,'Mean Kurtosis',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(7).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_mk.png');
             json.images(numfiles).name = fg_filename;
             json.images(numfiles).desc = strcat('Mean Kurtosis');
             numfiles = numfiles + 1;
             % rk
-            analysisProfiles(nii(8).mean,fgResampled,nii(8).name,'Radial Kurtosis',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(8).units);
+            analysisProfiles(nii(15).mean,fgResampled,nii(15).name,'Radial Kurtosis',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(8).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_rk.png');
             json.images(numfiles).name = fg_filename;
             json.images(numfiles).desc = strcat('Radial Kurtosis');
@@ -156,20 +161,20 @@ for ifg = 1:length(fg_classified)
         end
 
         if isfield(config,'ndi')
-            % ICVF
+            % NDI
             analysisProfiles(nii(end_index-6+1).mean,fgResampled,nii(end_index-6+1).name,'NDI',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+1).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_ndi.png');
             json.images(numfiles).name = fg_filename;
             json.images(numfiles).desc = strcat('NDI');
             numfiles = numfiles + 1;
             % ISOVF
-            analysisProfiles(nii(end_index-6+2).mean,fgResampled,nii(end_index-6+2).name,'ISOVF',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+2).units);
+            analysisProfiles(nii(end_index-6+3).mean,fgResampled,nii(end_index-6+3).name,'ISOVF',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+2).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_isovf.png');
             json.images(numfiles).name = fg_filename;
             json.images(numfiles).desc = strcat('ISOVF');
             numfiles = numfiles + 1;
-            % OD
-            analysisProfiles(nii(end_index-6+3).mean,fgResampled,nii(end_index-6+3).name,'ODI',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+3).units);
+            % ODI
+            analysisProfiles(nii(end_index-6+5).mean,fgResampled,nii(end_index-6+5).name,'ODI',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+3).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_odi.png');
             json.images(numfiles).name = fg_filename;
             json.images(numfiles).desc = strcat('ODI');

@@ -6,7 +6,7 @@ if ~isdeployed
     addpath(genpath('/N/soft/mason/SPM/spm8'))
     addpath(genpath('/N/u/brlife/git/jsonlab'))
     addpath(genpath('/N/soft/rhel7/mrtrix/3.0/mrtrix3/matlab'))
-    %addpath(genpath('/N/u/brlife/git/wma_tools'))
+    addpath(genpath('/N/u/brlife/git/wma_tools'))
 end
 
 % make directories and set up variables
@@ -71,7 +71,7 @@ if isfield(config,noddi(1))
 end_index = [end_index end_index(end)+length(noddi)];
 scale_index = [scale_index ["false","false","false"]];
 value_units = [value_units ["unitless","unitless","unitless"]];
-inverse_units = [value_units ["unitless","unitless","unitless"]];
+inverse_units = [inverse_units ["unitless","unitless","unitless"]];
 end
 
 %%%% load nifti data into singular structure
@@ -92,7 +92,7 @@ for ii = 1:length(classification.names)
 end
 
 %%%% generate analysis profiles
-tractAnalysisProfiles(classification,nii,config)
+tractAnalysisProfiles(classification,nii,config,numnodes,fg_classified)
 
 end
 
