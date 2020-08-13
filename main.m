@@ -40,7 +40,7 @@ value_units = [];
 inverse_units = [];
 
 % dti
-if exist(config,tensor(1))
+if exist(config.(tensor{1}))
 	for ii = 1:length(tensor)
 		measures{ii} = dir(config.(tensor{ii}));
     end
@@ -50,7 +50,7 @@ if exist(config,tensor(1))
     inverse_units = ["msec/um^2","unitless","msec/um^2","um^2/msec"];
 
     % dki
-    if exist(config,dki(1))
+    if exist(config.(dki{1}))
         for kk = 1:length(dki)
             measures{ii+kk} = dir(config.(dki{kk}));
         end
