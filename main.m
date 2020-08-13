@@ -40,7 +40,7 @@ value_units = [];
 inverse_units = [];
 
 % dti
-if isfield(config,tensor(1))
+if exist(config,tensor(1))
 	for ii = 1:length(tensor)
 		measures{ii} = dir(config.(tensor{ii}));
     end
@@ -50,7 +50,7 @@ if isfield(config,tensor(1))
     inverse_units = ["msec/um^2","unitless","msec/um^2","um^2/msec"];
 
     % dki
-    if isfield(config,dki(1))
+    if exist(config,dki(1))
         for kk = 1:length(dki)
             measures{ii+kk} = dir(config.(dki{kk}));
         end
@@ -68,10 +68,10 @@ if isfield(config,noddi(1))
 	for nn = 1:length(noddi)
 		measures{end_index(end)+nn} = dir(config.(noddi{nn}));
     end
-end_index = [end_index end_index(end)+length(noddi)];
-scale_index = [scale_index ["false","false","false"]];
-value_units = [value_units ["unitless","unitless","unitless"]];
-inverse_units = [inverse_units ["unitless","unitless","unitless"]];
+    end_index = [end_index end_index(end)+length(noddi)];
+    scale_index = [scale_index ["false","false","false"]];
+    value_units = [value_units ["unitless","unitless","unitless"]];
+    inverse_units = [inverse_units ["unitless","unitless","unitless"]];
 end
 
 %%%% load nifti data into singular structure
