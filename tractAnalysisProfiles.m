@@ -106,7 +106,7 @@ for ifg = 1:length(fg_classified)
         tractprofiles.(fg_filename).y_coords = SuperFiber.fibers{:}(2,:);
         tractprofiles.(fg_filename).z_coords = SuperFiber.fibers{:}(3,:);
 
-        if isfield(config,'ad')
+        if exist(config.ad)
             % AD
             analysisProfiles(nii(1).mean,fgResampled,nii(1).name,'Axial Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(1).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_ad.png');
@@ -133,7 +133,7 @@ for ifg = 1:length(fg_classified)
             numfiles = numfiles + 1;
         end
         
-        if isfield(config,'ga')
+        if exist(config.ga)
             % ga
             analysisProfiles(nii(9).mean,fgResampled,nii(9).name,'Geodesic Anisotropy',[0.00, 1.00],[0 .25 0.5 0.75],numnodes,nii(5).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_ga.png');
