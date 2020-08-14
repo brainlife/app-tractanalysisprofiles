@@ -14,3 +14,6 @@ then
 	echo "not all output generated"
 	exit 1
 fi
+
+# generate summary csv tractmeasures output
+singularity exec -e docker://brainlife/freesurfer-stats:1.2 ./generateCSV.py
