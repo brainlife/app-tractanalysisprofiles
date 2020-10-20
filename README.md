@@ -83,10 +83,10 @@ The secondary output of this app is `product.json`. This file allows web interfa
 ### Dependencies 
 
 This App requires the following libraries when run locally. 
-
-- Matlab: 
-- SPM8: 
-- vistasoft: 
-- wma_tools: 
-- jsonlab: 
-- singularity: 
+  
+  - singularity: https://singularity.lbl.gov/
+  - VISTASOFT: https://github.com/vistalab/vistasoft/
+  - SPM 8: https://www.fil.ion.ucl.ac.uk/spm/software/spm8/
+  - Matlab: https://www.mathworks.com/help/install/install-products.html
+  - jsonlab: https://github.com/fangq/jsonlab.git
+  - wma_tools: https://github.com/DanNBullock/wma_tools
