@@ -195,8 +195,7 @@ def main():
 		os.mkdir('./tractmeasures')
 
 	# define paths and variables
-	#subjectID = config['_inputs'][0]['meta']['subject']
-	subjectID = config['subjectID']
+	subjectID = config['_inputs'][0]['meta']['subject']
 	streamlines_path = config['track']
 	classification_path = config['classification']
 	reference_anat_path = config['dwi']
