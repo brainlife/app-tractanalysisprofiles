@@ -71,7 +71,7 @@ def generateTractmeasuresDatatype(subjectID,names,measure_names,tract_data,out_p
 		tmp_df['structureID'] = [ bundles for f in range(len(tmp_df)) ]
 		tmp_df['nodeID'] = [ f+1 for f in range(len(tmp_df)) ]
 		tmp_df = tmp_df[['subjectID','structureID','nodeID'] + [ f+'_mean' for f in measure_names ] ]
-		tmp_df.columns = tmp_df.columns.str.rstrip('_mean')
+		tmp_df.columns = tmp_df.columns.str.replace("_mean","")
 		out_df = pd.concat([out_df,tmp_df])
 
 	# output
