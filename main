@@ -3,20 +3,14 @@
 #PBS -N tractanalysisprofiles
 #PBS -V
 
-# singularity exec -e docker://brainlife/mcr:neurodebian1604-r2017a ./compiled/main
-
 #singularity exec -e docker://bacaron/athlete-brain-container:v1.1 ./tractAnalysisProfilesDipy.py
 SINGULARITYENV_PYTHONNOUSERSITE=true singularity exec -e docker://brainlife/pyafq:dev ./tractAnalysisProfilesDipy.py
 
-#count=$(ls images/*.png | wc -l)
-#NUMFILES=`cat numfiles.txt`
-##cp product.json ./profiles/
-#rm -rf product.json
-#if [ "$count" !=  "$NUMFILES" ];
-#then
-#	echo "not all output generated"
-#	exit 1
-#fi
+# count=$(ls images/*.png | wc -l)
+# NUMFILES=`cat numfiles.txt`
 
-# # generate summary csv tractmeasures output
-# singularity exec -e docker://brainlife/freesurfer-stats:1.2 ./generateCSV.py
+# if [ "$count" !=  "$NUMFILES" ];
+# then
+# 	echo "not all output generated"
+# 	exit 1
+# fi
