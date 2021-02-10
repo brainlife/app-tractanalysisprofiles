@@ -6,11 +6,10 @@
 #singularity exec -e docker://bacaron/athlete-brain-container:v1.1 ./tractAnalysisProfilesDipy.py
 SINGULARITYENV_PYTHONNOUSERSITE=true singularity exec -e docker://brainlife/pyafq:dev ./tractAnalysisProfilesDipy.py
 
-# count=$(ls images/*.png | wc -l)
-# NUMFILES=`cat numfiles.txt`
-
-# if [ "$count" !=  "$NUMFILES" ];
-# then
-# 	echo "not all output generated"
-# 	exit 1
-# fi
+if [ ! -f ./tractmeasures/output_FiberStats.csv ]; then
+    echo "something failed. checked logs"
+    exit 1
+else
+    echo "complete"
+    exit 0
+fi
