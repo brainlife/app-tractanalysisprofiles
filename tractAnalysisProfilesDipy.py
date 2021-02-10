@@ -207,15 +207,18 @@ def main():
 	df_measures = []
 	
 	# dti
-	if 'fa' in config:
+	fa = config['fa']
+	if os.path.isfile(fa):
 		df_measures = df_measures+['ad','fa','md','rd']
 
 	# dki
-	if 'ga' in config:
+	ga = config['ga']
+	if os.path.isfile(ga):
 		df_measures = df_measures+['ga','ak','mk','rk']
 
 	# noddi
-	if 'odi' in config:
+	odi = config['odi']
+	if os.path.isfile(odi):
 		df_measures = df_measures+['ndi','odi','isovf']
 
 	measure_path = [ config[f] for f in df_measures ]
