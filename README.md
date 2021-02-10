@@ -3,7 +3,7 @@
 
 # Tract Analysis Profiles 
 
-This app will compute profiles of tensor (i.e. AD, FA, MD, RD) and/or NODDI (i.e. ICVF, ISOVF, OD) measures, and their inverse measures and corresponding standard deviations, over a user-specified number of nodes along segmented white matter fascicles. This app requires the white matter classification (wmc) datatype, the whole-brain tractogram tck datatype used to generate the wmc dattype, and a tensor dataytpe. Optionally, the user can input a NODDI dataype. Based on user-input, it computes these profiles using either dtiComputeDiffusionPropertiesAlongFG_sd from Vistasoft (, which weights streamlines based on their distance away from a central core of the fascicle (i.e. ‘volume based’), or Compute_FA_AlongFG, which does not weight the streamlines and is appropriate for testing models involving streamline/fiber crossings (i.e. ‘fiber based’). EPS and PNG images of these profiles are created for the measures, and a .csv file is outputted containing all the measures and standard deviations for each segmented fascicle. 
+This app will compute profiles of tensor (i.e. AD, FA, MD, RD) and/or NODDI (i.e. ICVF, ISOVF, OD) measures, and their inverse measures and corresponding standard deviations, over a user-specified number of nodes along segmented white matter fascicles. This app requires the white matter classification (wmc) datatype, the whole-brain tractogram tck datatype used to generate the wmc dattype, and a tensor dataytpe. Optionally, the user can input a NODDI dataype. This version of the app uses Dipy and pyAFQ to generate tract profiles. EPS and PNG images of these profiles are created for the measures, and a .csv file is outputted containing all the measures and standard deviations for each segmented fascicle. 
 
 ### Authors 
 
@@ -25,7 +25,9 @@ This app will compute profiles of tensor (i.e. AD, FA, MD, RD) and/or NODDI (i.e
 
 Please cite the following articles when publishing papers that used data, code or other resources created by the brainlife.io community. 
 
-1. Yeatman JD, Dougherty RF, Myall NJ, Wandell BA, Feldman HM (2012) Tract Profiles of White Matter Properties: Automating Fiber-Tract Quantification. PLoS ONE 7(11): e49790. https://doi.org/10.1371/journal.pone.0049790 
+1. Yeatman JD, Dougherty RF, Myall NJ, Wandell BA, Feldman HM (2012) Tract Profiles of White Matter Properties: Automating Fiber-Tract Quantification. PLoS ONE 7(11): e49790. https://doi.org/10.1371/journal.pone.0049790
+1. Garyfallidis E, Brett M, Amirbekian B, Rokem A, van der Walt S, Descoteaux M, Nimmo-Smith I and Dipy Contributors (2014). DIPY, a library for the analysis of diffusion MRI data. Frontiers in Neuroinformatics, vol.8, no.8.
+1. Avesani, P., McPherson, B., Hayashi, S. et al. The open diffusion data derivatives, brain data upcycling via integrated publishing of derivatives and reproducible open cloud services. Sci Data 6, 69 (2019). https://doi.org/10.1038/s41597-019-0073-y
 
 ## Running the App 
 
@@ -41,7 +43,7 @@ You can submit this App online at [https://doi.org/10.25663/brainlife.app.185](h
 
 ```json 
 {
-   "afq":    "testdata/wmc/classification.mat",
+   "classification":    "testdata/wmc/classification.mat",
    "fa":    "testdata/tensor/ifa.nii.gz",
    "md":    "testdata/tensor/md.nii.gz",
    "rd":    "tesdata/tensor/rd.nii.gz",
@@ -49,9 +51,8 @@ You can submit this App online at [https://doi.org/10.25663/brainlife.app.185](h
    "icvf":    "testdata/noddi/icvf.nii.gz",
    "isovf":    "testdata/noddi/isovf.nii.gz",
    "od":    "tesdata/noddi/od.nii.gz",
-   "tck":    "testdata/track/track.tck",
-   "fiberbased":    false
-   "numnodes":    200
+   "track":    "testdata/track/track.tck",
+   "num_nodes":    200
 } 
 ``` 
 
@@ -85,8 +86,3 @@ The secondary output of this app is `product.json`. This file allows web interfa
 This App requires the following libraries when run locally. 
 
   - singularity: https://singularity.lbl.gov/
-  - VISTASOFT: https://github.com/vistalab/vistasoft/
-  - SPM 8: https://www.fil.ion.ucl.ac.uk/spm/software/spm8/
-  - Matlab: https://www.mathworks.com/help/install/install-products.html
-  - jsonlab: https://github.com/fangq/jsonlab.git
-  - wma_tools: https://github.com/DanNBullock/wma_tools
