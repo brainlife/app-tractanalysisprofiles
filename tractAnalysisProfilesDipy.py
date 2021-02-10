@@ -119,9 +119,6 @@ def computeTractProfiles(subjectID,reference_anat_path,streamlines_path,classifi
 		measure_name = measures.split('/')[-1].split('.nii.gz')[0]
 		print('loading measure %s' %measure_name)
 		df_measures[measure_name] = nib.load(measures)
-		tmp_binary = df_measures[measure_name].get_fdata()[df_measures[measure_name].get_fdata() > 0]
-		if np.median(tmp_binary) < 0.01:
-			df_measures[measure_name].get_fdata() = df_measures[measure_name].get_fdata() * 1000
 
 	# loop through tracts
 	for bundles in range(len(names)):
@@ -150,9 +147,14 @@ def computeTractProfiles(subjectID,reference_anat_path,streamlines_path,classifi
 		for measures in measures_path:
 			measure_name = measures.split('/')[-1].split('.nii.gz')[0]
 			print('computing measure %s' %measure_name)
+			
+			tmp_data = df_measures[measure_name].get_fdata()
+			tmp_binary = tmp_data[tmp_data > 0]
+			if np.median(tmp_binary) < 0.01:
+				tmp_data = tmp_data * 1000
 
 			# get values for each streamline and node
-			values = dsa.values_from_volume(df_measures[measure_name].get_fdata(),fgarray,df_measures[measure_name].affine)
+			values = dsa.values_from_volume(tmp_data,fgarray,df_measures[measure_name].affine)
 
 			# compute weighted mean
 			tracts[names[bundles]][measure_name+'_mean'] = np.sum(oriented_tract_weights * values,0)
