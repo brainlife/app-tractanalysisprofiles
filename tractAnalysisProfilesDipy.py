@@ -47,7 +47,7 @@ def generateImagesDatatype(tract_json,tract_data,tract_name,measure_name,out_pat
 
 	fig.savefig(out_path)
 
-	fig.close()
+	plt.close()
 
 	tmp = {}
 	tmp['filename'] = 'images/'+out_path.split('/')[-1]
