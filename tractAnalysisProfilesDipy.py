@@ -121,7 +121,7 @@ def computeTractProfiles(subjectID,reference_anat_path,streamlines_path,classifi
 		df_measures[measure_name] = nib.load(measures)
 		tmp_binary = df_measures[measure_name].get_fdata()[df_measures[measure_name].get_fdata() > 0]
 		if np.median(tmp_binary) < 0.01:
-			df_measures[measure_name] = df_measures[measure_name] * 1000
+			df_measures[measure_name].get_fdata() = df_measures[measure_name].get_fdata() * 1000
 
 	# loop through tracts
 	for bundles in range(len(names)):
