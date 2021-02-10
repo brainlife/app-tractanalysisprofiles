@@ -75,7 +75,7 @@ bl dataset download
 
 ## Output 
 
-The main output of this App is contains one CSV file for all measure data for each track and PNG and EPS images of the profiles. The CSV files are formatted in the following format: ad_mean, ad_sd, fa_mean, fa_sd, md_mean, md_sd, rd_mean, rd_sd, ad_inverse_mean, ad_inverse_sd, fa_inverse_mean, fa_inverse_sd, md_inverse_mean, md_inverse_sd, rd_inverse_mean, rd_inverse_sd, icvf_mean, icvf_sd, isovf_mean, isovf_sd, od_mean, od_sd, icvf_inverse_mean, icvf_inverse_sd, isovf_inverse_mean, isovf_inverse_sd, od_inverse_mean, od_inverse_sd. 
+The main output of this App is contains one CSV file for all measure data for each track and PNG and EPS images of the profiles. The CSV files are formatted in the following format: ad_mean, ad_sd, fa_mean, fa_sd, md_mean, md_sd, rd_mean, rd_sd, ndi_mean, ndi_sd, isovf_mean, isovf_sd, odi_mean, odi_sd.
 
 #### Product.json 
 
