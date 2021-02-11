@@ -99,6 +99,7 @@ for ifg = 1:length(fg_classified)
         
         jj = 0;
         tps = {'mean','sd'};
+	T = table();
         for jj = 1:length(nii)
             for tp = 1:length(tract_profiles(1,jj,:))
                 T(:,(2*jj-2)+tp) = table(tract_profiles(:,jj,tp));
