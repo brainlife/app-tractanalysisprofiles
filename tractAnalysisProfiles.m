@@ -1,4 +1,4 @@
-function [] = tractAnalysisProfiles(classification,nii,config,numnodes,fg_classified)
+function [] = tractAnalysisProfiles(classification,nii,config,numnodes,fg_classified,empty_indices)
 
 numfiles = 1;
 possible_error=0;
@@ -6,19 +6,51 @@ possible_error_lows=0;
 failed_tracts=[];
 failed_tracts_lows=[];
 end_index=length(nii);
+tps = {'mean','sd'};
 
 for ii = 1:length(classification.names)
     tractname = strrep(strrep(classification.names{ii},'.','_'),' ','');
     tractprofiles.(tractname) = struct();
     for jj = 1:length(nii)
+        if ismember(ii,empty_indices)
+            % capture cases where classification structure has no streamlines
+            for tp = 1:length(tps)
+                T(:,(2*jj-2)+tp) = table(NaN(numnodes,1));
+                T.Properties.VariableNames{(2*jj-2)+tp} = sprintf('%s_%s',char(nii(jj).name),tps{tp});
+                T.Properties.VariableUnits{(2*jj-2)+tp} = sprintf('%s',nii(jj).units);
+            end
+            T.x_coords = NaN(numnodes,1);
+            T.Properties.VariableUnits{length(T.Properties.VariableNames)} = 'mm';
+            T.y_coords = NaN(numnodes,1);
+            T.Properties.VariableUnits{length(T.Properties.VariableNames)} = 'mm';
+            T.z_coords = NaN(numnodes,1);
+            T.Properties.VariableUnits{length(T.Properties.VariableNames)} = 'mm';
+            writetable(T, strcat('profiles/', tractname, '_profiles.csv'));
+            
+            possible_error_lows=1;
+            failed_tracts_lows = strcat(failed_tracts,tractname," ");
+            save('profiles/error_messages_lows.mat','failed_tracts_lows')
+        end
+        % generate tractprofiles structure, outputting nans for tracts with
+        % zero streamlines
         if ~strcmp(nii(jj).name(end),'e')
-            measurename = nii(jj).name;
-            tractprofiles.(tractname).(measurename).profile = [];
-            tractprofiles.(tractname).(measurename).mean = [];
-            tractprofiles.(tractname).(measurename).sd = [];
+            if ismember(ii,empty_indices)
+                measurename = nii(jj).name;
+                tractprofiles.(tractname).(measurename).profile = NaN(numnodes,1);
+                tractprofiles.(tractname).(measurename).mean = NaN(1,1);
+                tractprofiles.(tractname).(measurename).sd = NaN(1,1);
+                tractprofiles.(tractname).x_coords = NaN(numnodes,1);
+                tractprofiles.(tractname).y_coords = NaN(numnodes,1);
+                tractprofiles.(tractname).z_coords = NaN(numnodes,1);
+            else
+                measurename = nii(jj).name;
+                tractprofiles.(tractname).(measurename).profile = [];
+                tractprofiles.(tractname).(measurename).mean = [];
+                tractprofiles.(tractname).(measurename).sd = [];   
+            end
         end
     end
-end
+end        
 
 % Set up cell for csv
 tract_profiles = cell(numnodes, length(nii));
@@ -183,14 +215,13 @@ for ifg = 1:length(fg_classified)
         
     catch ME
         possible_error=1;
-        failed_tracts = [failed_tracts, fg_filename];
-        
-    save('profiles/error_messages.mat','ME');
+        failed_tracts = strcat(failed_tracts,fg_filename," ");
+        save('profiles/error_messages.mat','ME');
     end
     
     if length(fg_classified{ifg}.fibers) < 6
         possible_error_lows=1;
-        failed_tracts_lows = [failed_tracts, fg_filename];
+        failed_tracts_lows = strcat(failed_tracts_lows,fg_filename," ");
         save('profiles/error_messages_lows.mat','failed_tracts_lows')
     end
     

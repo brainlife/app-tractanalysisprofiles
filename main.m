@@ -25,12 +25,37 @@ if ~isfield(config,'ad') && ~isfield(config,'ndi')
 end
 
 % load segmentation file and set number of nodes; take in both
-% classification structure and tck tractogram, will generate fg_classified
-% structure
+% classification structure and tck tractogram
 load(fullfile(config.afq));
 numnodes = config.numnodes;
 wbFG = wma_loadTck(config.tck);
-fg_classified = bsc_makeFGsFromClassification_v5(classification, wbFG);
+
+% identify if classification structure contains empty streamlines
+indices = unique(classification.index(classification.index>0));
+empty_indices = [];
+j=1;
+for i = 1:length(classification.names)
+    if ~ismissing(i,indices)
+        empty_indices(j) = i;
+        j=j+1;
+    end
+end
+
+% clean up before creation of fg_classified structure. will fail if empty
+% classifications are included
+cleaned_classification = classification;
+if ~isempty(empty_indices)
+    cleaned_classification.names = {classification.names{indices}};
+    new_indices = [1:1:length(cleaned_classification.names)];
+    for i = 1:length(indices)
+        tract_indices = find(cleaned_classification.index==indices(i));
+        for j = 1:length(tract_indices)
+            cleaned_classification.index(tract_indices(j)) = new_indices(i);
+        end
+    end
+end
+
+fg_classified = bsc_makeFGsFromClassification_v5(cleaned_classification, wbFG);
 
 %%%% load tensor and noddi (if applicable) files
 measures = {};
@@ -78,7 +103,7 @@ end
 nii = build_nifti_data(measures,scale_index,value_units,inverse_units);
 
 %%%% generate analysis profiles
-tractAnalysisProfiles(classification,nii,config,numnodes,fg_classified)
+tractAnalysisProfiles(classification,nii,config,numnodes,fg_classified,empty_indices)
 
 end
 
