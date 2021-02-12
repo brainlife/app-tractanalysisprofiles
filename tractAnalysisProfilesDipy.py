@@ -10,7 +10,7 @@ def generateRAScentroid(centroid_cluster):
 
 	max_dim = np.where(np.max([x_diff_max,y_diff_max,z_diff_max]))[0][0]
 
-	if centroid_cluster[0,max_dim] > 0:
+	if centroid_cluster[0,max_dim] < 0:
 		centroid_cluster = np.flip(centroid_cluster,0)
 
 	return centroid_cluster
@@ -43,7 +43,7 @@ def generateImagesDatatype(tract_json,tract_data,tract_name,measure_name,out_pat
 		dm_tag = "(um^2/msec)"
 
 	x_ticks = [0,len(tract_data)]
-	xticks_labels = ['Tract LPI','Tract RAS']
+	xticks_labels = ['Tract RAS','Tract LPI']
 
 	x_label = 'Location on Tract'
 	y_label = measure_name + '\n'+dm_tag
