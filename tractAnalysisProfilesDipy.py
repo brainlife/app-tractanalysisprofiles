@@ -222,10 +222,10 @@ def computeTractProfiles(subjectID,reference_anat_path,streamlines_path,classifi
 
 	# if errors, dump messages
 	if failed_tracts.tolist():
-		np.savetxt('./profiles/error_messages.txt',failed_tracts)
+		np.savetxt('./profiles/error_messages.txt',failed_tracts,fmt='%s')
 
 	if failed_tracts_lows.tolist():
-		np.savetxt('./profiles/error_messages_lows.txt',failed_tracts_lows)
+		np.savetxt('./profiles/error_messages_lows.txt',failed_tracts_lows,fmt='%s')
 
 	# generate tractmeasures datatype for all tracts
 	print('generating tractmeasures datatype')
