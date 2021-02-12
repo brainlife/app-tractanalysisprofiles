@@ -1,5 +1,20 @@
 #!/usr/bin/env python3
 
+def generateRAScentroid(centroid_cluster):
+
+	import numpy as np
+
+	[x_diff, y_diff, z_diff] = np.diff([centroid_cluster[:,0],centroid_cluster[:,1],centroid_cluster[:,2]])
+	[x_diff, y_diff, z_diff] = [np.append(x_diff,[centroid_cluster[0,0] - centroid_cluster[-1,0]]),np.append(y_diff,[centroid_cluster[0,1] - centroid_cluster[-1,1]]),np.append(z_diff,[centroid_cluster[0,2] - centroid_cluster[-1,2]])]
+	[x_diff_max, y_diff_max, z_diff_max] = [np.max(np.absolute(x_diff)),np.max(np.absolute(y_diff)),np.max(np.absolute(z_diff))]
+
+	max_dim = np.where(np.max([x_diff_max,y_diff_max,z_diff_max]))[0][0]
+
+	if centroid_cluster[0,max_dim] < 0:
+		centroid_cluster = np.flip(centroid_cluster,0)
+
+	return centroid_cluster
+
 def generateProfilesDatatype(tract_data,out_path):
 
 	import pandas as pd
@@ -131,11 +146,15 @@ def computeTractProfiles(subjectID,reference_anat_path,streamlines_path,classifi
 		tract_indices = [ f for f in range(len(indices)) if indices[f] == tract_index_value ]
 		fg = streamlines.streamlines[tract_indices]
 
+		# reorient streamlines to match orientation of first streamline. then compute centroid
+		fg_oriented = dts.orient_by_streamline(fg,fg[0])
+
 		# run quickbundles, find centroid, and reorient streamlines
 		qb = QuickBundles(np.inf,metric=metric)
-		tract_cluster = qb.cluster(fg)
+		tract_cluster = qb.cluster(fg_oriented)
 		centroid_cluster = tract_cluster.centroids[0]
-		oriented_tract = dts.orient_by_streamline(fg,centroid_cluster)
+		centroid_cluster_ras = generateRAScentroid(centroid_cluster)
+		oriented_tract = dts.orient_by_streamline(fg,centroid_cluster_ras)
 
 		# resample to same number of points
 		fgarray = dts.set_number_of_points(oriented_tract,n_points)
@@ -167,9 +186,9 @@ def computeTractProfiles(subjectID,reference_anat_path,streamlines_path,classifi
 			images_json = generateImagesDatatype(images_json,tracts[names[bundles]][measure_name+'_mean'],names[bundles],measure_name,out_path+'/images/%s_%s.png' %(names[bundles],measure_name))
 		
 		# centroid x,y, and z
-		tracts[names[bundles]]['x_coords'] = centroid_cluster[:,0]
-		tracts[names[bundles]]['y_coords'] = centroid_cluster[:,1]
-		tracts[names[bundles]]['z_coords'] = centroid_cluster[:,2]
+		tracts[names[bundles]]['x_coords'] = centroid_cluster_ras[:,0]
+		tracts[names[bundles]]['y_coords'] = centroid_cluster_ras[:,1]
+		tracts[names[bundles]]['z_coords'] = centroid_cluster_ras[:,2]
 
 		# output profile datatype csv for the tract
 		print('generating profiles datatype for tract')
