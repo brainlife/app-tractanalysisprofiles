@@ -163,7 +163,7 @@ def computeTractProfiles(subjectID,reference_anat_path,streamlines_path,classifi
 				measure_name = measures.split('/')[-1].split('.nii.gz')[0]
 				tracts[names[bundles]][measure_name+'_mean'] = np.empty(n_points)
 				tracts[names[bundles]][measure_name+'_mean'][:] = np.nan
-				tracts[names[bundles]][measure_name+'_sd'][:] = tracts[names[bundles]][measure_name+'_mean']
+				tracts[names[bundles]][measure_name+'_sd'] = tracts[names[bundles]][measure_name+'_mean']
 				tracts[names[bundles]]['x_coords'] = tracts[names[bundles]][measure_name+'_mean']
 				tracts[names[bundles]]['y_coords'] = tracts[names[bundles]][measure_name+'_mean']
 				tracts[names[bundles]]['z_coords'] = tracts[names[bundles]][measure_name+'_mean']
