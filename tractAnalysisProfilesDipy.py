@@ -10,7 +10,7 @@ def generateRAScentroid(centroid_cluster):
 
 	max_dim = np.where(np.max([x_diff_max,y_diff_max,z_diff_max]))[0][0]
 
-	if centroid_cluster[0,max_dim] < 0:
+	if centroid_cluster[0,max_dim] > 0:
 		centroid_cluster = np.flip(centroid_cluster,0)
 
 	return centroid_cluster
