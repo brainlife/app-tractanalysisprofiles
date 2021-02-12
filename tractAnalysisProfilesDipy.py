@@ -128,6 +128,10 @@ def computeTractProfiles(subjectID,reference_anat_path,streamlines_path,classifi
 	images_json = {}
 	images_json['images'] = []
 
+	# error messages
+	failed_tracts = np.array()
+	failed_tracts_lows = np.array()
+
 	# load measures
 	df_measures = {}
 	for measures in measures_path:
@@ -146,56 +150,82 @@ def computeTractProfiles(subjectID,reference_anat_path,streamlines_path,classifi
 		tract_indices = [ f for f in range(len(indices)) if indices[f] == tract_index_value ]
 		fg = streamlines.streamlines[tract_indices]
 
-		# reorient streamlines to match orientation of first streamline. then compute centroid
-		fg_oriented = dts.orient_by_streamline(fg,fg[0])
+		# catch if fg has 6 streamlines or less or are empty
+		if len(fg) <= 6:
+			if len(fg) == 0:
+				print('%s has zero streamlines' %names[bundles])
+				failed_tracts = np.append(failed_tracts,names[bundles])
+			else:
+				print('low streamlines detected for %s' %names[bundles])
+				failed_tracts_lows = np.append(failed_tracts_lows,names[bundles])
 
-		# run quickbundles, find centroid, and reorient streamlines
-		qb = QuickBundles(np.inf,metric=metric)
-		tract_cluster = qb.cluster(fg_oriented)
-		centroid_cluster = tract_cluster.centroids[0]
-		centroid_cluster_ras = generateRAScentroid(centroid_cluster)
-		oriented_tract = dts.orient_by_streamline(fg,centroid_cluster_ras)
+			for measures in measures_path:
+				measure_name = measures.split('/')[-1].split('.nii.gz')[0]
+				tracts[names[bundles]][measure_name+'_mean'] = np.empty(n_points)
+				tracts[names[bundles]][measure_name+'_mean'][:] = np.nan
+				tracts[names[bundles]][measure_name+'_sd'][:] = tracts[names[bundles]][measure_name+'_mean']
+				tracts[names[bundles]]['x_coords'] = tracts[names[bundles]][measure_name+'_mean']
+				tracts[names[bundles]]['y_coords'] = tracts[names[bundles]][measure_name+'_mean']
+				tracts[names[bundles]]['z_coords'] = tracts[names[bundles]][measure_name+'_mean']
+				generateProfilesDatatype(tracts[names[bundles]],out_path+'/profiles/%s_profiles.csv' %names[bundles])
+		else:
+			# reorient streamlines to match orientation of first streamline. then compute centroid
+			fg_oriented = dts.orient_by_streamline(fg,fg[0])
 
-		# resample to same number of points
-		fgarray = dts.set_number_of_points(oriented_tract,n_points)
+			# run quickbundles, find centroid, and reorient streamlines
+			qb = QuickBundles(np.inf,metric=metric)
+			tract_cluster = qb.cluster(fg_oriented)
+			centroid_cluster = tract_cluster.centroids[0]
+			centroid_cluster_ras = generateRAScentroid(centroid_cluster)
+			oriented_tract = dts.orient_by_streamline(fg,centroid_cluster_ras)
 
-		# calculate weights
-		oriented_tract_weights = dsa.gaussian_weights(fgarray,n_points)
+			# resample to same number of points
+			fgarray = dts.set_number_of_points(oriented_tract,n_points)
 
-		# loop through measures
-		for measures in measures_path:
-			measure_name = measures.split('/')[-1].split('.nii.gz')[0]
-			print('computing measure %s' %measure_name)
+			# calculate weights
+			oriented_tract_weights = dsa.gaussian_weights(fgarray,n_points)
+
+			# loop through measures
+			for measures in measures_path:
+				measure_name = measures.split('/')[-1].split('.nii.gz')[0]
+				print('computing measure %s' %measure_name)
+				
+				tmp_data = df_measures[measure_name].get_fdata()
+				tmp_binary = tmp_data[tmp_data > 0]
+				if np.median(tmp_binary) < 0.01:
+					tmp_data = tmp_data * 1000
+
+				# get values for each streamline and node
+				values = dsa.values_from_volume(tmp_data,fgarray,df_measures[measure_name].affine)
+
+				# compute weighted mean
+				tracts[names[bundles]][measure_name+'_mean'] = np.sum(oriented_tract_weights * values,0)
+
+				# compute standard deviation
+				tracts[names[bundles]][measure_name+'_sd'] = np.std(values,0)
+
+				# output png image of profile for the tract
+				print('generating profile images for tract')
+				images_json = generateImagesDatatype(images_json,tracts[names[bundles]][measure_name+'_mean'],names[bundles],measure_name,out_path+'/images/%s_%s.png' %(names[bundles],measure_name))
 			
-			tmp_data = df_measures[measure_name].get_fdata()
-			tmp_binary = tmp_data[tmp_data > 0]
-			if np.median(tmp_binary) < 0.01:
-				tmp_data = tmp_data * 1000
+			# centroid x,y, and z
+			tracts[names[bundles]]['x_coords'] = centroid_cluster_ras[:,0]
+			tracts[names[bundles]]['y_coords'] = centroid_cluster_ras[:,1]
+			tracts[names[bundles]]['z_coords'] = centroid_cluster_ras[:,2]
 
-			# get values for each streamline and node
-			values = dsa.values_from_volume(tmp_data,fgarray,df_measures[measure_name].affine)
-
-			# compute weighted mean
-			tracts[names[bundles]][measure_name+'_mean'] = np.sum(oriented_tract_weights * values,0)
-
-			# compute standard deviation
-			tracts[names[bundles]][measure_name+'_sd'] = np.std(values,0)
-
-			# output png image of profile for the tract
-			print('generating profile images for tract')
-			images_json = generateImagesDatatype(images_json,tracts[names[bundles]][measure_name+'_mean'],names[bundles],measure_name,out_path+'/images/%s_%s.png' %(names[bundles],measure_name))
-		
-		# centroid x,y, and z
-		tracts[names[bundles]]['x_coords'] = centroid_cluster_ras[:,0]
-		tracts[names[bundles]]['y_coords'] = centroid_cluster_ras[:,1]
-		tracts[names[bundles]]['z_coords'] = centroid_cluster_ras[:,2]
-
-		# output profile datatype csv for the tract
-		print('generating profiles datatype for tract')
-		generateProfilesDatatype(tracts[names[bundles]],out_path+'/profiles/%s_profiles.csv' %names[bundles])		
+			# output profile datatype csv for the tract
+			print('generating profiles datatype for tract')
+			generateProfilesDatatype(tracts[names[bundles]],out_path+'/profiles/%s_profiles.csv' %names[bundles])		
 	
 	# dump images.json
-	pd.Series(images_json).to_json(out_path+'/images/images.json',orient='index')
+	pd.Series(images_json).to_json(out_path+'/images.json',orient='index')
+
+	# if errors, dump messages
+	if failed_tracts.tolist():
+		np.savetxt('./profiles/error_messages.txt',failed_tracts)
+
+	if failed_tracts_lows.tolist():
+		np.savetxt('./profiles/error_messages_lows.txt',failed_tracts_lows)
 
 	# generate tractmeasures datatype for all tracts
 	print('generating tractmeasures datatype')
