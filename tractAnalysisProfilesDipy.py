@@ -8,9 +8,9 @@ def generateRAScentroid(centroid_cluster):
 	[x_diff, y_diff, z_diff] = [np.append(x_diff,[centroid_cluster[0,0] - centroid_cluster[-1,0]]),np.append(y_diff,[centroid_cluster[0,1] - centroid_cluster[-1,1]]),np.append(z_diff,[centroid_cluster[0,2] - centroid_cluster[-1,2]])]
 	[x_diff_max, y_diff_max, z_diff_max] = [np.max(np.absolute(x_diff)),np.max(np.absolute(y_diff)),np.max(np.absolute(z_diff))]
 
-	max_dim = np.where(np.max([x_diff_max,y_diff_max,z_diff_max]))[0][0]
+	max_dim = np.where([x_diff_max,y_diff_max,z_diff_max] == np.max([x_diff_max,y_diff_max,z_diff_max]))[0][0]
 
-	if centroid_cluster[0,max_dim] < 0:
+	if centroid_cluster[0,max_dim] < centroid_cluster[-1,max_dim]:
 		centroid_cluster = np.flip(centroid_cluster,0)
 
 	return centroid_cluster
