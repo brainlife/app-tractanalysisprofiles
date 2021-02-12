@@ -129,8 +129,8 @@ def computeTractProfiles(subjectID,reference_anat_path,streamlines_path,classifi
 	images_json['images'] = []
 
 	# error messages
-	failed_tracts = np.array()
-	failed_tracts_lows = np.array()
+	failed_tracts = np.array([])
+	failed_tracts_lows = np.array([])
 
 	# load measures
 	df_measures = {}
