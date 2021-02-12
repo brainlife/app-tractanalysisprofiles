@@ -43,7 +43,7 @@ def generateImagesDatatype(tract_json,tract_data,tract_name,measure_name,out_pat
 		dm_tag = "(um^2/msec)"
 
 	x_ticks = [0,len(tract_data)]
-	xticks_labels = ['Tract RAS','Tract LPI']
+	xticks_labels = ['Tract LPI','Tract RAS']
 
 	x_label = 'Location on Tract'
 	y_label = measure_name + '\n'+dm_tag
