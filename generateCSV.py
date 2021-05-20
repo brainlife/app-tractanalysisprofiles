@@ -22,7 +22,7 @@ def generateSummaryCsv(subjectID,profiles,outdir):
 	nodes = [ x for x in range(len(df_temp)) ]
 	
 	# clear temp data
-	del df_temp,df_temp_reduced
+	del df_temp
 	
 	# set columns for pandas array
 	columns = ['subjectID','structureID','nodeID'] + diffusion_measures
