@@ -15,12 +15,13 @@ mkdir('profiles');
 tensor = {'ad','fa','md','rd'};
 dki = {'ga','mk','ak','rk'};
 noddi = {'ndi','isovf','odi'};
+myelin = {'myelin'};
 
 % load config.json
 config = loadjson('config.json');
 
-if ~isfield(config,'ad') && ~isfield(config,'ndi')
-    display('Please specify either tensor or noddi input (or both). You are trying to run this app with neither of them.');
+if ~isfield(config,'ad') && ~isfield(config,'ndi') && ~isfield(config,'myelin')
+    display('Please specify either tensor, noddi or myelin input (or both). You are trying to run this app with neither of them.');
     exit
 end
 
@@ -97,6 +98,15 @@ if isfield(config,noddi(1))
     scale_index = [scale_index ["false","false","false"]];
     value_units = [value_units ["unitless","unitless","unitless"]];
     inverse_units = [inverse_units ["unitless","unitless","unitless"]];
+end
+
+% myelin
+if isfield(config,myelin(1))
+    measures{end_index(end)+1} = dir(config.myelin);
+    end_index = [end_index end_index(end)+1];
+    scale_index = [scale_index ["false"]];
+    value_units = [value_units ["unitless"]];
+    inverse_units = [inverse_units ["unitless"]];
 end
 
 %%%% load nifti data into singular structure
