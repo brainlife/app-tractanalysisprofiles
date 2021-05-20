@@ -17,7 +17,7 @@ def generateSummaryCsv(subjectID,profiles,outdir):
 	df_temp = pd.read_csv(os.path.join(profiles,structureList[0]))
 	# df_temp_reduced = df_temp[[ x for x in list(df_temp.keys()) if x.split('_')[1] == 'mean' ]]
 	# diffusion_measures = [ x.split('_')[0] for x in list(df_temp_reduced.keys()) ]
-	diffusion_measures = list(df_temp_reduced.keys())
+	diffusion_measures = list(df_temp.keys())
 
 	nodes = [ x for x in range(len(df_temp)) ]
 	
