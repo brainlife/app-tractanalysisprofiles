@@ -99,7 +99,7 @@ for ifg = 1:length(fg_classified)
         
         jj = 0;
         tps = {'mean','sd'};
-	T = table();
+        T = table();
         for jj = 1:length(nii)
             for tp = 1:length(tract_profiles(1,jj,:))
                 T(:,(2*jj-2)+tp) = table(tract_profiles(:,jj,tp));
@@ -195,22 +195,31 @@ for ifg = 1:length(fg_classified)
 
         if isfield(config,'ndi')
             % NDI
-            analysisProfiles(nii(end_index-6+1).mean,fgResampled,nii(end_index-6+1).name,'NDI',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+1).units);
+            analysisProfiles(nii(find(strcmp({nii(:).name},'ndi'))).mean,fgResampled,nii(find(strcmp({nii(:).name},'ndi'))).name,'NDI',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+1).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_ndi.png');
             json.images(numfiles).name = fg_filename;
             json.images(numfiles).desc = strcat('NDI');
             numfiles = numfiles + 1;
             % ISOVF
-            analysisProfiles(nii(end_index-6+3).mean,fgResampled,nii(end_index-6+3).name,'ISOVF',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+2).units);
+            analysisProfiles(nii(find(strcmp({nii(:).name},'isovf'))).mean,fgResampled,nii(find(strcmp({nii(:).name},'isovf'))).name,'ISOVF',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+2).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_isovf.png');
             json.images(numfiles).name = fg_filename;
             json.images(numfiles).desc = strcat('ISOVF');
             numfiles = numfiles + 1;
             % ODI
-            analysisProfiles(nii(end_index-6+5).mean,fgResampled,nii(end_index-6+5).name,'ODI',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+3).units);
+            analysisProfiles(nii(find(strcmp({nii(:).name},'odi'))).mean,fgResampled,nii(find(strcmp({nii(:).name},'odi'))).name,'ODI',[0 1.00],[0.25 .5 .75],numnodes,nii(end_index-6+3).units);
             json.images(numfiles).filename = strcat('images/',fg_filename,'_odi.png');
             json.images(numfiles).name = fg_filename;
             json.images(numfiles).desc = strcat('ODI');
+            numfiles = numfiles + 1;
+        end
+
+        if isfield(config,'myelin')
+            % myelin map
+            analysisProfiles(nii(find(strcmp({nii(:).name},'map'))).mean,fgResampled,nii(find(strcmp({nii(:).name},'map'))).name,'myelin',[0 5.00],[0 1.25 2.5 3.75],numnodes,nii(find(strcmp({nii(:).name},'map'))).units);
+            json.images(numfiles).filename = strcat('images/',fg_filename,'_myelin.png');
+            json.images(numfiles).name = fg_filename;
+            json.images(numfiles).desc = strcat('Myelin');
             numfiles = numfiles + 1;
         end
         
