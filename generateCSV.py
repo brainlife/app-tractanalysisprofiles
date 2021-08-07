@@ -42,6 +42,9 @@ def generateSummaryCsv(subjectID,profiles,outdir):
 		for measures in diffusion_measures:
 			# df.loc[df.structureID==tractNames[tracts], measures] = list(data_means[measures+'_mean'])
 			df.loc[df.structureID==tractNames[tracts], measures] = list(data[measures])
+			if 'inverse' not in measures:
+				if 'mean' in measures:
+					df.rename(columns={measures: measures.split('_')[0]},inplace=True)
 
 	# sort by tract and subject ID
 	df.sort_values(['structureID','nodeID'],inplace=True)
