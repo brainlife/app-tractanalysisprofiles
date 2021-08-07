@@ -47,7 +47,7 @@ def generateSummaryCsv(subjectID,profiles,outdir):
 	df.sort_values(['structureID','nodeID'],inplace=True)
 	
 	# write out to csv
-	df.to_csv('./%s/output_FiberStats.csv' %(outdir), index=False)
+	df.to_csv('./%s/tractmeasures.csv' %(outdir), index=False)
 
 def main():
 
