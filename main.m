@@ -111,11 +111,10 @@ if isfield(config,myelin(1))
 end
 
 % qmri
-if isfield(config,qmri{1})
+if isfield(config,'T1')
     n=0;
     for nn = 1:length(qmri)
-        if exist(qmri{nn},'file')
-	    display(qmri{nn})
+        if exist(config.(qmri{nn}),'file')
             n=n+1
             measures{end_index(end)+n} = dir(config.(qmri{nn}));
 
