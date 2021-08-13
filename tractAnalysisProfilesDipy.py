@@ -278,21 +278,24 @@ def main():
 		df_measures = df_measures+['ga','ak','mk','rk']
 
 	# noddi
-	odi = config['odi']
-	if os.path.isfile(odi):
-		df_measures = df_measures+['ndi','odi','isovf']
+	if 'odi' in config:
+		odi = config['odi']
+		if os.path.isfile(odi):
+			df_measures = df_measures+['ndi','odi','isovf']
 		
 	# myelin-map
-	myelin = config['myelin']
-	if os.path.isfile(myelin):
-		df_measures = df_measures+['myelin']
+	if 'myelin' in config:
+		myelin = config['myelin']
+		if os.path.isfile(myelin):
+			df_measures = df_measures+['myelin']
 		
 	# qmri
-	qmri = ["T1","R1","M0","PD","MTV","VIP","SIR","WF"]
-	for i in qmri:
-		test_met = config[i]
-		if os.path.isfile(test_met):
-			df_measures = df_measures+[i]
+	if 'T1' in config:
+		qmri = ["T1","R1","M0","PD","MTV","VIP","SIR","WF"]
+		for i in qmri:
+			test_met = config[i]
+			if os.path.isfile(test_met):
+				df_measures = df_measures+[i]
 	
 	measure_path = [ config[f] for f in df_measures ]
 
