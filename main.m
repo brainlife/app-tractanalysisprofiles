@@ -115,44 +115,42 @@ if isfield(config,'T1')
     n=0;
     for nn = 1:length(qmri)
         if exist(config.(qmri{nn}),'file')
-            n=n+1
+            n=n+1;
             measures{end_index(end)+n} = dir(config.(qmri{nn}));
 
             if strcmp(qmri{nn},'T1')
                 scale_index = [scale_index ["false"]];
-                value_units = [values_units ["seconds"]];
+                value_units = [value_units ["seconds"]];
                 inverse_units = [inverse_units ["1/seconds"]];
             elseif strcmp(qmri{nn},'R1')
                scale_index = [scale_index ["false"]];
-                value_units = [values_units ["1/seconds"]];
+                value_units = [value_units ["1/seconds"]];
                 inverse_units = [inverse_units ["seconds"]];
             elseif strcmp(qmri{nn},'M0')
                scale_index = [scale_index ["false"]];
-                value_units = [values_units ["unitless"]];
+                value_units = [value_units ["unitless"]];
                 inverse_units = [inverse_units ["unitless"]];
             elseif strcmp(qmri{nn},'MTV')
                scale_index = [scale_index ["false"]];
-                value_units = [values_units ["unitless"]];
+                value_units = [value_units ["unitless"]];
                 inverse_units = [inverse_units ["unitless"]];
             elseif strcmp(qmri{nn},'VIP')
                scale_index = [scale_index ["false"]];
-                value_units = [values_units ["unitless"]];
+                value_units = [value_units ["unitless"]];
                 inverse_units = [inverse_units ["unitless"]];
             elseif strcmp(qmri{nn},'SIR')
                scale_index = [scale_index ["false"]];
-                value_units = [values_units ["unitless"]];
+                value_units = [value_units ["unitless"]];
                 inverse_units = [inverse_units ["unitless"]];
             elseif strcmp(qmri{nn},'WF')
                scale_index = [scale_index ["false"]];
-                value_units = [values_units ["unitless"]];
+                value_units = [value_units ["unitless"]];
                 inverse_units = [inverse_units ["unitless"]];
             end
         end
     end
     end_index = [end_index end_index(end)+n];
 end
-
-display(measures{length(measures)})
 
 %%%% load nifti data into singular structure
 nii = build_nifti_data(measures,scale_index,value_units,inverse_units);
