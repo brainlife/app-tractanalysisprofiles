@@ -111,7 +111,7 @@ if isfield(config,myelin(1))
 end
 
 % qmri
-if isfield(config,qmri(1))
+if isfield(config,qmri{1})
     n=0
     for nn = 1:length(qmri)
         if exist(qmri{nn},'file')
@@ -151,6 +151,8 @@ if isfield(config,qmri(1))
     end
     end_index = [end_index end_index(end)+n];
 end
+
+display(measures{length(measures)})
 
 %%%% load nifti data into singular structure
 nii = build_nifti_data(measures,scale_index,value_units,inverse_units);
