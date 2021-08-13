@@ -33,10 +33,17 @@ def generateImagesDatatype(tract_json,tract_data,tract_name,measure_name,out_pat
 	import matplotlib.pyplot as plt
 
 	# if measure = odi, ndi, isovf, fa, md, ad, rd, ga; scale = 0 1, ticks = [0 0.25 0.5 0.75]; else scale = 0 2, ticks = [0 0.5 1 1.5]
-	if measure_name in ['fa','ga','ndi','odi','isovf']:
+	if measure_name in ['fa','ga','ndi','odi','isovf','M0','PD','MTV','VIP','SIR','WF']:
 		y_scale = [0,1]
 		y_ticks = [0,0.25,0.5,0.75]
 		dm_tag = "(unitless)"
+	elif measure_name in ['T1','R1']:
+		y_scale = [0,3]
+		y_ticks= [1,2,3]
+		if measure_name == "T1":
+			dm_tag="(seconds)"
+		else:
+			dm_tag="(1/seconds)"
 	else:
 		y_scale = [0,2]
 		y_ticks = [0,0.5,1,1.5]
@@ -274,7 +281,19 @@ def main():
 	odi = config['odi']
 	if os.path.isfile(odi):
 		df_measures = df_measures+['ndi','odi','isovf']
-
+		
+	# myelin-map
+	myelin = config['myelin']
+	if os.path.isfile(myelin):
+		df_measures = df_measures+['myelin']
+		
+	# qmri
+	qmri = ["T1","R1","M0","PD","MTV","VIP","SIR","WF"]
+	for i in qmri:
+		test_met = config[i]
+		if os.path.isfile(test_met):
+			df_measures = df_measures+[i]
+	
 	measure_path = [ config[f] for f in df_measures ]
 
 	# compute tract profiles and output appropriate data
