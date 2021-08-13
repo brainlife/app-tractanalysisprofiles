@@ -114,7 +114,7 @@ end
 if isfield(config,qmri(1))
     n=0
     for nn = 1:length(qmri)
-        if isfile(qmri{nn})
+        if exist(qmri{nn},'file')
             n=n+1
             measures{end_index(end)+n} = dir(config.(qmri{nn}));
 
