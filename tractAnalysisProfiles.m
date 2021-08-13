@@ -222,7 +222,96 @@ for ifg = 1:length(fg_classified)
             json.images(numfiles).desc = strcat('Myelin');
             numfiles = numfiles + 1;
         end
-        
+
+        %% qmri
+        if isfield(config,'T1')
+            if isfile(config.T1)
+                % T1
+                analysisProfiles(nii(find(strcmp({nii(:).name},'T1'))).mean,fgResampled,nii(find(strcmp({nii(:).name},'T1'))).name,'T1',[0 3.00],[1 2 3],numnodes,nii(find(strcmp({nii(:).name},'T1'))).units);
+                json.images(numfiles).filename = strcat('images/',fg_filename,'_T1.png');
+                json.images(numfiles).name = fg_filename;
+                json.images(numfiles).desc = strcat('T1');
+                numfiles = numfiles + 1;
+            end
+        end
+
+        if isfield(config,'R1')
+            if isfile(config.R1)
+                % R1
+                analysisProfiles(nii(find(strcmp({nii(:).name},'R1'))).mean,fgResampled,nii(find(strcmp({nii(:).name},'R1'))).name,'R1',[0 3.00],[1 2 3],numnodes,nii(find(strcmp({nii(:).name},'R1'))).units);
+                json.images(numfiles).filename = strcat('images/',fg_filename,'_R1.png');
+                json.images(numfiles).name = fg_filename;
+                json.images(numfiles).desc = strcat('R1');
+                numfiles = numfiles + 1;
+            end
+        end
+
+        if isfield(config,'M0')
+            if isfile(config.M0)
+                % M0
+                analysisProfiles(nii(find(strcmp({nii(:).name},'M0'))).mean,fgResampled,nii(find(strcmp({nii(:).name},'M0'))).name,'M0',[0 3.00],[1 2 3],numnodes,nii(find(strcmp({nii(:).name},'M0'))).units);
+                json.images(numfiles).filename = strcat('images/',fg_filename,'_M0.png');
+                json.images(numfiles).name = fg_filename;
+                json.images(numfiles).desc = strcat('M0');
+                numfiles = numfiles + 1;
+            end
+        end
+
+        if isfield(config,'PD')
+            if isfile(config.PD)
+                % PD
+                analysisProfiles(nii(find(strcmp({nii(:).name},'PD'))).mean,fgResampled,nii(find(strcmp({nii(:).name},'PD'))).name,'PD',[0 1.00],[0.25 .5 .75],numnodes,nii(find(strcmp({nii(:).name},'PD'))).units);
+                json.images(numfiles).filename = strcat('images/',fg_filename,'_PD.png');
+                json.images(numfiles).name = fg_filename;
+                json.images(numfiles).desc = strcat('PD');
+                numfiles = numfiles + 1;
+            end
+        end
+
+        if isfield(config,'MTV')
+            if isfile(config.MTV)
+                % MTV
+                analysisProfiles(nii(find(strcmp({nii(:).name},'MTV'))).mean,fgResampled,nii(find(strcmp({nii(:).name},'MTV'))).name,'MTV',[0 1.00],[0.25 .5 .75],numnodes,nii(find(strcmp({nii(:).name},'MTV'))).units);
+                json.images(numfiles).filename = strcat('images/',fg_filename,'_MTV.png');
+                json.images(numfiles).name = fg_filename;
+                json.images(numfiles).desc = strcat('MTV');
+                numfiles = numfiles + 1;
+            end
+        end
+
+        if isfield(config,'VIP')
+            if isfile(config.VIP)
+                % VIP
+                analysisProfiles(nii(find(strcmp({nii(:).name},'VIP'))).mean,fgResampled,nii(find(strcmp({nii(:).name},'VIP'))).name,'VIP',[0 1.00],[0.25 .5 .75],numnodes,nii(find(strcmp({nii(:).name},'VIP'))).units);
+                json.images(numfiles).filename = strcat('images/',fg_filename,'_VIP.png');
+                json.images(numfiles).name = fg_filename;
+                json.images(numfiles).desc = strcat('VIP');
+                numfiles = numfiles + 1;
+            end
+        end
+
+        if isfield(config,'SIR')
+            if isfile(config.SIR)
+                % SIR
+                analysisProfiles(nii(find(strcmp({nii(:).name},'SIR'))).mean,fgResampled,nii(find(strcmp({nii(:).name},'SIR'))).name,'SIR',[0 1.00],[0.25 .5 .75],numnodes,nii(find(strcmp({nii(:).name},'SIR'))).units);
+                json.images(numfiles).filename = strcat('images/',fg_filename,'_SIR.png');
+                json.images(numfiles).name = fg_filename;
+                json.images(numfiles).desc = strcat('SIR');
+                numfiles = numfiles + 1;
+            end
+        end
+
+        if isfield(config,'WF')
+            if isfile(config.WF)
+                % WF
+                analysisProfiles(nii(find(strcmp({nii(:).name},'WF'))).mean,fgResampled,nii(find(strcmp({nii(:).name},'WF'))).name,'WF',[0 1.00],[0.25 .5 .75],numnodes,nii(find(strcmp({nii(:).name},'WF'))).units);
+                json.images(numfiles).filename = strcat('images/',fg_filename,'_WF.png');
+                json.images(numfiles).name = fg_filename;
+                json.images(numfiles).desc = strcat('WF');
+                numfiles = numfiles + 1;
+            end
+        end
+
     catch ME
         possible_error=1;
         failed_tracts = strcat(failed_tracts,fg_filename," ");

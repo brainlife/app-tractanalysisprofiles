@@ -16,6 +16,7 @@ tensor = {'ad','fa','md','rd'};
 dki = {'ga','mk','ak','rk'};
 noddi = {'ndi','isovf','odi'};
 myelin = {'myelin'};
+qmri = {'T1','R1','M0','PD','MTV','VIP','SIR','WF'};
 
 % load config.json
 config = loadjson('config.json');
@@ -107,6 +108,48 @@ if isfield(config,myelin(1))
     scale_index = [scale_index ["false"]];
     value_units = [value_units ["unitless"]];
     inverse_units = [inverse_units ["unitless"]];
+end
+
+% qmri
+if isfield(config,qmri(1))
+    n=0
+    for nn = 1:length(qmri)
+        if isfile(qmri{nn})
+            n=n+1
+            measures{end_index(end)+n} = dir(config.(qmri{nn}));
+
+            if strcmp(qmri{nn},'T1')
+                scale_index = [scale_index ["false"]];
+                value_units = [values_units ["seconds"]];
+                inverse_units = [inverse_units ["1/seconds"]];
+            elseif strcmp(qmri{nn},'R1')
+               scale_index = [scale_index ["false"]];
+                value_units = [values_units ["1/seconds"]];
+                inverse_units = [inverse_units ["seconds"]];
+            elseif strcmp(qmri{nn},'M0')
+               scale_index = [scale_index ["false"]];
+                value_units = [values_units ["unitless"]];
+                inverse_units = [inverse_units ["unitless"]];
+            elseif strcmp(qmri{nn},'MTV')
+               scale_index = [scale_index ["false"]];
+                value_units = [values_units ["unitless"]];
+                inverse_units = [inverse_units ["unitless"]];
+            elseif strcmp(qmri{nn},'VIP')
+               scale_index = [scale_index ["false"]];
+                value_units = [values_units ["unitless"]];
+                inverse_units = [inverse_units ["unitless"]];
+            elseif strcmp(qmri{nn},'SIR')
+               scale_index = [scale_index ["false"]];
+                value_units = [values_units ["unitless"]];
+                inverse_units = [inverse_units ["unitless"]];
+            elseif strcmp(qmri{nn},'WF')
+               scale_index = [scale_index ["false"]];
+                value_units = [values_units ["unitless"]];
+                inverse_units = [inverse_units ["unitless"]];
+            end
+        end
+    end
+    end_index = [end_index end_index(end)+n];
 end
 
 %%%% load nifti data into singular structure
