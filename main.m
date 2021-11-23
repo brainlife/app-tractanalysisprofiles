@@ -75,20 +75,40 @@ if exist(config.(tensor{1}))
     scale_index = ["true","false","true","true"];
     value_units = ["um^2/msec","unitless","um^2/msec","um^2/msec"];
     inverse_units = ["msec/um^2","unitless","msec/um^2","um^2/msec"];
-
-    % dki
-    if exist(config.(dki{1}))
-        for kk = 1:length(dki)
-            measures{ii+kk} = dir(config.(dki{kk}));
-        end
-        end_index = [end_index end_index+length(dki)];
-        scale_index = [scale_index ["false","false","false","false"]];
-        value_units = [value_units ["unitless","um^2/msec","um^2/msec","um^2/msec"]];
-    	inverse_units = [inverse_units ["unitless","msec/um^2","msec/um^2","um^2/msec"]];
-    end
 else
     end_index = 0;
 end
+
+% dki
+if exist(config.(dki{1}))
+    n=0;
+    for nn = 1:length(dki)
+        if exist(config.(dki{nn}),'file')
+            n=n+1;
+            measures{end_index(end)+n} = dir(config.(dki{nn}));
+            
+            if strcmp(dki{nn},'ga')
+                scale_index = [scale_index ["false"]];
+                value_units = [value_units ["unitless"]];
+                inverse_units = [inverse_units ["unitless"]];
+            elseif strcmp(dki{nn},'ak')
+                scale_index = [scale_index ["false"]];
+                value_units = [value_units ["um^2/msec"]];
+                inverse_units = [inverse_units ["msec/um^2"]];
+            elseif strcmp(dki{nn},'mk')
+                scale_index = [scale_index ["false"]];
+                value_units = [value_units ["um^2/msec"]];
+                inverse_units = [inverse_units ["msec/um^2"]];      
+            elseif strcmp(dki{nn},'rk')
+                scale_index = [scale_index ["false"]];
+                value_units = [value_units ["um^2/msec"]];
+                inverse_units = [inverse_units ["msec/um^2"]];    
+            end
+        end
+    end
+    end_index = [end_index end_index(end)+n];
+end
+
 
 % noddi
 if isfield(config,noddi(1))
