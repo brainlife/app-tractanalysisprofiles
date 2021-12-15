@@ -82,35 +82,36 @@ if isfield(config,tensor{1})
 end
 
 % dki
-if exist(config.(dki{1}))
-    n=0;
-    for nn = 1:length(dki)
-        if exist(config.(dki{nn}),'file')
-            n=n+1;
-            measures{end_index(end)+n} = dir(config.(dki{nn}));
-            
-            if strcmp(dki{nn},'ga')
-                scale_index = [scale_index ["false"]];
-                value_units = [value_units ["unitless"]];
-                inverse_units = [inverse_units ["unitless"]];
-            elseif strcmp(dki{nn},'ak')
-                scale_index = [scale_index ["false"]];
-                value_units = [value_units ["um^2/msec"]];
-                inverse_units = [inverse_units ["msec/um^2"]];
-            elseif strcmp(dki{nn},'mk')
-                scale_index = [scale_index ["false"]];
-                value_units = [value_units ["um^2/msec"]];
-                inverse_units = [inverse_units ["msec/um^2"]];      
-            elseif strcmp(dki{nn},'rk')
-                scale_index = [scale_index ["false"]];
-                value_units = [value_units ["um^2/msec"]];
-                inverse_units = [inverse_units ["msec/um^2"]];    
-            end
-        end
-    end
-    end_index = [end_index end_index(end)+n];
+if isfield(config,dki{1})
+	if exist(config.(dki{1}))
+	    n=0;
+	    for nn = 1:length(dki)
+		if exist(config.(dki{nn}),'file')
+		    n=n+1;
+		    measures{end_index(end)+n} = dir(config.(dki{nn}));
+		    
+		    if strcmp(dki{nn},'ga')
+		        scale_index = [scale_index ["false"]];
+		        value_units = [value_units ["unitless"]];
+		        inverse_units = [inverse_units ["unitless"]];
+		    elseif strcmp(dki{nn},'ak')
+		        scale_index = [scale_index ["false"]];
+		        value_units = [value_units ["um^2/msec"]];
+		        inverse_units = [inverse_units ["msec/um^2"]];
+		    elseif strcmp(dki{nn},'mk')
+		        scale_index = [scale_index ["false"]];
+		        value_units = [value_units ["um^2/msec"]];
+		        inverse_units = [inverse_units ["msec/um^2"]];      
+		    elseif strcmp(dki{nn},'rk')
+		        scale_index = [scale_index ["false"]];
+		        value_units = [value_units ["um^2/msec"]];
+		        inverse_units = [inverse_units ["msec/um^2"]];    
+		    end
+		end
+	    end
+	    end_index = [end_index end_index(end)+n];
+	end
 end
-
 
 % noddi
 if isfield(config,noddi(1))
