@@ -67,16 +67,18 @@ value_units = [];
 inverse_units = [];
 
 % dti
-if exist(config.(tensor{1}))
-	for ii = 1:length(tensor)
-		measures{ii} = dir(config.(tensor{ii}));
-    end
-    end_index = [length(tensor)];
-    scale_index = ["true","false","true","true"];
-    value_units = ["um^2/msec","unitless","um^2/msec","um^2/msec"];
-    inverse_units = ["msec/um^2","unitless","msec/um^2","um^2/msec"];
-else
-    end_index = 0;
+if isfield(config,tensor{1})
+	if exist(config.(tensor{1}))
+		for ii = 1:length(tensor)
+			measures{ii} = dir(config.(tensor{ii}));
+	    	end
+	    end_index = [length(tensor)];
+	    scale_index = ["true","false","true","true"];
+	    value_units = ["um^2/msec","unitless","um^2/msec","um^2/msec"];
+	    inverse_units = ["msec/um^2","unitless","msec/um^2","um^2/msec"];
+	else
+	    end_index = 0;
+	end
 end
 
 % dki

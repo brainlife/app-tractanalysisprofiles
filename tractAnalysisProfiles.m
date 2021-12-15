@@ -139,7 +139,7 @@ for ifg = 1:length(fg_classified)
         tractprofiles.(fg_classified{ifg}.name).y_coords = SuperFiber.fibers{:}(2,:);
         tractprofiles.(fg_classified{ifg}.name).z_coords = SuperFiber.fibers{:}(3,:);
 
-        if exist(config.ad)
+        if isfield(config,'ad')
             % AD
             analysisProfiles(nii(1).mean,fgResampled,nii(1).name,'Axial Diffusivity',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(1).units);
             json.images(numfiles).filename = strcat('images/',fg_classified{ifg}.name,'_ad.png');
@@ -168,7 +168,7 @@ for ifg = 1:length(fg_classified)
         
         % dki
         % ga
-        if isfield(config.ga)
+        if isfield(config,'ga')
             if exists(config.ga,'file')
                 analysisProfiles(nii(9).mean,fgResampled,nii(9).name,'Geodesic Anisotropy',[0.00, 1.00],[0 .25 0.5 0.75],numnodes,nii(5).units);
                 json.images(numfiles).filename = strcat('images/',fg_classified{ifg}.name,'_ga.png');
@@ -179,7 +179,7 @@ for ifg = 1:length(fg_classified)
         end
         
         % ak
-        if isfield(config.ak)
+        if isfield(config,'ak')
             if exists(config.ak,'file')
                 analysisProfiles(nii(11).mean,fgResampled,nii(11).name,'Axial Kurtosis',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(6).units);
                 json.images(numfiles).filename = strcat('images/',fg_classified{ifg}.name,'_ak.png');
@@ -190,7 +190,7 @@ for ifg = 1:length(fg_classified)
         end
         
         % mk
-        if isfield(config.mk)
+        if isfield(config,'mk')
             if exists(config.mk,'file')
                 analysisProfiles(nii(13).mean,fgResampled,nii(13).name,'Mean Kurtosis',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(7).units);
                 json.images(numfiles).filename = strcat('images/',fg_classified{ifg}.name,'_mk.png');
@@ -201,7 +201,7 @@ for ifg = 1:length(fg_classified)
         end
         
         % rk
-        if isfield(config.rk)
+        if isfield(config,'rk')
             if exists(config.rk)
                 analysisProfiles(nii(15).mean,fgResampled,nii(15).name,'Radial Kurtosis',[0.00, 2.00],[0 .5 1 1.5],numnodes,nii(8).units);
                 json.images(numfiles).filename = strcat('images/',fg_classified{ifg}.name,'_rk.png');
