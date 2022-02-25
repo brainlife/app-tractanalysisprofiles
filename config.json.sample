@@ -3,8 +3,12 @@
         "md": "./testdata/tensor/md.nii.gz",
         "rd": "./testdata/tensor/rd.nii.gz",
         "ad": "./testdata/tensor/ad.nii.gz",
-        "afq": "./testdata/afq/classification.mat",
-        "tck": "./testdata/tck/track.tck",
-        "numnodes": 100,
-        "fiberbased": false
+        "ga": "./testdata/tensor/ga.nii.gz",
+        "ak": "./testdata/tensor/ak.nii.gz",
+        "mk": "./testdata/tensor/mk.nii.gz",
+        "rk": "./testdata/tensor/rk.nii.gz",
+        "dwi":  "./testdata/dwi/dwi.nii.gz",
+        "classification": "./testdata/afq/classification.mat",
+        "track": "./testdata/tck/track.tck",
+        "numnodes": 100
 }
