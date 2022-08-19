@@ -236,7 +236,7 @@ def computeTractProfiles(subjectID,reference_anat_path,streamlines_path,classifi
 
 	# generate tractmeasures datatype for all tracts
 	print('generating tractmeasures datatype')
-	generateTractmeasuresDatatype(subjectID,names,list(df_measures.keys()),tracts,out_path+'/tractmeasures/output_FiberStats.csv')
+	generateTractmeasuresDatatype(subjectID,names,list(df_measures.keys()),tracts,out_path+'/tractmeasures/tractmeasures.csv')
 
 def main():
 
