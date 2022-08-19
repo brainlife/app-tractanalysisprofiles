@@ -6,7 +6,7 @@
 #singularity exec -e docker://bacaron/athlete-brain-container:v1.1 ./tractAnalysisProfilesDipy.py
 SINGULARITYENV_PYTHONNOUSERSITE=true singularity exec -e docker://brainlife/pyafq:dev ./tractAnalysisProfilesDipy.py
 
-if [ ! -f ./tractmeasures/output_FiberStats.csv ]; then
+if [ ! -f ./tractmeasures/tractmeasures.csv ]; then
     echo "something failed. checked logs"
     exit 1
 else
