@@ -9,7 +9,7 @@ end_index=length(nii);
 tps = {'mean','sd'};
 
 for ii = 1:length(classification.names)
-    tractname = strrep(strrep(strrep(classification.names{ii},'.','_'),' ','_'),'+','_');
+    tractname = strrep(strrep(strrep(strrep(classification.names{ii},'.','_'),' ','_'),'+','_'),'-','_');
     tractprofiles.(tractname) = struct();
     for jj = 1:length(nii)
         if ismember(ii,empty_indices)
