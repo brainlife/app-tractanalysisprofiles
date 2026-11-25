@@ -14,19 +14,11 @@
 
 <!-- brainlife-app:begin (generated from the App manifest; edit the manifest, not this block) -->
 
-> **Computes tract profiles of a myelin map along segmented white matter tracts with Vistasoft, producing profile plots and a tractmeasures CSV.**
+**Computes tract profiles of a myelin map along segmented white matter tracts with Vistasoft, producing profile plots and a tractmeasures CSV.**
 
 Samples a myelin map along each tract of a white matter classification (wmc) at numnodes evenly spaced nodes, weighting streamlines by their distance from the tract core (Vistasoft dtiComputeDiffusionPropertiesAlongFG) or, when fiberbased is true, without weighting (Compute_FA_AlongFG). Produces PNG/EPS profile plots per tract and measure and a tractmeasures CSV with means and standard deviations. Use it after tract segmentation; it needs the wmc and the whole-brain tck it was derived from.
 
-| | |
-|---|---|
-| 📥 **Inputs** | `neuro/myelin-map` · `neuro/wmc` · `neuro/track/tck` |
-| 📤 **Outputs** | `generic/images` · `neuro/tractmeasures` |
-| 🐳 **Container** | `brainlife/mcr:neurodebian1604-r2017a` |
-| ⚙️ **Resources** | 4 CPUs · 32 GB memory · 11 h walltime |
-| 🔗 **Run it** | [doi.org/10.25663/brainlife.app.523](https://doi.org/10.25663/brainlife.app.523) |
-
-#### 📥 Inputs
+Run it on brainlife.io: [https://doi.org/10.25663/brainlife.app.523](https://doi.org/10.25663/brainlife.app.523)
 
 | Input | Datatype | Required | Description |
 |---|---|---|---|
@@ -34,22 +26,20 @@ Samples a myelin map along each tract of a white matter classification (wmc) at 
 | `afq` | `neuro/wmc` | yes | The path to the wmc classification datatype |
 | `tck` | `neuro/track/tck` | yes | The path to the tractogram corresponding to the wmc structure. Must be the whole-brain tractogram used to generate the wmc classification. |
 
-#### 📤 Outputs
-
 | Output | Datatype | Description |
 |---|---|---|
 | `images` | `generic/images` | Directory of tract profile images for each tract and measure |
 | `tractmeasures` | `neuro/tractmeasures` | CSV containing all tracts and measures |
-
-<details>
-<summary><b>⚙️ Parameters</b> (2)</summary>
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
 | `fiberbased` | boolean | `false` | to create profiles using a non-weighted, fiber-based method: "true" |
 | `numnodes` | number | `200` | Number of nodes for tract profiles |
 
-</details>
+Runtime: container `brainlife/mcr:neurodebian1604-r2017a`; 4 CPUs; 32 GB memory; 11 h walltime.
+
+Please cite:
+- Yeatman JD, Dougherty RF, Myall NJ, Wandell BA, Feldman HM (2012) Tract Profiles of White Matter Properties: Automating Fiber-Tract Quantification. PLoS ONE 7(11): e49790. [doi:10.1371/journal.pone.0049790](https://doi.org/10.1371/journal.pone.0049790)
 
 <!-- brainlife-app:end -->
 
