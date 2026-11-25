@@ -10,9 +10,9 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-lightgrey.svg" alt="MIT license"></a>
 </p>
 
-> 📍 **This branch, `dipy-1.0`, is the brainlife.io App Tract Analysis Profiles - Dipy** ([doi:10.25663/brainlife.app.474](https://doi.org/10.25663/brainlife.app.474)). The other Apps in this repository are listed under **Versions on brainlife.io** below.
+> **This branch, `dipy-1.0`, is the brainlife.io App Tract Analysis Profiles - Dipy** ([doi:10.25663/brainlife.app.474](https://doi.org/10.25663/brainlife.app.474)). The other Apps in this repository are listed under **Versions on brainlife.io** below.
 
-## 🧠 At a glance
+## At a glance
 
 <!-- brainlife-app:begin (generated from the App manifest; edit the manifest, not this block) -->
 
@@ -22,13 +22,13 @@ For each tract in a white matter classification (wmc), orients the streamlines t
 
 | | |
 |---|---|
-| 📥 **Inputs** | `neuro/dwi` · `neuro/wmc` · `neuro/track/tck` · `neuro/tensor` · `neuro/noddi` (optional) · `neuro/myelin-map` (optional) · `neuro/anat/qmri` (optional) |
-| 📤 **Outputs** | `generic/images` · `neuro/tractprofile-deprecated` · `neuro/tractmeasures` |
-| 🐳 **Container** | `brainlife/pyafq:dev` |
-| ⚙️ **Resources** | 4 CPUs · 28 GB memory · 10 h walltime |
-| 🔗 **Run it** | [doi.org/10.25663/brainlife.app.474](https://doi.org/10.25663/brainlife.app.474) |
+| **Inputs** | `neuro/dwi` · `neuro/wmc` · `neuro/track/tck` · `neuro/tensor` · `neuro/noddi` (optional) · `neuro/myelin-map` (optional) · `neuro/anat/qmri` (optional) |
+| **Outputs** | `generic/images` · `neuro/tractprofile-deprecated` · `neuro/tractmeasures` |
+| **Container** | `brainlife/pyafq:dev` |
+| **Resources** | 4 CPUs · 28 GB memory · 10 h walltime |
+| **Run it** | [doi.org/10.25663/brainlife.app.474](https://doi.org/10.25663/brainlife.app.474) |
 
-#### 📥 Inputs
+#### Inputs
 
 | Input | Datatype | Required | Description |
 |---|---|---|---|
@@ -40,7 +40,7 @@ For each tract in a white matter classification (wmc), orients the streamlines t
 | `myelin` | `neuro/myelin-map` | no | Optional myelin map sampled along each tract. |
 | `qmri` | `neuro/anat/qmri` | no | Optional quantitative MRI maps sampled along each tract. |
 
-#### 📤 Outputs
+#### Outputs
 
 | Output | Datatype | Description |
 |---|---|---|
@@ -49,7 +49,7 @@ For each tract in a white matter classification (wmc), orients the streamlines t
 | `tractmeasures` | `neuro/tractmeasures` | CSV containing all tracts and measures |
 
 <details>
-<summary><b>⚙️ Parameters</b> (1)</summary>
+<summary><b>Parameters</b> (1)</summary>
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
@@ -59,7 +59,7 @@ For each tract in a white matter classification (wmc), orients the streamlines t
 
 <!-- brainlife-app:end -->
 
-## 🏷️ Versions on brainlife.io
+## Versions on brainlife.io
 
 Each version is a separate App on brainlife.io, built from a branch of this repository. The Apps on branch `1.13` share the same code and differ only in the measures they ask for.
 
@@ -78,15 +78,15 @@ Each version is a separate App on brainlife.io, built from a branch of this repo
 - **Tract Analysis Profiles - Myelin mapping** (`brainlife.app.523`): a myelin map.
 - **Tract Analysis Profiles - Dipy** (`brainlife.app.474`): a Python reimplementation that orients the streamlines of each tract to a QuickBundles centroid and averages the measures with DIPY's Gaussian distance weights; it also needs the reference DWI.
 
-## 🚀 Running the App
+## Running the App
 
-### ☁️ On brainlife.io
+### On brainlife.io
 
 Open the App at [doi.org/10.25663/brainlife.app.523](https://doi.org/10.25663/brainlife.app.523) (or one of the variants above), choose a white matter classification (`neuro/wmc`), the whole-brain tractogram (`neuro/track/tck`) it was derived from and the measure maps, set the number of nodes and press **Execute**. The App archives a `generic/images` dataset of profile plots and a `neuro/tractmeasures` dataset to your project.
 
 Each profile samples the measures at `numnodes` evenly spaced nodes along the tract (200 by default). By default streamlines are weighted by their distance from the tract core (Vistasoft `dtiComputeDiffusionPropertiesAlongFG`, "volume based"). Setting `fiberbased` to `true` uses `Compute_FA_AlongFG` instead, which does not weight the streamlines and is appropriate for testing models involving streamline crossings ("fiber based").
 
-### 💻 Locally
+### Locally
 
 The Vistasoft versions are compiled MATLAB code. You need [Singularity/Apptainer](https://apptainer.org/) and [`jq`](https://jqlang.github.io/jq/); `main` runs the MATLAB Compiler Runtime R2017a (`brainlife/mcr:neurodebian1604-r2017a`) and builds the summary CSV with `brainlife/freesurfer-stats:1.2`.
 
@@ -118,7 +118,7 @@ The DIPY version (`git checkout dipy-1.0`) runs in `brainlife/pyafq:dev` and rea
 
 To run the uncompiled MATLAB code you need [Vistasoft](https://github.com/vistalab/vistasoft/), [SPM 8](https://www.fil.ion.ucl.ac.uk/spm/software/spm8/) and [jsonlab](https://github.com/fangq/jsonlab).
 
-### 🧪 Sample data
+### Sample data
 
 Download sample datasets from brainlife.io with the [brainlife CLI](https://github.com/brainlife/cli):
 
@@ -131,7 +131,7 @@ bl dataset download 5b96bdba059cf900271924fa && mv 5b96bdba059cf900271924fa inpu
 bl dataset download 5b96bdd2059cf900271924fc && mv 5b96bdd2059cf900271924fc input/wmc
 ```
 
-## 📦 Outputs
+## Outputs
 
 ```text
 images/          PNG and EPS plots of the profile of every measure for every tract
@@ -141,13 +141,13 @@ tractmeasures/   tractmeasures.csv: all tracts, nodes and measures in one table
 
 In the per-tract CSVs each measure has two columns, `<measure>_1` (mean) and `<measure>_2` (standard deviation). The DIPY version writes the same three directories.
 
-## 🩺 Troubleshooting
+## Troubleshooting
 
 - **`not all output generated`** (Vistasoft versions): the number of profile images differs from the number expected. Check the log for tracts with too few streamlines or for missing measure files.
 - **`something failed. checked logs`** (DIPY version): `tractmeasures/tractmeasures.csv` was not created. Check the log of `tractAnalysisProfilesDipy.py` for the failing tract or measure.
 - The tractogram must be the whole-brain tractogram from which the white matter classification was made; the classification indexes its streamlines.
 
-## 📚 Citing
+## Citing
 
 > [!TIP]
 > If you use this App in your work, please cite the App, the software it builds on and brainlife.io (below). GitHub's **Cite this repository** button gives the App citation in APA and BibTeX.
@@ -162,14 +162,14 @@ In the per-tract CSVs each measure has two columns, `<measure>_1` (mean) and `<m
 - Hayashi S, Caron BA, Heinsfeld AS, et al. brainlife.io: a decentralized and open-source cloud platform to support neuroscience research. *Nature Methods* 21:809–813 (2024). [doi:10.1038/s41592-024-02237-2](https://doi.org/10.1038/s41592-024-02237-2)
 - Avesani P, McPherson B, Hayashi S, et al. The open diffusion data derivatives, brain data upcycling via integrated publishing of derivatives and reproducible open cloud services. *Scientific Data* 6:69 (2019). [doi:10.1038/s41597-019-0073-y](https://doi.org/10.1038/s41597-019-0073-y)
 
-## 👥 Authors
+## Authors
 
 - Brad Caron
 - Lindsey Kitchell
 
 **Contributors:** Soichi Hayashi, Franco Pestilli
 
-## 💰 Funding
+## Funding
 
 [![Wellcome-226486/Z/22/Z](https://img.shields.io/badge/Wellcome-226486%2FZ%2F22%2FZ-purple.svg)](https://wellcome.org/)
 [![NIH-NINDS-U24NS140384](https://img.shields.io/badge/NIH_NINDS-U24NS140384-green.svg)](https://reporter.nih.gov/project-details/11261037)
@@ -188,6 +188,6 @@ In the per-tract CSVs each measure has two columns, `<measure>_1` (mean) and `<m
 
 <sub>brainlife.io is publicly funded, and acknowledging that support helps keep it running. This App was developed with support from Wellcome, the U.S. National Institutes of Health (including the BRAIN Initiative BRAIN CONNECTS program: The Axonal Projectome EXchange, U24NS140384, and the Center for Mesoscale Connectomics, UM1NS132207) and the U.S. National Science Foundation.</sub>
 
-## ⚖️ License
+## License
 
 [MIT](LICENSE).
